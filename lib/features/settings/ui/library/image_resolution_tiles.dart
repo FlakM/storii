@@ -23,6 +23,7 @@ class ImageResolutionListTile extends StatelessWidget {
         AppBottomSheet.show(
           context,
           title: l10n.imageResolution,
+          subtitle: l10n.imageResolutionSubtitle,
           body: const _ImageResolutionTiles(),
         );
       },
