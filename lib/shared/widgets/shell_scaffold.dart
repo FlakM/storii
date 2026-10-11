@@ -34,6 +34,11 @@ class ShellScaffold extends ConsumerWidget {
       onPopInvokedWithResult: (didPop, _) async {
         if (didPop) return;
 
+        if (factor > 0) {
+          ref.read(playerModeProvider.notifier).toMini();
+          return;
+        }
+
         if (context.canPop()) {
           context.pop();
           return;

@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/2.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- player should minimize correctly in inner route
+
 ## [v0.12.0] - 2026-10-10
 
 ### Added
