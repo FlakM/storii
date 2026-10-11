@@ -9,8 +9,6 @@ environment:
   flutter: 3.47.0
 
 dependencies:
-  abs_api:
-    path: packages/abs_api
   analyzer: ^14.4.0
   app_links: ^7.2.1
   audio_service: ^0.18.19
@@ -49,6 +47,7 @@ dependencies:
       path: just_audio
 
   material_ui: ^1.4.0
+  mime: ^2.1.0
   package_info_plus: ^10.2.1
   path: ^1.9.1
   path_provider: ^2.1.6
@@ -58,6 +57,7 @@ dependencies:
   saf_stream: ^4.0.1
   saf_util: ^3.1.0
   sensors_plus: ^7.1.0
+  socket_io_client: ^3.1.6
   source_gen: ^4.3.0
   ttf_metadata: ^0.0.6
   url_launcher: ^6.3.2

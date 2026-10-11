@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/models/playback_event.dart';
 import 'package:storii/features/player/logic/listen_time_accumulator.dart';
 import 'package:storii/features/player/logic/playback_history.dart';

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
+import 'package:storii/api/abs/abs_api.dart';
 
 class FakeSessionsApi extends SessionsApi {
   new() : super(ApiClient(baseUrl: Uri.parse('http://localhost')));

@@ -22,7 +22,6 @@ You do **not** need to write code to contribute. If you spot any text errors (ty
 ```bash
 git clone https://github.com/YOUR_USERNAME/storii.git
 cd storii
-(cd packages/abs_api && dart pub get && dart run build_runner build)
 flutter pub get
 dart run build_runner build
 ```

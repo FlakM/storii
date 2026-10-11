@@ -1,4 +1,4 @@
-import 'package:abs_api/abs_api.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/models/playback_event.dart';
 import 'package:storii/storage/local/playback_history_store.dart';
 import 'package:storii/storage/local/session_store.dart';

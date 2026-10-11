@@ -1,0 +1,74 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:storii/api/abs/models/audio_file.dart';
+import 'package:storii/api/abs/models/audio_track.dart';
+import 'package:storii/api/abs/models/book_chapter.dart';
+import 'package:storii/api/abs/models/enums.dart';
+import 'package:storii/api/abs/models/json_converters.dart';
+import 'package:storii/api/abs/models/media_metadata.dart';
+import 'package:storii/api/abs/models/podcast_episode.dart';
+
+part 'media.freezed.dart';
+part 'media.g.dart';
+
+@freezed
+sealed class Media with _$Media {
+  @DurationPreciseSecondsConverter()
+  const factory book({
+    required String id,
+    required MediaMetadata metadata,
+    String? libraryItemId,
+    @Default([]) List<String> tags,
+    Duration? duration,
+    String? coverPath,
+    @Default([]) List<AudioFile> audioFiles,
+    @Default(0) int numAudioFiles,
+    @Default([]) List<AudioTrack> tracks,
+    @Default(0) int numTracks,
+    @Default([]) List<BookChapter> chapters,
+    @Default(0) int numChapters,
+    int? size,
+  }) = BookMedia;
+
+  @DateTimeEpochConverter()
+  const factory podcast({
+    required String id,
+    required MediaMetadata metadata,
+    String? libraryItemId,
+    @Default([]) List<String> tags,
+    @Default(false) bool autoDownloadEpisodes,
+    @Default([]) List<PodcastEpisode> episodes,
+    String? coverPath,
+    DateTime? lastEpisodeCheck,
+    int? maxNewEpisodesToDownload,
+    int? maxEpisodesToKeep,
+    int? size,
+    int? numEpisodes,
+  }) = PodcastMedia;
+
+  factory fromJson(Map<String, dynamic> json) =>
+      const MediaConverter().fromJson(json);
+}
+
+class MediaConverter implements JsonConverter<Media, Map<String, dynamic>> {
+  const new();
+
+  @override
+  Media fromJson(Map<String, dynamic> json) {
+    if (json.containsKey('runtimeType')) return _$MediaFromJson(json);
+
+    final MediaType mediaType;
+    if (json.containsKey('episodes')) {
+      mediaType = .podcast;
+    } else {
+      mediaType = .book;
+    }
+
+    return switch (mediaType) {
+      .book => BookMedia.fromJson(json),
+      .podcast => PodcastMedia.fromJson(json),
+    };
+  }
+
+  @override
+  Map<String, dynamic> toJson(Media media) => media.toJson();
+}

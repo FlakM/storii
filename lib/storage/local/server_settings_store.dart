@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/storage/hive/boxes.dart';
 
 part 'server_settings_store.g.dart';

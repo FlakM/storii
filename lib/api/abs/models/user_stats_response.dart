@@ -1,0 +1,51 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:storii/api/abs/models/enums.dart';
+import 'package:storii/api/abs/models/json_converters.dart';
+import 'package:storii/api/abs/models/media_metadata.dart';
+import 'package:storii/api/abs/models/playback_session.dart';
+
+part 'user_stats_response.freezed.dart';
+part 'user_stats_response.g.dart';
+
+@freezed
+abstract class UserStatsResponse with _$UserStatsResponse {
+  @DurationSecConverter()
+  const factory({
+    required Duration totalTime,
+    required Map<String, ItemsListenedToResponse> items,
+    @JsonKey(toJson: _daysToJson) required Map<DateTime, Duration> days,
+    required Map<DayOfTheWeek, Duration> dayOfWeek,
+    required Duration today,
+    required List<PlaybackSession> recentSessions,
+  }) = _UserStatsResponse;
+
+  factory fromJson(Map<String, dynamic> json) =>
+      _$UserStatsResponseFromJson(json);
+}
+
+Map<String, int> _daysToJson(Map<DateTime, Duration> days) {
+  return {
+    for (final day in days.entries)
+      _dateTimeToDateString(day.key): day.value.inSeconds,
+  };
+}
+
+String _dateTimeToDateString(DateTime date) {
+  final year = date.year.toString().padLeft(4, '0');
+  final month = date.month.toString().padLeft(2, '0');
+  final day = date.day.toString().padLeft(2, '0');
+  return '$year-$month-$day';
+}
+
+@freezed
+abstract class ItemsListenedToResponse with _$ItemsListenedToResponse {
+  @DurationSecConverter()
+  const factory({
+    @JsonKey(name: 'id') required String libraryItemId,
+    required Duration timeListening,
+    required MediaMetadata mediaMetadata,
+  }) = _ItemsListenedToResponse;
+
+  factory fromJson(Map<String, dynamic> json) =>
+      _$ItemsListenedToResponseFromJson(json);
+}

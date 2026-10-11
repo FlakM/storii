@@ -1,0 +1,31 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:storii/api/abs/models/models.dart';
+
+part 'library_item.freezed.dart';
+part 'library_item.g.dart';
+
+@freezed
+sealed class LibraryItem with _$LibraryItem {
+  @DateTimeEpochConverter()
+  const factory({
+    required String id,
+    required String libraryId,
+    required DateTime addedAt,
+    required DateTime updatedAt,
+    required bool isMissing,
+    required MediaType mediaType,
+    required Media media,
+    @Default('') String path,
+    @Default('') String relPath,
+    @Default(false) bool isFile,
+    int? size,
+    String? sequence,
+    String? seriesSequence,
+    MediaProgress? userMediaProgress,
+    // List<PodcastEpisodeDownload>? episodesDownloading,
+    Series? collapsedSeries,
+    PodcastEpisode? recentEpisode,
+  }) = _LibraryItem;
+
+  factory fromJson(Map<String, dynamic> json) => _$LibraryItemFromJson(json);
+}
