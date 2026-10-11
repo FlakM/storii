@@ -586,6 +586,7 @@
   "osNotificationCanSpeedSubtitle": "Show playback speed button in OS notification",
   "pagination": "Pagination",
   "imageResolution": "Image resolution",
+  "imageResolutionSubtitle": "Server resizes images to your pixel limit to save data and load faster",
   "imageResolutionListView": "Image resolution in list view",
   "imageResolutionGridView": "Image resolution in grid view",
   "coverImageSizes": "Cover image sizes",
