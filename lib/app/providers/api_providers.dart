@@ -99,9 +99,6 @@ LibraryApi libraryApi(Ref ref) => LibraryApi(ref.watch(apiClientProvider));
 ItemApi itemApi(Ref ref) => ItemApi(ref.watch(apiClientProvider));
 
 @riverpod
-AuthorApi authorApi(Ref ref) => AuthorApi(ref.watch(apiClientProvider));
-
-@riverpod
 MeApi meApi(Ref ref) => MeApi(ref.watch(apiClientProvider));
 
 @riverpod

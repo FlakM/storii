@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/connection_providers.dart';
-import 'package:storii/shared/helpers/app_error.dart';
+import 'package:storii/shared/helpers/api_call_logger.dart' as api_calls;
 
 extension RefExtensions on Ref {
   Future<T> logApiCall<T>(
@@ -9,24 +8,12 @@ extension RefExtensions on Ref {
     required String source,
     String? logMessage,
     bool debug = false,
-  }) async {
-    try {
-      return await call();
-    } catch (e, st) {
-      final error = AppError.from(e, st);
-      final message = logMessage != null
-          ? '$logMessage: ${error.message}'
-          : error.message;
-      LogService.log(
-        message,
-        source: source,
-        level: debug ? .debug : .error,
-        originalError: error.originalError,
-        stackTrace: error.stackTrace,
-      );
-      throw error;
-    }
-  }
+  }) => api_calls.logApiCall(
+    call,
+    source: source,
+    logMessage: logMessage,
+    debug: debug,
+  );
 
   void invalidateOnReconnect() {
     listen(serverConnectionProvider, (prev, next) {

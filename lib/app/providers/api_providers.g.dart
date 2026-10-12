@@ -291,47 +291,6 @@ final class ItemApiProvider
 
 String _$itemApiHash() => r'cae7ca796de5a8a1c262e7c0511e5f9f731b9e86';
 
-@ProviderFor(authorApi)
-final authorApiProvider = AuthorApiProvider._();
-
-final class AuthorApiProvider
-    extends $FunctionalProvider<AuthorApi, AuthorApi, AuthorApi>
-    with $Provider<AuthorApi> {
-  AuthorApiProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'authorApiProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$authorApiHash();
-
-  @$internal
-  @override
-  $ProviderElement<AuthorApi> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  AuthorApi create(Ref ref) {
-    return authorApi(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AuthorApi value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<AuthorApi>(value),
-    );
-  }
-}
-
-String _$authorApiHash() => r'd2931d6d6b100084168d6fbb79cbc044c933856c';
-
 @ProviderFor(meApi)
 final meApiProvider = MeApiProvider._();
 

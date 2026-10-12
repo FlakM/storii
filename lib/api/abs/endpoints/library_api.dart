@@ -110,6 +110,15 @@ class LibraryApi {
     return listFromJsonKey(response.data, 'authors', Author.fromJson);
   }
 
+  Future<Author> getAuthor(String authorId, String libraryId) async {
+    final response = await api.request(
+      ApiRoutes.authorById(authorId),
+      method: .get,
+      query: {'include': 'items,series'},
+    );
+    return fromJson(response.data, Author.fromJson);
+  }
+
   Future<SearchResponse> search(
     String libraryId, {
     required String query,
