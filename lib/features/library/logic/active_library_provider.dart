@@ -1,12 +1,11 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
 import 'package:storii/features/library/logic/filter_data_provider.dart';
 import 'package:storii/features/library/logic/user_libraries_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'active_library_provider.g.dart';
 
@@ -15,13 +14,9 @@ Future<LibraryResponse> activeLibraryDetails(Ref ref) async {
   final currentLibrary = ref.watch(currentLibraryProvider);
 
   Future<LibraryResponse> fetchFullLibrary(Library lib) async {
-    await ref.watch(authGateProvider.future);
-    final api = ref.read(libraryApiProvider);
-    return ref.logApiCall(
-      () => api.get(lib.id),
-      logMessage: 'Error fetching active library details',
-      source: 'activeLibraryDetails',
-    );
+    await ref.read(authGateProvider.future);
+    final repo = ref.read(libraryRepositoryProvider);
+    return repo.get(lib.id);
   }
 
   if (currentLibrary == null) {

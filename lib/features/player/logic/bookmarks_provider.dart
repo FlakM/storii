@@ -2,11 +2,10 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/shared/helpers/app_error.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'bookmarks_provider.g.dart';
 
@@ -24,13 +23,12 @@ class BookmarksController extends _$BookmarksController {
 
   Future<bool> create({required Duration time, required String title}) async {
     await ref.read(authGateProvider.future);
-    final api = ref.read(meApiProvider);
+    final repo = ref.read(meRepositoryProvider);
     try {
-      await ref.logApiCall(
-        () =>
-            api.createBookmark(libraryItemId: itemId, time: time, title: title),
-        source: 'BookmarksNotifier',
-        logMessage: 'creating bookmark failed',
+      await repo.createBookmark(
+        libraryItemId: itemId,
+        time: time,
+        title: title,
       );
       ref.invalidate(serverUserProvider);
       return true;
@@ -41,13 +39,12 @@ class BookmarksController extends _$BookmarksController {
 
   Future<bool> modify({required Duration time, required String title}) async {
     await ref.read(authGateProvider.future);
-    final api = ref.read(meApiProvider);
+    final repo = ref.read(meRepositoryProvider);
     try {
-      await ref.logApiCall(
-        () =>
-            api.updateBookmark(libraryItemId: itemId, time: time, title: title),
-        source: 'BookmarksNotifier',
-        logMessage: 'updating bookmark failed',
+      await repo.updateBookmark(
+        libraryItemId: itemId,
+        time: time,
+        title: title,
       );
       ref.invalidate(serverUserProvider);
       return true;
@@ -58,13 +55,9 @@ class BookmarksController extends _$BookmarksController {
 
   Future<bool> remove({required Duration time}) async {
     await ref.read(authGateProvider.future);
-    final api = ref.read(meApiProvider);
+    final repo = ref.read(meRepositoryProvider);
     try {
-      await ref.logApiCall(
-        () => api.removeBookmark(libraryItemId: itemId, time: time),
-        source: 'BookmarksNotifier',
-        logMessage: 'removing bookmark failed',
-      );
+      await repo.removeBookmark(libraryItemId: itemId, time: time);
       ref.invalidate(serverUserProvider);
       return true;
     } on AppError catch (_) {

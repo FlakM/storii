@@ -1,8 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/admin/logic/task_stream_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'library_actions_provider.g.dart';
 
@@ -31,12 +30,8 @@ class ScanLibrary extends _$ScanLibrary {
 
   Future<void> scan(String libraryId) async {
     await ref.read(authGateProvider.future);
-    final api = ref.read(libraryApiProvider);
+    final repo = ref.read(libraryRepositoryProvider);
 
-    return ref.logApiCall(
-      () => api.scan(libraryId),
-      logMessage: 'Error scanning library',
-      source: 'scanLibrary',
-    );
+    return repo.scanLibrary(libraryId);
   }
 }

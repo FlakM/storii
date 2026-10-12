@@ -48,4 +48,4 @@ final class RecentEpisodesProvider
   }
 }
 
-String _$recentEpisodesHash() => r'21e85437e6bf3b876cafaf40547bbd475a839382';
+String _$recentEpisodesHash() => r'0c11afe8d601cd240df82e35dee8660eade99d49';

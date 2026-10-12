@@ -2,12 +2,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/user.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
 import 'package:storii/shared/helpers/app_error.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/progress_store.dart';
 import 'package:storii/storage/local/session_store.dart';
 
@@ -37,7 +36,7 @@ class SessionsCleanup extends _$SessionsCleanup {
     List<PlaybackSession> sessions,
   ) async {
     await ref.read(authGateProvider.future);
-    final sessionsApi = ref.read(sessionsApiProvider);
+    final repo = ref.read(sessionRepositoryProvider);
 
     for (final session in sessions) {
       try {
@@ -52,25 +51,17 @@ class SessionsCleanup extends _$SessionsCleanup {
         }
 
         if (session.playMethod == .local) {
-          await ref.logApiCall(
-            () => sessionsApi.syncLocal(localSession: session.stripped),
-            source: _source,
-            debug: true,
-          );
+          await repo.syncLocal(localSession: session.stripped);
           ref
               .read(progressStoreProvider(user.id).notifier)
               .put(session.toMediaProgress());
         } else {
-          await ref.logApiCall(
-            () => sessionsApi.syncSession(
-              sessionId: session.id,
-              params: SyncSessionRequestParams(
-                currentTime: session.currentTime,
-                timeListened: session.timeListening,
-              ),
+          await repo.syncSession(
+            sessionId: session.id,
+            params: SyncSessionRequestParams(
+              currentTime: session.currentTime,
+              timeListened: session.timeListening,
             ),
-            source: _source,
-            debug: true,
           );
         }
 

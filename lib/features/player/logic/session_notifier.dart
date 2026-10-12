@@ -4,16 +4,15 @@ import 'dart:developer';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/player/logic/play_request_params.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/extensions.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/session_store.dart';
 
 part 'session_notifier.g.dart';
@@ -30,17 +29,13 @@ class SessionNotifier extends _$SessionNotifier {
     String? episodeId,
   }) async {
     await ref.read(authGateProvider.future);
-    final api = ref.read(itemApiProvider);
+    final repo = ref.read(sessionRepositoryProvider);
     final params = await ref.read(playRequestParamsProvider.future);
 
-    final session = await ref.logApiCall(
-      () async => api.createSession(
-        libraryItemId: itemId,
-        params: params,
-        episodeId: episodeId,
-      ),
-      source: 'SessionNotifier',
-      logMessage: 'Failed to create playback session',
+    final session = await repo.createSession(
+      itemId: itemId,
+      params: params,
+      episodeId: episodeId,
     );
 
     await ref.read(sessionStoreProvider.notifier).save(session);
@@ -127,12 +122,8 @@ class SessionNotifier extends _$SessionNotifier {
 
       try {
         await ref.read(authGateProvider.future);
-        await ref.logApiCall(
-          () async => ref
-              .read(sessionsApiProvider)
-              .syncLocal(localSession: updated.stripped),
-          source: 'SessionNotifier',
-        );
+        final repo = ref.read(sessionRepositoryProvider);
+        await repo.syncLocal(localSession: updated.stripped);
       } catch (e) {
         LogService.log(
           'Local session saved locally, server sync deferred',
@@ -155,17 +146,13 @@ class SessionNotifier extends _$SessionNotifier {
       }
 
       await ref.read(authGateProvider.future);
-      await ref.logApiCall(
-        () async => ref
-            .read(sessionsApiProvider)
-            .syncSession(
-              sessionId: session.id,
-              params: SyncSessionRequestParams(
-                currentTime: position,
-                timeListened: totalListened,
-              ),
-            ),
-        source: 'SessionNotifier',
+      final repo = ref.read(sessionRepositoryProvider);
+      await repo.syncSession(
+        sessionId: session.id,
+        params: SyncSessionRequestParams(
+          currentTime: position,
+          timeListened: totalListened,
+        ),
       );
     }
 
@@ -188,12 +175,8 @@ class SessionNotifier extends _$SessionNotifier {
     try {
       if (!isLocal) {
         await ref.read(authGateProvider.future);
-        await ref.logApiCall(
-          () async =>
-              ref.read(sessionsApiProvider).closeSession(sessionId: session.id),
-          source: 'SessionNotifier',
-          logMessage: 'session close failed for ${session.displayTitle}',
-        );
+        final repo = ref.read(sessionRepositoryProvider);
+        await repo.closeSession(sessionId: session.id);
         await ref.read(sessionStoreProvider.notifier).delete(session.id);
       }
       LogService.log(

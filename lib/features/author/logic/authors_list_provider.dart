@@ -1,11 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/library/logic/library_filters_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'authors_list_provider.g.dart';
 
@@ -19,11 +18,7 @@ Future<List<Author>> authorsList(Ref ref) async {
   );
 
   await ref.watch(authGateProvider.future);
-  final api = ref.read(libraryApiProvider);
+  final repo = ref.read(libraryRepositoryProvider);
 
-  return ref.logApiCall(
-    () => api.getAuthors(libraryId, params),
-    source: 'authorsList',
-    logMessage: 'Error getting authors',
-  );
+  return repo.getAuthors(libraryId, params);
 }

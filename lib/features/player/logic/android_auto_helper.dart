@@ -5,7 +5,9 @@ import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
+import 'package:storii/app/repositories/item_repository.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
 import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/home/logic/shelves_provider.dart';
@@ -37,7 +39,11 @@ class AndroidAutoHelper {
 
   final ProviderContainer _container;
 
-  Uri? get _serverUrl => _container.read(currentUserProvider)?.serverUrl;
+  ItemRepository? _itemRepository() {
+    final user = _container.read(currentUserProvider);
+    if (user == null) return null;
+    return _container.read(itemRepositoryProvider);
+  }
 
   CoverHelper get _helper => _container.read(coverHelperProvider);
 
@@ -123,10 +129,10 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
+    final repo = _itemRepository();
     return Future.wait(
       paged.map(
-        (item) =>
-            item.toAndroidAutoMediaItem(serverUrl: _serverUrl, helper: _helper),
+        (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
       ),
     );
   }
@@ -164,10 +170,10 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
+    final repo = _itemRepository();
     return Future.wait(
       paged.map(
-        (item) =>
-            item.toAndroidAutoMediaItem(serverUrl: _serverUrl, helper: _helper),
+        (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
       ),
     );
   }
@@ -191,8 +197,7 @@ class AndroidAutoHelper {
       );
       final mediaItems = await Future.wait(
         paged.map(
-          (item) =>
-              item.toAndroidAutoMediaItem(serverUrl: null, helper: _helper),
+          (item) => item.toAndroidAutoMediaItem(repo: null, helper: _helper),
         ),
       );
       return mediaItems.map((mediaItem) {
@@ -219,10 +224,10 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
+    final repo = _itemRepository();
     return Future.wait(
       paged.map(
-        (item) =>
-            item.toAndroidAutoMediaItem(serverUrl: _serverUrl, helper: _helper),
+        (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
       ),
     );
   }
@@ -235,11 +240,9 @@ class AndroidAutoHelper {
     try {
       final item = await _container.read(itemDetailProvider(itemId).future);
       if (item.isBook) {
+        final repo = _itemRepository();
         return applyAndroidAutoPaging([
-          await item.toAndroidAutoMediaItem(
-            serverUrl: _serverUrl,
-            helper: _helper,
-          ),
+          await item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
         ], androidAutoPagingFromOptions(options));
       }
 
@@ -261,12 +264,13 @@ class AndroidAutoHelper {
         episodes,
         androidAutoPagingFromOptions(options),
       );
+      final repo = _itemRepository();
       return await Future.wait(
         paged.map(
           (e) => e.toAndroidAutoMediaItem(
             itemId: itemId,
             podcastTitle: item.title,
-            serverUrl: _serverUrl,
+            repo: repo,
             helper: _helper,
           ),
         ),

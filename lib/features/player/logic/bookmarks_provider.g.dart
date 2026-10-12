@@ -134,7 +134,7 @@ final class BookmarksControllerProvider
 }
 
 String _$bookmarksControllerHash() =>
-    r'7579b063aae61a986e56194d77b3b536ad3efe59';
+    r'b301ae804cf5c97e63171c42b9dce689ff81ca64';
 
 final class BookmarksControllerFamily extends $Family
     with $ClassFamilyOverride<BookmarksController, void, void, void, String> {

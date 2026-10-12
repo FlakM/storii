@@ -23,6 +23,10 @@ class FakeSessionsApi extends SessionsApi {
   }
 }
 
+class FakeItemApi extends ItemApi {
+  new() : super(ApiClient(baseUrl: Uri.parse('http://localhost')));
+}
+
 class FakeSocketApi extends SocketApi {
   bool _current = false;
   final StreamController<bool> _controller = StreamController<bool>.broadcast();

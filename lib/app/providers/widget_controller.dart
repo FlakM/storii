@@ -9,10 +9,10 @@ import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/widget_config.dart';
-import 'package:storii/app/providers/api_providers.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/widget_store.dart';
 
 part 'widget_controller.g.dart';
@@ -144,12 +144,11 @@ class WidgetController extends _$WidgetController {
 
     try {
       final cancelToken = CancelToken();
-      final bytes = await ref.logApiCall(
-        () async => ref
-            .read(itemApiProvider)
-            .getCover(libraryItemId: libraryItemId, cancelToken: cancelToken),
-        source: 'WidgetController',
-        logMessage: 'Failed to download cover for widget',
+      await ref.read(authGateProvider.future);
+      final repo = ref.read(itemRepositoryProvider);
+      final bytes = await repo.getCover(
+        libraryItemId,
+        cancelToken: cancelToken,
       );
       if (bytes == null) return null;
 

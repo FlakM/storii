@@ -6,8 +6,8 @@ import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/shared/helpers/app_error.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/items_cache.dart';
 
 part 'item_detail_provider.g.dart';
@@ -31,14 +31,10 @@ class ItemDetail extends _$ItemDetail {
       throw l10n.connectionServerDisconnected;
     }
 
-    await ref.watch(authGateProvider.future);
-    final api = ref.read(itemApiProvider);
+    await ref.read(authGateProvider.future);
+    final repo = ref.read(itemRepositoryProvider);
     try {
-      final remoteItem = await ref.logApiCall(
-        () => api.get(id, includeProgress: true),
-        source: 'itemDetail',
-        logMessage: 'Error fetching library item details',
-      );
+      final remoteItem = await repo.getItem(id, includeProgress: true);
       unawaited(cache.put(remoteItem));
       return remoteItem;
     } on AppError catch (error) {

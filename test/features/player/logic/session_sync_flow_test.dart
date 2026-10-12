@@ -4,7 +4,9 @@ import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
+import 'package:storii/app/repositories/session_repository.dart';
 import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/logic/sessions_cleanup.dart';
 import 'package:storii/storage/local/session_store.dart';
@@ -18,6 +20,7 @@ void main() {
   late FakeSessionStore sessionStore;
   late FakeSessionsApi fakeSessionsApi;
   late FakeSocketApi fakeSocketApi;
+  late FakeItemApi fakeItemApi;
 
   setUpAll(() async {
     await initGlobals();
@@ -28,6 +31,7 @@ void main() {
     sessionStore = FakeSessionStore();
     fakeSessionsApi = FakeSessionsApi();
     fakeSocketApi = FakeSocketApi();
+    fakeItemApi = FakeItemApi();
   });
 
   tearDown(() {
@@ -49,6 +53,9 @@ void main() {
         authGateProvider.overrideWith((ref) async {}),
         socketApiProvider.overrideWith((ref) async => fakeSocketApi),
         sessionsApiProvider.overrideWithValue(fakeSessionsApi),
+        sessionRepositoryProvider.overrideWith(
+          (ref) => SessionRepository(fakeItemApi, fakeSessionsApi),
+        ),
       ],
     );
   }

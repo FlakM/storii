@@ -6,8 +6,8 @@ import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'item_metadata_notifier.freezed.dart';
 part 'item_metadata_notifier.g.dart';
@@ -55,12 +55,10 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
     if (curr == null || !curr.canSave) return false;
     state = AsyncData(curr.copyWith(saving: true));
     await ref.read(authGateProvider.future);
-    final api = ref.read(itemApiProvider);
+    final repo = ref.read(itemRepositoryProvider);
     try {
       final params = diffMedia(draft: curr.draft, original: curr.original);
-      await ref.logApiCall(() async {
-        await api.updateMedia(libraryItemId: id, parameters: params);
-      }, source: 'ItemMetadataNotifier');
+      await repo.updateMetadata(id, parameters: params);
       return true;
     } catch (e) {
       return false;

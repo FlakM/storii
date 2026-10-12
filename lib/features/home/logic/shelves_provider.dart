@@ -1,14 +1,13 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/items_cache.dart';
 import 'package:storii/storage/local/session_store.dart';
 
@@ -150,11 +149,7 @@ Future<List<Shelf>> rawShelves(Ref ref) async {
       .id;
 
   await ref.watch(authGateProvider.future);
-  final api = ref.read(libraryApiProvider);
+  final repo = ref.read(libraryRepositoryProvider);
 
-  return ref.logApiCall(
-    () => api.getPersonalized(libraryId),
-    source: 'rawShelves',
-    logMessage: 'Error getting personalized home',
-  );
+  return repo.getShelves(libraryId);
 }

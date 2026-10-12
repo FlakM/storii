@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/storage/local/server_settings_store.dart';
@@ -22,8 +23,8 @@ class ServerUser extends _$ServerUser {
     });
     await _userSub?.cancel();
     await ref.watch(authGateProvider.future);
-    final api = ref.read(meApiProvider);
-    final user = await api.getUser();
+    final repo = ref.read(meRepositoryProvider);
+    final user = await repo.getUser();
 
     final socket = await ref.watch(socketApiProvider.future);
     _userSub = socket.user.onUserUpdated.listen((update) {
