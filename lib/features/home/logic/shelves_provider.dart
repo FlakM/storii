@@ -2,7 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/downloads/logic/downloads_provider.dart';
@@ -98,8 +99,7 @@ Future<List<Shelf>> sortedShelves(Ref ref) async {
 
 @riverpod
 Future<List<Shelf>> rawShelves(Ref ref) async {
-  ref.invalidateOnReconnect();
-  final isConnected = ref.readConnection();
+  final isConnected = ref.read(serverConnectionProvider);
   if (!isConnected) {
     final downloads = await ref.read(downloadsProvider.future);
     final cache = ref.read(itemsCacheProvider.notifier);
@@ -149,8 +149,8 @@ Future<List<Shelf>> rawShelves(Ref ref) async {
       .library
       .id;
 
-  final user = await ref.watch(authenticatedUserProvider.future);
-  final api = await ref.watch(libraryApiProvider(user).future);
+  await ref.watch(authGateProvider.future);
+  final api = ref.read(libraryApiProvider);
 
   return ref.logApiCall(
     () => api.getPersonalized(libraryId),

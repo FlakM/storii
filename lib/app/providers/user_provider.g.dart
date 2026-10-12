@@ -33,7 +33,7 @@ final class ServerUserProvider
   ServerUser create() => ServerUser();
 }
 
-String _$serverUserHash() => r'5126159102b714753490508bf4bb1ec278cdd9d8';
+String _$serverUserHash() => r'46a8d3617d6f4eb04e19a963c1b4377449ed7e02';
 
 abstract class _$ServerUser extends $AsyncNotifier<User> {
   FutureOr<User> build();
@@ -130,7 +130,7 @@ final class IsUserAdminProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$isUserAdminHash() => r'c96de0368859e48e9ef7a9637eff8a66936f808c';
+String _$isUserAdminHash() => r'11749126637844517ef42a6bbf12e970e8b42736';
 
 @ProviderFor(currentServerSettings)
 final currentServerSettingsProvider = CurrentServerSettingsProvider._();

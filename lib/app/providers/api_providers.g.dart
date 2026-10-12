@@ -9,79 +9,87 @@ part of 'api_providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
+@ProviderFor(apiCancelToken)
+final apiCancelTokenProvider = ApiCancelTokenProvider._();
+
+final class ApiCancelTokenProvider
+    extends $FunctionalProvider<CancelToken, CancelToken, CancelToken>
+    with $Provider<CancelToken> {
+  ApiCancelTokenProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'apiCancelTokenProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$apiCancelTokenHash();
+
+  @$internal
+  @override
+  $ProviderElement<CancelToken> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  CancelToken create(Ref ref) {
+    return apiCancelToken(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CancelToken value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CancelToken>(value),
+    );
+  }
+}
+
+String _$apiCancelTokenHash() => r'f4d619e4ce453737a8950de39c08d37e83d7f20f';
+
 @ProviderFor(apiClient)
-final apiClientProvider = ApiClientFamily._();
+final apiClientProvider = ApiClientProvider._();
 
 final class ApiClientProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<ApiClient>,
-          ApiClient,
-          FutureOr<ApiClient>
-        >
-    with $FutureModifier<ApiClient>, $FutureProvider<ApiClient> {
-  ApiClientProvider._({
-    required ApiClientFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'apiClientProvider',
-         isAutoDispose: false,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<ApiClient, ApiClient, ApiClient>
+    with $Provider<ApiClient> {
+  ApiClientProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'apiClientProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$apiClientHash();
 
-  @override
-  String toString() {
-    return r'apiClientProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<ApiClient> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<ApiClient> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<ApiClient> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return apiClient(ref, argument);
+  ApiClient create(Ref ref) {
+    return apiClient(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is ApiClientProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ApiClient value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ApiClient>(value),
+    );
   }
 }
 
-String _$apiClientHash() => r'19bd8fabe67a4218ac595fcf2079c2aa066ecc26';
-
-final class ApiClientFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<ApiClient>, UserDomain> {
-  ApiClientFamily._()
-    : super(
-        retry: null,
-        name: r'apiClientProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: false,
-      );
-
-  ApiClientProvider call(UserDomain user) =>
-      ApiClientProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'apiClientProvider';
-}
+String _$apiClientHash() => r'2d2b4b0b7482bdca1da6a0592e27efed8c206b3f';
 
 @ProviderFor(authApi)
 final authApiProvider = AuthApiFamily._();
@@ -161,442 +169,252 @@ final class AuthApiFamily extends $Family
 }
 
 @ProviderFor(serverApi)
-final serverApiProvider = ServerApiFamily._();
+final serverApiProvider = ServerApiProvider._();
 
 final class ServerApiProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<ServerApi>,
-          ServerApi,
-          FutureOr<ServerApi>
-        >
-    with $FutureModifier<ServerApi>, $FutureProvider<ServerApi> {
-  ServerApiProvider._({
-    required ServerApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'serverApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<ServerApi, ServerApi, ServerApi>
+    with $Provider<ServerApi> {
+  ServerApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'serverApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$serverApiHash();
 
-  @override
-  String toString() {
-    return r'serverApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<ServerApi> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<ServerApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<ServerApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return serverApi(ref, argument);
+  ServerApi create(Ref ref) {
+    return serverApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is ServerApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ServerApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ServerApi>(value),
+    );
   }
 }
 
-String _$serverApiHash() => r'b0476968779eba05485c998aaa5781294cb21d7a';
-
-final class ServerApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<ServerApi>, UserDomain> {
-  ServerApiFamily._()
-    : super(
-        retry: null,
-        name: r'serverApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  ServerApiProvider call(UserDomain user) =>
-      ServerApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'serverApiProvider';
-}
+String _$serverApiHash() => r'cb4d1be05bc49c770c1637f161fbdf46fa7f6446';
 
 @ProviderFor(libraryApi)
-final libraryApiProvider = LibraryApiFamily._();
+final libraryApiProvider = LibraryApiProvider._();
 
 final class LibraryApiProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<LibraryApi>,
-          LibraryApi,
-          FutureOr<LibraryApi>
-        >
-    with $FutureModifier<LibraryApi>, $FutureProvider<LibraryApi> {
-  LibraryApiProvider._({
-    required LibraryApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'libraryApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<LibraryApi, LibraryApi, LibraryApi>
+    with $Provider<LibraryApi> {
+  LibraryApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'libraryApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$libraryApiHash();
 
-  @override
-  String toString() {
-    return r'libraryApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<LibraryApi> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<LibraryApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<LibraryApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return libraryApi(ref, argument);
+  LibraryApi create(Ref ref) {
+    return libraryApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is LibraryApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(LibraryApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<LibraryApi>(value),
+    );
   }
 }
 
-String _$libraryApiHash() => r'f7ba53b115889a7e14415907c44b62097ae5449f';
-
-final class LibraryApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<LibraryApi>, UserDomain> {
-  LibraryApiFamily._()
-    : super(
-        retry: null,
-        name: r'libraryApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  LibraryApiProvider call(UserDomain user) =>
-      LibraryApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'libraryApiProvider';
-}
+String _$libraryApiHash() => r'c19315e0bd043d321c3a97d842c7f402875d7f80';
 
 @ProviderFor(itemApi)
-final itemApiProvider = ItemApiFamily._();
+final itemApiProvider = ItemApiProvider._();
 
 final class ItemApiProvider
-    extends $FunctionalProvider<AsyncValue<ItemApi>, ItemApi, FutureOr<ItemApi>>
-    with $FutureModifier<ItemApi>, $FutureProvider<ItemApi> {
-  ItemApiProvider._({
-    required ItemApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'itemApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<ItemApi, ItemApi, ItemApi>
+    with $Provider<ItemApi> {
+  ItemApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'itemApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$itemApiHash();
 
-  @override
-  String toString() {
-    return r'itemApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<ItemApi> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<ItemApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<ItemApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return itemApi(ref, argument);
+  ItemApi create(Ref ref) {
+    return itemApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is ItemApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ItemApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ItemApi>(value),
+    );
   }
 }
 
-String _$itemApiHash() => r'30c04e51cf858cfbf34f177093bea1132573aec2';
-
-final class ItemApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<ItemApi>, UserDomain> {
-  ItemApiFamily._()
-    : super(
-        retry: null,
-        name: r'itemApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  ItemApiProvider call(UserDomain user) =>
-      ItemApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'itemApiProvider';
-}
+String _$itemApiHash() => r'cae7ca796de5a8a1c262e7c0511e5f9f731b9e86';
 
 @ProviderFor(authorApi)
-final authorApiProvider = AuthorApiFamily._();
+final authorApiProvider = AuthorApiProvider._();
 
 final class AuthorApiProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<AuthorApi>,
-          AuthorApi,
-          FutureOr<AuthorApi>
-        >
-    with $FutureModifier<AuthorApi>, $FutureProvider<AuthorApi> {
-  AuthorApiProvider._({
-    required AuthorApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'authorApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<AuthorApi, AuthorApi, AuthorApi>
+    with $Provider<AuthorApi> {
+  AuthorApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'authorApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$authorApiHash();
 
-  @override
-  String toString() {
-    return r'authorApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<AuthorApi> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<AuthorApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<AuthorApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return authorApi(ref, argument);
+  AuthorApi create(Ref ref) {
+    return authorApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is AuthorApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AuthorApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<AuthorApi>(value),
+    );
   }
 }
 
-String _$authorApiHash() => r'cda7b7d996a0dace467ec0d5d6660929073bcec5';
-
-final class AuthorApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<AuthorApi>, UserDomain> {
-  AuthorApiFamily._()
-    : super(
-        retry: null,
-        name: r'authorApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  AuthorApiProvider call(UserDomain user) =>
-      AuthorApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'authorApiProvider';
-}
+String _$authorApiHash() => r'd2931d6d6b100084168d6fbb79cbc044c933856c';
 
 @ProviderFor(meApi)
-final meApiProvider = MeApiFamily._();
+final meApiProvider = MeApiProvider._();
 
-final class MeApiProvider
-    extends $FunctionalProvider<AsyncValue<MeApi>, MeApi, FutureOr<MeApi>>
-    with $FutureModifier<MeApi>, $FutureProvider<MeApi> {
-  MeApiProvider._({
-    required MeApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'meApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+final class MeApiProvider extends $FunctionalProvider<MeApi, MeApi, MeApi>
+    with $Provider<MeApi> {
+  MeApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'meApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$meApiHash();
 
-  @override
-  String toString() {
-    return r'meApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<MeApi> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<MeApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<MeApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return meApi(ref, argument);
+  MeApi create(Ref ref) {
+    return meApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is MeApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MeApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<MeApi>(value),
+    );
   }
 }
 
-String _$meApiHash() => r'e41ebf6cdd933b071988584901196f5e8a5e1e94';
-
-final class MeApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<MeApi>, UserDomain> {
-  MeApiFamily._()
-    : super(
-        retry: null,
-        name: r'meApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  MeApiProvider call(UserDomain user) =>
-      MeApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'meApiProvider';
-}
+String _$meApiHash() => r'a36080ae9cab89803fe3f658d71602155b4d23f3';
 
 @ProviderFor(sessionsApi)
-final sessionsApiProvider = SessionsApiFamily._();
+final sessionsApiProvider = SessionsApiProvider._();
 
 final class SessionsApiProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<SessionsApi>,
-          SessionsApi,
-          FutureOr<SessionsApi>
-        >
-    with $FutureModifier<SessionsApi>, $FutureProvider<SessionsApi> {
-  SessionsApiProvider._({
-    required SessionsApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'sessionsApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<SessionsApi, SessionsApi, SessionsApi>
+    with $Provider<SessionsApi> {
+  SessionsApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'sessionsApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$sessionsApiHash();
 
-  @override
-  String toString() {
-    return r'sessionsApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<SessionsApi> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $ProviderElement<SessionsApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<SessionsApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return sessionsApi(ref, argument);
+  SessionsApi create(Ref ref) {
+    return sessionsApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is SessionsApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SessionsApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SessionsApi>(value),
+    );
   }
 }
 
-String _$sessionsApiHash() => r'224acfce41426f5ee02e9842f1ecd64ff717d61a';
-
-final class SessionsApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<SessionsApi>, UserDomain> {
-  SessionsApiFamily._()
-    : super(
-        retry: null,
-        name: r'sessionsApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  SessionsApiProvider call(UserDomain user) =>
-      SessionsApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'sessionsApiProvider';
-}
+String _$sessionsApiHash() => r'f035ab5e98c1f49a2de822e8274ee5749adc9c3f';
 
 @ProviderFor(socketApi)
-final socketApiProvider = SocketApiFamily._();
+final socketApiProvider = SocketApiProvider._();
 
 final class SocketApiProvider
     extends
@@ -606,26 +424,19 @@ final class SocketApiProvider
           FutureOr<SocketApi>
         >
     with $FutureModifier<SocketApi>, $FutureProvider<SocketApi> {
-  SocketApiProvider._({
-    required SocketApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'socketApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+  SocketApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'socketApiProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$socketApiHash();
-
-  @override
-  String toString() {
-    return r'socketApiProvider'
-        ''
-        '($argument)';
-  }
 
   @$internal
   @override
@@ -634,261 +445,131 @@ final class SocketApiProvider
 
   @override
   FutureOr<SocketApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return socketApi(ref, argument);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is SocketApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+    return socketApi(ref);
   }
 }
 
-String _$socketApiHash() => r'95f1387d50571a3b3f86eeed2b6551b0da9503df';
-
-final class SocketApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<SocketApi>, UserDomain> {
-  SocketApiFamily._()
-    : super(
-        retry: null,
-        name: r'socketApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  SocketApiProvider call(UserDomain user) =>
-      SocketApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'socketApiProvider';
-}
+String _$socketApiHash() => r'df43540a109e24d44b3f628656c6ec8fe4be6c70';
 
 @ProviderFor(collectionsApi)
-final collectionsApiProvider = CollectionsApiFamily._();
+final collectionsApiProvider = CollectionsApiProvider._();
 
 final class CollectionsApiProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<CollectionsApi>,
-          CollectionsApi,
-          FutureOr<CollectionsApi>
-        >
-    with $FutureModifier<CollectionsApi>, $FutureProvider<CollectionsApi> {
-  CollectionsApiProvider._({
-    required CollectionsApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'collectionsApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<CollectionsApi, CollectionsApi, CollectionsApi>
+    with $Provider<CollectionsApi> {
+  CollectionsApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'collectionsApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$collectionsApiHash();
 
-  @override
-  String toString() {
-    return r'collectionsApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<CollectionsApi> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $ProviderElement<CollectionsApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<CollectionsApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return collectionsApi(ref, argument);
+  CollectionsApi create(Ref ref) {
+    return collectionsApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is CollectionsApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(CollectionsApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<CollectionsApi>(value),
+    );
   }
 }
 
-String _$collectionsApiHash() => r'4525bd897cfc323e7f6d753416b4275f3725349b';
-
-final class CollectionsApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<CollectionsApi>, UserDomain> {
-  CollectionsApiFamily._()
-    : super(
-        retry: null,
-        name: r'collectionsApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  CollectionsApiProvider call(UserDomain user) =>
-      CollectionsApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'collectionsApiProvider';
-}
+String _$collectionsApiHash() => r'15a51061dfe2582844d548180160febc97f5264e';
 
 @ProviderFor(playlistsApi)
-final playlistsApiProvider = PlaylistsApiFamily._();
+final playlistsApiProvider = PlaylistsApiProvider._();
 
 final class PlaylistsApiProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<PlaylistsApi>,
-          PlaylistsApi,
-          FutureOr<PlaylistsApi>
-        >
-    with $FutureModifier<PlaylistsApi>, $FutureProvider<PlaylistsApi> {
-  PlaylistsApiProvider._({
-    required PlaylistsApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'playlistsApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<PlaylistsApi, PlaylistsApi, PlaylistsApi>
+    with $Provider<PlaylistsApi> {
+  PlaylistsApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'playlistsApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$playlistsApiHash();
 
-  @override
-  String toString() {
-    return r'playlistsApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<PlaylistsApi> $createElement(
-    $ProviderPointer pointer,
-  ) => $FutureProviderElement(pointer);
+  $ProviderElement<PlaylistsApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<PlaylistsApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return playlistsApi(ref, argument);
+  PlaylistsApi create(Ref ref) {
+    return playlistsApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is PlaylistsApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PlaylistsApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PlaylistsApi>(value),
+    );
   }
 }
 
-String _$playlistsApiHash() => r'da2ad7b3d0e8b553d44a65bbf86250f83ed10231';
-
-final class PlaylistsApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<PlaylistsApi>, UserDomain> {
-  PlaylistsApiFamily._()
-    : super(
-        retry: null,
-        name: r'playlistsApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  PlaylistsApiProvider call(UserDomain user) =>
-      PlaylistsApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'playlistsApiProvider';
-}
+String _$playlistsApiHash() => r'a71df6bef0d284403f9857d1edf35da4d4c3f95f';
 
 @ProviderFor(searchApi)
-final searchApiProvider = SearchApiFamily._();
+final searchApiProvider = SearchApiProvider._();
 
 final class SearchApiProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<SearchApi>,
-          SearchApi,
-          FutureOr<SearchApi>
-        >
-    with $FutureModifier<SearchApi>, $FutureProvider<SearchApi> {
-  SearchApiProvider._({
-    required SearchApiFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'searchApiProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $FunctionalProvider<SearchApi, SearchApi, SearchApi>
+    with $Provider<SearchApi> {
+  SearchApiProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'searchApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$searchApiHash();
 
-  @override
-  String toString() {
-    return r'searchApiProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  $FutureProviderElement<SearchApi> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+  $ProviderElement<SearchApi> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
 
   @override
-  FutureOr<SearchApi> create(Ref ref) {
-    final argument = this.argument as UserDomain;
-    return searchApi(ref, argument);
+  SearchApi create(Ref ref) {
+    return searchApi(ref);
   }
 
-  @override
-  bool operator ==(Object other) {
-    return other is SearchApiProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SearchApi value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SearchApi>(value),
+    );
   }
 }
 
-String _$searchApiHash() => r'1e30bbc87b348fbc53bbf08e00faccefc421af68';
-
-final class SearchApiFamily extends $Family
-    with $FunctionalFamilyOverride<FutureOr<SearchApi>, UserDomain> {
-  SearchApiFamily._()
-    : super(
-        retry: null,
-        name: r'searchApiProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  SearchApiProvider call(UserDomain user) =>
-      SearchApiProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'searchApiProvider';
-}
+String _$searchApiHash() => r'5debfa1af67573698a719db72d52eff1234ee7eb';

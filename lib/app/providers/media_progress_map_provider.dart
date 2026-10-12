@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
@@ -23,13 +22,14 @@ class MediaProgressSyncController extends _$MediaProgressSyncController {
     await _progressSub?.cancel();
 
     try {
-      final user = await ref.watch(authenticatedUserProvider.future);
+      final user = ref.watch(currentUserProvider);
+      if (user == null) return;
       final store = ref.watch(progressStoreProvider(user.id).notifier);
 
       final serverUser = await ref.watch(serverUserProvider.future);
       store.putAll(serverUser.mediaProgress);
 
-      final socket = await ref.read(socketApiProvider(user).future);
+      final socket = await ref.read(socketApiProvider.future);
       _progressSub = socket.user.onProgressUpdate.listen((event) {
         store.put(event.data);
       });

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/player/logic/session_notifier.dart';
@@ -46,10 +46,9 @@ void main() {
       overrides: [
         sessionStoreProvider.overrideWith(() => sessionStore),
         currentUserProvider.overrideWithValue(testUser),
-        authenticatedUserProvider.overrideWith((ref) async => testUser),
-        socketApiProvider(testUser).overrideWith((ref) async => fakeSocketApi),
-        sessionsApiProvider(testUser)
-            .overrideWithValue(AsyncData(fakeSessionsApi)),
+        authGateProvider.overrideWith((ref) async {}),
+        socketApiProvider.overrideWith((ref) async => fakeSocketApi),
+        sessionsApiProvider.overrideWithValue(fakeSessionsApi),
       ],
     );
   }

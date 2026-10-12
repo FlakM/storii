@@ -71,12 +71,7 @@ class _ConnectionDetailsSheet extends ConsumerWidget {
         : scheme.primary;
 
     final serverStatus = user != null
-        ? ref
-              .watch(activeServerUrlProvider(user))
-              .maybeWhen(
-                data: (activeUrl) => ref.watch(serverStatusProvider(activeUrl)),
-                orElse: () => null,
-              )
+        ? ref.watch(serverStatusProvider(ref.watch(activeServerUrlProvider)))
         : null;
 
     return Container(
@@ -109,7 +104,7 @@ class _ConnectionDetailsSheet extends ConsumerWidget {
                 const SizedBox(height: 12),
                 SpoilerText(
                   Text(
-                    '${ref.watch(activeServerUrlProvider(user)).value}',
+                    '${ref.watch(activeServerUrlProvider)}',
                     style: textTheme.bodySmall?.copyWith(
                       color: scheme.onSurfaceVariant,
                     ),

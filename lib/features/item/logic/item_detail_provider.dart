@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
@@ -31,8 +31,8 @@ class ItemDetail extends _$ItemDetail {
       throw l10n.connectionServerDisconnected;
     }
 
-    final user = await ref.watch(authenticatedUserProvider.future);
-    final api = await ref.read(itemApiProvider(user).future);
+    await ref.watch(authGateProvider.future);
+    final api = ref.read(itemApiProvider);
     try {
       final remoteItem = await ref.logApiCall(
         () => api.get(id, includeProgress: true),
@@ -53,7 +53,6 @@ class ItemDetail extends _$ItemDetail {
 
 @riverpod
 Stream<LibraryItem?> libraryItemUpdated(Ref ref) async* {
-  final userDomain = await ref.watch(authenticatedUserProvider.future);
-  final socket = await ref.watch(socketApiProvider(userDomain).future);
+  final socket = await ref.watch(socketApiProvider.future);
   yield* socket.itemEvents.onItemUpdated;
 }

@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
@@ -44,8 +44,8 @@ class SeriesListNotifier extends _$SeriesListNotifier {
       libraryFiltersProvider(.series).select((s) => s.toSeriesParams()),
     );
     final params = baseParams.copyWith(page: page, limit: pageSize);
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(libraryApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(libraryApiProvider);
 
     final response = await ref.logApiCall(
       () => api.getSeries(libraryId, params),

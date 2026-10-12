@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/storage_location.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/downloads/logic/download_engine.dart';
 import 'package:storii/features/downloads/logic/download_extensions.dart';
@@ -59,7 +58,8 @@ class DownloadQueue extends _$DownloadQueue {
       final item = await ref.read(itemDetailProvider(libraryItemId).future);
       await ref.read(itemsCacheProvider.notifier).put(item);
 
-      final user = await ref.read(authenticatedUserProvider.future);
+      final user = ref.read(currentUserProvider);
+      if (user == null) throw StateError('No current user');
       final existing = _store.getAll()[key];
       final service = ref.read(storageServiceProvider(location));
 
@@ -137,7 +137,8 @@ class DownloadQueue extends _$DownloadQueue {
     );
 
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
+      final user = ref.read(currentUserProvider);
+      if (user == null) throw StateError('No current user');
 
       final stream = ref
           .read(downloadEngineProvider.notifier)

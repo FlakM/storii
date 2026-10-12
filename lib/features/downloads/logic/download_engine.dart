@@ -48,7 +48,6 @@ class DownloadEngine extends _$DownloadEngine {
     await _downloadCover(
       libraryItemId: item.libraryItemId,
       isPodcast: item.episodeId != null,
-      user: user,
       cancelToken: coverToken,
     );
     _coverTokens.remove(item.libraryItemId);
@@ -193,14 +192,14 @@ class DownloadEngine extends _$DownloadEngine {
   }
 
   Future<void> _downloadCover({
-    required UserDomain user,
     required String libraryItemId,
     required bool isPodcast,
     required CancelToken cancelToken,
   }) async {
     try {
       final imageBytes = await ref.logApiCall(
-        () async => (await ref.read(itemApiProvider(user).future))
+        () async => ref
+            .read(itemApiProvider)
             .getCover(libraryItemId: libraryItemId, cancelToken: cancelToken),
         source: 'DownloadEngine',
         logMessage: 'Failed to download cover for $libraryItemId',

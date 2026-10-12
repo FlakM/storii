@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
@@ -23,8 +23,8 @@ class BookmarksController extends _$BookmarksController {
   void build(String itemId) {}
 
   Future<bool> create({required Duration time, required String title}) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () =>
@@ -40,8 +40,8 @@ class BookmarksController extends _$BookmarksController {
   }
 
   Future<bool> modify({required Duration time, required String title}) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () =>
@@ -57,8 +57,8 @@ class BookmarksController extends _$BookmarksController {
   }
 
   Future<bool> remove({required Duration time}) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () => api.removeBookmark(libraryItemId: itemId, time: time),

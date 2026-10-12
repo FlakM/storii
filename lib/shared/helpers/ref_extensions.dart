@@ -28,10 +28,6 @@ extension RefExtensions on Ref {
     }
   }
 
-  bool readConnection() {
-    return read(serverConnectionProvider);
-  }
-
   void invalidateOnReconnect() {
     listen(serverConnectionProvider, (prev, next) {
       if (prev == false && next == true) invalidateSelf();

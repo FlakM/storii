@@ -33,7 +33,7 @@ final class ScanItemProvider
   ScanItem create() => ScanItem();
 }
 
-String _$scanItemHash() => r'9db65e047188c4355b61a72fbc7a119bbb728c75';
+String _$scanItemHash() => r'a5e7aad7926e2762ae2bb2aa1762591c1b408d9d';
 
 abstract class _$ScanItem extends $AsyncNotifier<Set<String>> {
   FutureOr<Set<String>> build();

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/library/logic/library_filters_provider.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
@@ -11,7 +11,6 @@ part 'authors_list_provider.g.dart';
 
 @riverpod
 Future<List<Author>> authorsList(Ref ref) async {
-  ref.invalidateOnReconnect();
   final libraryId = (await ref.watch(activeLibraryDetailsProvider.future))
       .library
       .id;
@@ -19,8 +18,8 @@ Future<List<Author>> authorsList(Ref ref) async {
     libraryFiltersProvider(.authors).select((s) => s.toAuthorParams()),
   );
 
-  final user = await ref.read(authenticatedUserProvider.future);
-  final api = await ref.read(libraryApiProvider(user).future);
+  await ref.watch(authGateProvider.future);
+  final api = ref.read(libraryApiProvider);
 
   return ref.logApiCall(
     () => api.getAuthors(libraryId, params),

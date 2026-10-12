@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'item_actions_provider.g.dart';
@@ -12,8 +12,8 @@ class ScanItem extends _$ScanItem {
   Future<Set<String>> build() async => {};
 
   Future<String?> scan(String itemId) async {
-    final user = await ref.watch(authenticatedUserProvider.future);
-    final api = await ref.read(itemApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(itemApiProvider);
 
     try {
       state = AsyncData({...?state.value}..add(itemId));

@@ -40,7 +40,7 @@ final class SocketStatusProvider
   }
 }
 
-String _$socketStatusHash() => r'c5cd6a92e3767afdf9ed2d07918125accdafcb57';
+String _$socketStatusHash() => r'28d2710c62c6c4dffff3c8abf39e565d08d3b7fd';
 
 @ProviderFor(connectivityStream)
 final connectivityStreamProvider = ConnectivityStreamProvider._();
@@ -126,91 +126,54 @@ final class ConnectionTypeProvider
 String _$connectionTypeHash() => r'ac4f22daf36ed3faf6afdf9ab5031fabf818733a';
 
 @ProviderFor(ActiveServerUrl)
-final activeServerUrlProvider = ActiveServerUrlFamily._();
+final activeServerUrlProvider = ActiveServerUrlProvider._();
 
 final class ActiveServerUrlProvider
-    extends $AsyncNotifierProvider<ActiveServerUrl, Uri> {
-  ActiveServerUrlProvider._({
-    required ActiveServerUrlFamily super.from,
-    required UserDomain super.argument,
-  }) : super(
-         retry: null,
-         name: r'activeServerUrlProvider',
-         isAutoDispose: false,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends $NotifierProvider<ActiveServerUrl, Uri> {
+  ActiveServerUrlProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'activeServerUrlProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$activeServerUrlHash();
-
-  @override
-  String toString() {
-    return r'activeServerUrlProvider'
-        ''
-        '($argument)';
-  }
 
   @$internal
   @override
   ActiveServerUrl create() => ActiveServerUrl();
 
-  @override
-  bool operator ==(Object other) {
-    return other is ActiveServerUrlProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Uri value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Uri>(value),
+    );
   }
 }
 
-String _$activeServerUrlHash() => r'455d4f8006120e33d94077826bb2416f904cdd50';
+String _$activeServerUrlHash() => r'd15f10527ee60ed977c6ec4b738d6ea8248e05b3';
 
-final class ActiveServerUrlFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          ActiveServerUrl,
-          AsyncValue<Uri>,
-          Uri,
-          FutureOr<Uri>,
-          UserDomain
-        > {
-  ActiveServerUrlFamily._()
-    : super(
-        retry: null,
-        name: r'activeServerUrlProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: false,
-      );
-
-  ActiveServerUrlProvider call(UserDomain user) =>
-      ActiveServerUrlProvider._(argument: user, from: this);
-
-  @override
-  String toString() => r'activeServerUrlProvider';
-}
-
-abstract class _$ActiveServerUrl extends $AsyncNotifier<Uri> {
-  late final _$args = ref.$arg as UserDomain;
-  UserDomain get user => _$args;
-
-  FutureOr<Uri> build(UserDomain user);
+abstract class _$ActiveServerUrl extends $Notifier<Uri> {
+  Uri build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<Uri>, Uri>;
+    final ref = this.ref as $Ref<Uri, Uri>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<AsyncValue<Uri>, Uri>,
-              AsyncValue<Uri>,
+              AnyNotifier<Uri, Uri>,
+              Uri,
               Object?,
               Object?
             >;
-    return element.handleCreate(ref, () => build(_$args));
+    return element.handleCreate(ref, build);
   }
 }
 

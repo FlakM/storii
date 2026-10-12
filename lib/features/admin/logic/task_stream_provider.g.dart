@@ -40,7 +40,7 @@ final class TaskStartProvider
   }
 }
 
-String _$taskStartHash() => r'1598ce469d0dbd18f2c48176678c2246e2ca7c48';
+String _$taskStartHash() => r'bfa65d968d2506bf90af476467c587535e014099';
 
 @ProviderFor(taskUpdate)
 final taskUpdateProvider = TaskUpdateProvider._();
@@ -73,7 +73,7 @@ final class TaskUpdateProvider
   }
 }
 
-String _$taskUpdateHash() => r'dbed17bd78f647db4939d71b16f9b528b2362562';
+String _$taskUpdateHash() => r'9f71cc46384d63fbb609c974ef5a7ac6ee6f0232';
 
 @ProviderFor(taskComplete)
 final taskCompleteProvider = TaskCompleteProvider._();
@@ -106,4 +106,4 @@ final class TaskCompleteProvider
   }
 }
 
-String _$taskCompleteHash() => r'3ad3c8e0469f99bf06c71b0e7931e654fe72b3f4';
+String _$taskCompleteHash() => r'8a8f189efc47c82e11e0f45451eeb7a0963f680c';

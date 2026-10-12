@@ -4,7 +4,7 @@ import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
 import 'package:storii/features/downloads/logic/downloads_provider.dart';
@@ -37,8 +37,7 @@ class AndroidAutoHelper {
 
   final ProviderContainer _container;
 
-  Uri? get _serverUrl =>
-      _container.read(authenticatedUserProvider).value?.serverUrl;
+  Uri? get _serverUrl => _container.read(currentUserProvider)?.serverUrl;
 
   CoverHelper get _helper => _container.read(coverHelperProvider);
 
@@ -109,11 +108,11 @@ class AndroidAutoHelper {
     String query, [
     Map<String, dynamic>? options,
   ]) async {
-    final user = await _container.read(authenticatedUserProvider.future);
     final libraryId = _container.read(currentLibraryProvider)?.id;
     if (libraryId == null) return [];
 
-    final api = await _container.read(libraryApiProvider(user).future);
+    await _container.read(authGateProvider.future);
+    final api = _container.read(libraryApiProvider);
     final result = await api.search(libraryId, query: query);
     final items = <LibraryItem>[
       ...result.book,

@@ -50,7 +50,7 @@ final class ItemDetailProvider
   }
 }
 
-String _$itemDetailHash() => r'cc0976e4b92f926e9aceeb76f7c692e970aa89a7';
+String _$itemDetailHash() => r'cf80b6ee4e9419b4bb48e800d53ef5d0630c245a';
 
 final class ItemDetailFamily extends $Family
     with
@@ -136,4 +136,4 @@ final class LibraryItemUpdatedProvider
 }
 
 String _$libraryItemUpdatedHash() =>
-    r'64b8e9c4f4c0b13efc28d2e23ec57f1f3af9cb87';
+    r'e63e358f270858e85a7fe1994123c15f2a97a697';

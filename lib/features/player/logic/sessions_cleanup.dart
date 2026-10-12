@@ -3,7 +3,8 @@ import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
@@ -24,7 +25,9 @@ class SessionsCleanup extends _$SessionsCleanup {
     final sessions = store.getAll();
     if (sessions.isEmpty) return;
 
-    final user = await ref.read(authenticatedUserProvider.future);
+    final user = ref.read(currentUserProvider);
+    if (user == null) return;
+    await ref.read(authGateProvider.future);
     await syncLocalSessions(user, sessions);
     LogService.log('session cleanup complete', source: _source);
   }
@@ -33,7 +36,8 @@ class SessionsCleanup extends _$SessionsCleanup {
     UserDomain user,
     List<PlaybackSession> sessions,
   ) async {
-    final sessionsApi = await ref.read(sessionsApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final sessionsApi = ref.read(sessionsApiProvider);
 
     for (final session in sessions) {
       try {

@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
@@ -13,12 +13,11 @@ part 'series_provider.g.dart';
 
 @riverpod
 Future<Series> series(Ref ref, String seriesId) async {
-  ref.invalidateOnReconnect();
-  final user = await ref.watch(authenticatedUserProvider.future);
+  await ref.watch(authGateProvider.future);
   final libraryId = (await ref.watch(activeLibraryDetailsProvider.future))
       .library
       .id;
-  final api = await ref.read(libraryApiProvider(user).future);
+  final api = ref.read(libraryApiProvider);
   final progressMap = await ref.watch(mediaProgressMapProvider.future);
 
   return ref.logApiCall(

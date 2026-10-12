@@ -35,7 +35,7 @@ final class MediaProgressSyncControllerProvider
 }
 
 String _$mediaProgressSyncControllerHash() =>
-    r'183c69cd7832a1492c4402385dfc57622efcfef3';
+    r'fb12ef64908cfb1e02675a12cf059d17217c5819';
 
 abstract class _$MediaProgressSyncController extends $AsyncNotifier<void> {
   FutureOr<void> build();

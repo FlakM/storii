@@ -5,7 +5,7 @@ import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
 
@@ -54,11 +54,11 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
     final curr = state.value;
     if (curr == null || !curr.canSave) return false;
     state = AsyncData(curr.copyWith(saving: true));
+    await ref.read(authGateProvider.future);
+    final api = ref.read(itemApiProvider);
     try {
       final params = diffMedia(draft: curr.draft, original: curr.original);
       await ref.logApiCall(() async {
-        final user = await ref.read(authenticatedUserProvider.future);
-        final api = await ref.read(itemApiProvider(user).future);
         await api.updateMedia(libraryItemId: id, parameters: params);
       }, source: 'ItemMetadataNotifier');
       return true;
@@ -83,9 +83,9 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
       return l10n.cancelled;
     }
 
+    await ref.read(authGateProvider.future);
+    final api = ref.read(itemApiProvider);
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
-      final api = await ref.read(itemApiProvider(user).future);
       final response = await api.uploadCover(
         libraryItemId: id,
         coverFile: FileUpload.fromPath(
@@ -112,9 +112,9 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
   }
 
   Future<bool> removeCover() async {
+    await ref.read(authGateProvider.future);
+    final api = ref.read(itemApiProvider);
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
-      final api = await ref.read(itemApiProvider(user).future);
       await api.removeCover(libraryItemId: id);
       state = AsyncData(state.value!.copyWith(updatedAt: DateTime.now()));
       return true;

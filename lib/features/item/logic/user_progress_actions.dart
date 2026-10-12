@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
 
@@ -15,8 +15,8 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   void build(String itemId, [String? episodeId]) {}
 
   Future<bool> markComplete({bool isFinished = true}) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () => api.upsertMediaProgress(
@@ -33,8 +33,8 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> remove(String progressId) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () => api.removeMediaProgress(mediaProgressId: progressId),
@@ -47,8 +47,8 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeEpisodeProgress() async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () => api.upsertMediaProgress(
@@ -65,8 +65,8 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeFromContinueListening(String mediaProgressId) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () => api.removeFromContinueListening(mediaProgressId: mediaProgressId),
@@ -79,8 +79,8 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeSeriesFromContinueListening(String seriesId) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () => api.removeSeriesFromContinueListening(seriesId: seriesId),
@@ -93,8 +93,8 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> reAddSeriesToContinueListening(String seriesId) async {
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(meApiProvider(user).future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(meApiProvider);
     try {
       await ref.logApiCall(
         () => api.reAddSeriesToContinueListening(seriesId: seriesId),

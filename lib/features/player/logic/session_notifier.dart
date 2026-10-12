@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
@@ -29,11 +29,12 @@ class SessionNotifier extends _$SessionNotifier {
     required String itemId,
     String? episodeId,
   }) async {
-    final user = await ref.read(authenticatedUserProvider.future);
+    await ref.read(authGateProvider.future);
+    final api = ref.read(itemApiProvider);
     final params = await ref.read(playRequestParamsProvider.future);
 
     final session = await ref.logApiCall(
-      () async => (await ref.read(itemApiProvider(user).future)).createSession(
+      () async => api.createSession(
         libraryItemId: itemId,
         params: params,
         episodeId: episodeId,
@@ -125,11 +126,11 @@ class SessionNotifier extends _$SessionNotifier {
       }
 
       try {
-        final user = await ref.read(authenticatedUserProvider.future);
+        await ref.read(authGateProvider.future);
         await ref.logApiCall(
-          () async =>
-              (await ref.read(sessionsApiProvider(user).future))
-                  .syncLocal(localSession: updated.stripped),
+          () async => ref
+              .read(sessionsApiProvider)
+              .syncLocal(localSession: updated.stripped),
           source: 'SessionNotifier',
         );
       } catch (e) {
@@ -153,10 +154,11 @@ class SessionNotifier extends _$SessionNotifier {
         throw 'No Server Connection';
       }
 
-      final user = await ref.read(authenticatedUserProvider.future);
+      await ref.read(authGateProvider.future);
       await ref.logApiCall(
-        () async =>
-            (await ref.read(sessionsApiProvider(user).future)).syncSession(
+        () async => ref
+            .read(sessionsApiProvider)
+            .syncSession(
               sessionId: session.id,
               params: SyncSessionRequestParams(
                 currentTime: position,
@@ -184,12 +186,11 @@ class SessionNotifier extends _$SessionNotifier {
     }
 
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
       if (!isLocal) {
+        await ref.read(authGateProvider.future);
         await ref.logApiCall(
           () async =>
-              (await ref.read(sessionsApiProvider(user).future))
-                  .closeSession(sessionId: session.id),
+              ref.read(sessionsApiProvider).closeSession(sessionId: session.id),
           source: 'SessionNotifier',
           logMessage: 'session close failed for ${session.displayTitle}',
         );

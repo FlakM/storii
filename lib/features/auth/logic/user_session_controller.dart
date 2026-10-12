@@ -28,7 +28,7 @@ class UserSessionController extends _$UserSessionController {
     }
     await ref
         .logApiCall(
-          () async => (await ref.read(serverApiProvider(user).future)).logout(),
+          () async => ref.read(serverApiProvider).logout(),
           source: 'UserSessionController',
         )
         .then(
@@ -64,8 +64,8 @@ class UserSessionController extends _$UserSessionController {
     }
     if (user != null) {
       ref
-        ..invalidate(apiClientProvider(user))
-        ..invalidate(socketApiProvider(user));
+        ..invalidate(apiClientProvider)
+        ..invalidate(socketApiProvider);
     }
     await ref.read(appSettingsProvider.notifier).setCurrentUser(null);
     await ref.read(appSettingsProvider.notifier).setServerUrl(null);
@@ -85,7 +85,7 @@ class UserSessionController extends _$UserSessionController {
     await ref.read(appSettingsProvider.notifier).setCurrentUser(null);
     await ref.read(appSettingsProvider.notifier).setServerUrl(null);
     ref
-      ..invalidate(apiClientProvider(user))
-      ..invalidate(socketApiProvider(user));
+      ..invalidate(apiClientProvider)
+      ..invalidate(socketApiProvider);
   }
 }

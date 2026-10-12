@@ -46,4 +46,4 @@ final class UserLibrariesProvider
   }
 }
 
-String _$userLibrariesHash() => r'1b1b7d644da27e0890d4714d1b80b7f38994a3ee';
+String _$userLibrariesHash() => r'b947f0f02d2e4204989e6f983735714a3f5b5914';
