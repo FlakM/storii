@@ -48,7 +48,7 @@ void main() {
   ProviderContainer createContainer() {
     return ProviderContainer(
       overrides: [
-        sessionStoreProvider.overrideWith(() => sessionStore),
+        sessionStoreProvider.overrideWithValue(sessionStore),
         currentUserProvider.overrideWithValue(testUser),
         authGateProvider.overrideWith((ref) async {}),
         socketApiProvider.overrideWith((ref) async => fakeSocketApi),

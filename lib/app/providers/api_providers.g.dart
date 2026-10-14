@@ -89,7 +89,7 @@ final class ApiClientProvider
   }
 }
 
-String _$apiClientHash() => r'2d2b4b0b7482bdca1da6a0592e27efed8c206b3f';
+String _$apiClientHash() => r'737d3b274c1331d746551e800227d920c53f9914';
 
 @ProviderFor(authApi)
 final authApiProvider = AuthApiFamily._();

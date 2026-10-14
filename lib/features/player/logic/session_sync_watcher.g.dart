@@ -20,7 +20,7 @@ final class SessionSyncWatcherProvider
         argument: null,
         retry: null,
         name: r'sessionSyncWatcherProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -42,7 +42,7 @@ final class SessionSyncWatcherProvider
 }
 
 String _$sessionSyncWatcherHash() =>
-    r'51a6ea30b238224ec1e5be8d40ca796e53a23bff';
+    r'2814d3ba4a5ccc98a1130c0022ad3b7ae4c166f0';
 
 abstract class _$SessionSyncWatcher extends $Notifier<void> {
   void build();

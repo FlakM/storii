@@ -3,17 +3,21 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/repository_providers.dart';
+import 'package:storii/app/repositories/me_repository.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 
 part 'user_progress_actions.g.dart';
 
-@Riverpod(keepAlive: true)
-class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
-  @override
-  void build(String itemId, [String? episodeId]) {}
+class UserProgressActions {
+  const new(this.repo);
 
-  Future<bool> markComplete({bool isFinished = true}) async {
-    final repo = ref.read(meRepositoryProvider);
+  final MeRepository repo;
+
+  Future<bool> markComplete({
+    required String itemId,
+    String? episodeId,
+    bool isFinished = true,
+  }) async {
     try {
       await repo.upsertMediaProgress(
         libraryItemId: itemId,
@@ -27,7 +31,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> remove(String progressId) async {
-    final repo = ref.read(meRepositoryProvider);
     try {
       await repo.removeMediaProgress(mediaProgressId: progressId);
       return true;
@@ -36,8 +39,10 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
     }
   }
 
-  Future<bool> removeEpisodeProgress() async {
-    final repo = ref.read(meRepositoryProvider);
+  Future<bool> removeEpisodeProgress({
+    required String itemId,
+    String? episodeId,
+  }) async {
     try {
       await repo.upsertMediaProgress(
         libraryItemId: itemId,
@@ -51,7 +56,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeFromContinueListening(String mediaProgressId) async {
-    final repo = ref.read(meRepositoryProvider);
     try {
       await repo.removeFromContinueListening(mediaProgressId: mediaProgressId);
       return true;
@@ -61,7 +65,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeSeriesFromContinueListening(String seriesId) async {
-    final repo = ref.read(meRepositoryProvider);
     try {
       await repo.removeSeriesFromContinueListening(seriesId: seriesId);
       return true;
@@ -71,7 +74,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> reAddSeriesToContinueListening(String seriesId) async {
-    final repo = ref.read(meRepositoryProvider);
     try {
       await repo.reAddSeriesToContinueListening(seriesId: seriesId);
       return true;
@@ -79,4 +81,10 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
       return false;
     }
   }
+}
+
+@riverpod
+UserProgressActions userProgressActions(Ref ref) {
+  final repo = ref.watch(meRepositoryProvider);
+  return UserProgressActions(repo);
 }

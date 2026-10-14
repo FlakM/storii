@@ -52,10 +52,7 @@ bool isUserAdmin(Ref ref) {
 ServerSettings? currentServerSettings(Ref ref) {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
-  final serverId = ref
-      .read(serversStoreProvider.notifier)
-      .get(user.serverUrl)
-      ?.id;
+  final serverId = ref.read(serversStoreProvider).get(user.serverUrl)?.id;
   if (serverId == null) return null;
   return ref.watch(serverSettingsStoreProvider).value?[serverId];
 }

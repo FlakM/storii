@@ -19,8 +19,7 @@ class SessionsCleanup extends _$SessionsCleanup {
   void build() {}
 
   Future<void> cleanup() async {
-    final store = ref.read(sessionStoreProvider.notifier);
-    final sessions = store.getAll();
+    final sessions = ref.read(sessionStoreProvider).getAll();
     if (sessions.isEmpty) return;
 
     final user = ref.read(currentUserProvider);
@@ -39,7 +38,7 @@ class SessionsCleanup extends _$SessionsCleanup {
     for (final session in sessions) {
       try {
         if (session.userId != user.id) {
-          await ref.read(sessionStoreProvider.notifier).delete(session.id);
+          await ref.read(sessionStoreProvider).delete(session.id);
           LogService.log(
             'local session from another user removed',
             level: .info,
@@ -63,7 +62,7 @@ class SessionsCleanup extends _$SessionsCleanup {
           );
         }
 
-        await ref.read(sessionStoreProvider.notifier).delete(session.id);
+        await ref.read(sessionStoreProvider).delete(session.id);
       } on AppError catch (e) {
         if (e.type == .notFound) {
           LogService.log(
@@ -71,7 +70,7 @@ class SessionsCleanup extends _$SessionsCleanup {
             level: .warning,
             source: _source,
           );
-          await ref.read(sessionStoreProvider.notifier).delete(session.id);
+          await ref.read(sessionStoreProvider).delete(session.id);
         } else {
           LogService.log(
             'failed to sync session ${session.displayTitle}: ${e.message}',

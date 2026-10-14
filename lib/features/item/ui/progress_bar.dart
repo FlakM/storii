@@ -3,7 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:storii/app/config/constants.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
-import 'package:storii/features/player/logic/session_notifier.dart';
+import 'package:storii/storage/local/session_store.dart';
 
 class ProgressBar extends ConsumerWidget {
   const new({required this.itemId, this.episodeId, super.key});
@@ -17,7 +17,7 @@ class ProgressBar extends ConsumerWidget {
         .value;
     final progress = mediaProgress?.progress ?? 0.0;
     final localSession = ref
-        .watch(localSessionProvider(itemId, episodeId))
+        .watch(localSessionByIdProvider(itemId, episodeId))
         .value;
     final localProgress = localSession?.localProgress ?? 0;
 

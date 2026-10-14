@@ -20,7 +20,7 @@ final class ProgressStoreProvider
   }) : super(
          retry: null,
          name: r'progressStoreProvider',
-         isAutoDispose: false,
+         isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
@@ -50,7 +50,7 @@ final class ProgressStoreProvider
   }
 }
 
-String _$progressStoreHash() => r'a3f5c5e4070c9b34f2869f8df05fa4a221853678';
+String _$progressStoreHash() => r'0fe1acc464a0ad8dcdbd9781ff912f0896909de6';
 
 final class ProgressStoreFamily extends $Family
     with
@@ -67,7 +67,7 @@ final class ProgressStoreFamily extends $Family
         name: r'progressStoreProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
-        isAutoDispose: false,
+        isAutoDispose: true,
       );
 
   ProgressStoreProvider call(String userId) =>

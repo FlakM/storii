@@ -20,7 +20,7 @@ final class DownloadQueueProvider
         argument: null,
         retry: null,
         name: r'downloadQueueProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -41,7 +41,7 @@ final class DownloadQueueProvider
   }
 }
 
-String _$downloadQueueHash() => r'27d738e15a146db7ee1295cbb14dcfd59de3a989';
+String _$downloadQueueHash() => r'd3088f2bc4a87494f292f4c210a96c705d79cd16';
 
 abstract class _$DownloadQueue extends $Notifier<List<String>> {
   List<String> build();

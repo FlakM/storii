@@ -584,4 +584,4 @@ final class DownloadedItemsProvider
   }
 }
 
-String _$downloadedItemsHash() => r'57f65289cdefded306de0c797ace17822209a19c';
+String _$downloadedItemsHash() => r'403a398c13dca78616dacc01a3d84795379192e9';

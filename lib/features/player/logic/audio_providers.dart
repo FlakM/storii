@@ -267,14 +267,14 @@ class VolumeControl extends _$VolumeControl {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class LocalSpeed extends _$LocalSpeed {
   @override
   double build() {
     final session = ref.watch(sessionProvider);
     if (session == null) return ref.watch(speedProvider);
     final storedSpeed = ref
-        .read(speedStoreProvider.notifier)
+        .read(speedStoreProvider)
         .getSpeed(session.libraryItemId);
     return storedSpeed ?? ref.watch(speedProvider);
   }
@@ -283,7 +283,7 @@ class LocalSpeed extends _$LocalSpeed {
     final session = ref.read(sessionProvider);
     if (session != null) {
       await ref
-          .read(speedStoreProvider.notifier)
+          .read(speedStoreProvider)
           .saveSpeed(session.libraryItemId, speed);
     }
     state = speed;

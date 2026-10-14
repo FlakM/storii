@@ -53,7 +53,7 @@ final class AuthRefresherProvider
         argument: null,
         retry: null,
         name: r'authRefresherProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -74,7 +74,7 @@ final class AuthRefresherProvider
   }
 }
 
-String _$authRefresherHash() => r'97ee96184fba4b79307aad7ca97fc005c39c3275';
+String _$authRefresherHash() => r'6683bd52786cffbb186eb790a9bbbb41d1fdaba4';
 
 abstract class _$AuthRefresher extends $Notifier<void> {
   void build();

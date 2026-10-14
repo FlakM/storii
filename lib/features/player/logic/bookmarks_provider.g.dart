@@ -84,93 +84,50 @@ final class BookmarksFamily extends $Family
   String toString() => r'bookmarksProvider';
 }
 
-@ProviderFor(BookmarksController)
-final bookmarksControllerProvider = BookmarksControllerFamily._();
+@ProviderFor(bookmarksController)
+final bookmarksControllerProvider = BookmarksControllerProvider._();
 
 final class BookmarksControllerProvider
-    extends $NotifierProvider<BookmarksController, void> {
-  BookmarksControllerProvider._({
-    required BookmarksControllerFamily super.from,
-    required String super.argument,
-  }) : super(
-         retry: null,
-         name: r'bookmarksControllerProvider',
-         isAutoDispose: false,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+    extends
+        $FunctionalProvider<
+          BookmarksController,
+          BookmarksController,
+          BookmarksController
+        >
+    with $Provider<BookmarksController> {
+  BookmarksControllerProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'bookmarksControllerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$bookmarksControllerHash();
 
-  @override
-  String toString() {
-    return r'bookmarksControllerProvider'
-        ''
-        '($argument)';
-  }
-
   @$internal
   @override
-  BookmarksController create() => BookmarksController();
+  $ProviderElement<BookmarksController> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  BookmarksController create(Ref ref) {
+    return bookmarksController(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(BookmarksController value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<BookmarksController>(value),
     );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is BookmarksControllerProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
   }
 }
 
 String _$bookmarksControllerHash() =>
-    r'41b2e40583cc242a6228792b1cbc74abd915f70a';
-
-final class BookmarksControllerFamily extends $Family
-    with $ClassFamilyOverride<BookmarksController, void, void, void, String> {
-  BookmarksControllerFamily._()
-    : super(
-        retry: null,
-        name: r'bookmarksControllerProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: false,
-      );
-
-  BookmarksControllerProvider call(String itemId) =>
-      BookmarksControllerProvider._(argument: itemId, from: this);
-
-  @override
-  String toString() => r'bookmarksControllerProvider';
-}
-
-abstract class _$BookmarksController extends $Notifier<void> {
-  late final _$args = ref.$arg as String;
-  String get itemId => _$args;
-
-  void build(String itemId);
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, () => build(_$args));
-  }
-}
+    r'ddc1c8941cc914d5d6241534a43bc957c0f0c1e0';

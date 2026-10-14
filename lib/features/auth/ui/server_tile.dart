@@ -4,8 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:storii/app/config/constants.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/models/server.dart';
-import 'package:storii/features/auth/logic/servers_provider.dart';
-import 'package:storii/features/auth/logic/users_provider.dart';
+import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/auth/ui/add_server_sheet.dart';
 import 'package:storii/features/auth/ui/add_user_sheet.dart';
 import 'package:storii/features/auth/ui/user_tile.dart';
@@ -13,6 +12,8 @@ import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/shared/widgets/app_buttons.dart';
 import 'package:storii/shared/widgets/app_dialog.dart';
 import 'package:storii/shared/widgets/waveform.dart';
+import 'package:storii/storage/local/servers_store.dart';
+import 'package:storii/storage/local/users_store.dart';
 
 class ServerTile extends ConsumerStatefulWidget {
   const new(this.server, {super.key});
@@ -120,9 +121,17 @@ class _ServerTileState extends ConsumerState<ServerTile> {
                                     isDestructive: true,
                                     actionLabel: l10n.delete,
                                     onTap: () async {
+                                      final users = await ref
+                                          .read(usersStoreProvider)
+                                          .removeUsersByServer(
+                                            widget.server.url,
+                                          );
                                       await ref
-                                          .read(serversProvider.notifier)
-                                          .delete(widget.server);
+                                          .read(appSettingsProvider.notifier)
+                                          .deleteSettings(users);
+                                      await ref
+                                          .read(serversStoreProvider)
+                                          .remove(widget.server.id);
                                     },
                                   );
                                 },

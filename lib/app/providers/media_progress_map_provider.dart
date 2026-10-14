@@ -10,31 +10,25 @@ import 'package:storii/storage/local/progress_store.dart';
 
 part 'media_progress_map_provider.g.dart';
 
-@Riverpod(keepAlive: true)
-class MediaProgressSyncController extends _$MediaProgressSyncController {
-  StreamSubscription? _progressSub;
+@riverpod
+Future<void> mediaProgressSyncController(Ref ref) async {
+  final user = ref.watch(currentUserProvider);
+  if (user == null) return;
+  final store = ref.watch(progressStoreProvider(user.id).notifier);
+  final serverUser = await ref.watch(serverUserProvider.future);
+  store.putAll(serverUser.mediaProgress);
+  ref.listen(_progressUpdateProvider, (_, next) {
+    final progress = next.value;
+    if (progress != null) {
+      store.put(progress);
+    }
+  });
+}
 
-  @override
-  Future<void> build() async {
-    ref.onDispose(() {
-      _progressSub?.cancel();
-    });
-    await _progressSub?.cancel();
-
-    try {
-      final user = ref.watch(currentUserProvider);
-      if (user == null) return;
-      final store = ref.watch(progressStoreProvider(user.id).notifier);
-
-      final serverUser = await ref.watch(serverUserProvider.future);
-      store.putAll(serverUser.mediaProgress);
-
-      final socket = await ref.read(socketApiProvider.future);
-      _progressSub = socket.user.onProgressUpdate.listen((event) {
-        store.put(event.data);
-      });
-    } catch (_) {}
-  }
+@riverpod
+Stream<MediaProgress> _progressUpdate(Ref ref) async* {
+  final socket = await ref.watch(socketApiProvider.future);
+  yield* socket.user.onProgressUpdate.map((e) => e.data);
 }
 
 @riverpod

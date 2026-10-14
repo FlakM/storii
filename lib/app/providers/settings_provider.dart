@@ -18,7 +18,7 @@ part 'settings_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class AppSettingsNotifier extends _$AppSettingsNotifier {
-  SettingsStore get _store => ref.read(settingsStoreProvider.notifier);
+  SettingsStore get _store => ref.read(settingsStoreProvider);
 
   @override
   AppSettings build() {
@@ -68,7 +68,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
 
 @riverpod
 class UserSettingsNotifier extends _$UserSettingsNotifier {
-  SettingsStore get _store => ref.read(settingsStoreProvider.notifier);
+  SettingsStore get _store => ref.read(settingsStoreProvider);
 
   @override
   UserSettings? build() {

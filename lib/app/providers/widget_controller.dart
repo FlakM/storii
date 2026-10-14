@@ -24,7 +24,7 @@ class WidgetController extends _$WidgetController {
 
   @override
   void build() {
-    final configs = ref.read(widgetStoreProvider.notifier).getAllConfigs();
+    final configs = ref.read(widgetStoreProvider).getAllConfigs();
     if (configs.isNotEmpty) {
       configs.forEach(_refreshWidget);
     }
@@ -77,9 +77,7 @@ class WidgetController extends _$WidgetController {
 
       for (final config in configs) {
         if (!installedIds.contains(config.widgetId)) {
-          await ref
-              .read(widgetStoreProvider.notifier)
-              .clearConfig(config.widgetId);
+          await ref.read(widgetStoreProvider).clearConfig(config.widgetId);
         }
       }
     } catch (e, st) {
@@ -93,7 +91,7 @@ class WidgetController extends _$WidgetController {
   }
 
   Future<void> _saveAndUpdateWidget(WidgetConfig config) async {
-    await ref.read(widgetStoreProvider.notifier).saveConfig(config);
+    await ref.read(widgetStoreProvider).saveConfig(config);
     await HomeWidget.saveWidgetData<String>(
       'widget_${config.widgetId}',
       jsonEncode(config),

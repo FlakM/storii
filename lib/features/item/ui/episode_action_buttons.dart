@@ -89,13 +89,11 @@ class EpisodeActionButtons extends ConsumerWidget {
                               actionIcon: Icons.beenhere_outlined,
                               onTap: () async {
                                 final success = await ref
-                                    .read(
-                                      userProgressActionsProvider(
-                                        episode.libraryItemId,
-                                        episode.id,
-                                      ).notifier,
-                                    )
-                                    .markComplete();
+                                    .read(userProgressActionsProvider)
+                                    .markComplete(
+                                      itemId: episode.libraryItemId,
+                                      episodeId: episode.id,
+                                    );
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -134,12 +132,7 @@ class EpisodeActionButtons extends ConsumerWidget {
                               isDestructive: true,
                               onTap: () async {
                                 final success = await ref
-                                    .read(
-                                      userProgressActionsProvider(
-                                        episode.libraryItemId,
-                                        episode.id,
-                                      ).notifier,
-                                    )
+                                    .read(userProgressActionsProvider)
                                     .remove(progress.id);
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(

@@ -131,7 +131,7 @@ List<DownloadItem> _filterDownloads(
   List<DownloadItem> items,
   String query,
 ) {
-  final cache = ref.read(itemsCacheProvider.notifier);
+  final cache = ref.read(itemsCacheProvider);
   return items.where((item) {
     final title = cache.get(item.libraryItemId)?.title ?? item.title;
     final author = cache.get(item.libraryItemId)?.authorName ?? item.author;
@@ -146,7 +146,7 @@ List<DownloadItem> _sortDownloads(
   DownloadSort sort,
   bool ascending,
 ) {
-  final cache = ref.read(itemsCacheProvider.notifier);
+  final cache = ref.read(itemsCacheProvider);
   final settings = ref.watch(currentServerSettingsProvider);
   final prefixes = settings?.sortingIgnorePrefix == true
       ? settings?.sortingPrefixes ?? <String>[]
@@ -200,7 +200,7 @@ String _sortKey(String value, List<String> prefixes) {
 
 DateTime _lastListenedTime(Ref ref, DownloadItem item) {
   final session = ref
-      .watch(sessionStoreProvider.notifier)
+      .read(sessionStoreProvider)
       .getSession(item.libraryItemId, item.episodeId);
   if (session?.updatedAt != null) return session!.updatedAt;
   final progress = ref
@@ -214,7 +214,7 @@ DateTime _lastListenedTime(Ref ref, DownloadItem item) {
 @riverpod
 List<LibraryItem> downloadedItems(Ref ref) {
   final items = ref.watch(sortedCompletedDownloadsProvider);
-  final cache = ref.watch(itemsCacheProvider.notifier);
+  final cache = ref.watch(itemsCacheProvider);
 
   final libraryItems = <LibraryItem>[];
   final seen = <String>{};

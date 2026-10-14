@@ -15,7 +15,7 @@ part 'item_detail_provider.g.dart';
 class ItemDetail extends _$ItemDetail {
   @override
   Future<LibraryItem> build(String id) async {
-    final cache = ref.read(itemsCacheProvider.notifier);
+    final cache = ref.read(itemsCacheProvider);
     ref.listen(libraryItemUpdatedProvider, (_, next) {
       final updated = next.value;
       if (updated == null || updated.id != id || !state.hasValue) return;

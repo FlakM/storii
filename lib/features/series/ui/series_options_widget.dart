@@ -98,7 +98,7 @@ class SeriesOptionsWidget extends ConsumerWidget {
             leading: const Icon(Icons.playlist_add),
             onTap: () async {
               final success = await ref
-                  .read(userProgressActionsProvider(series.id).notifier)
+                  .read(userProgressActionsProvider)
                   .reAddSeriesToContinueListening(series.id);
               globalMessengerKey.currentState?.hideCurrentSnackBar();
               globalMessengerKey.currentState?.showAppSnackBar(

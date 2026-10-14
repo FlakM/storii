@@ -85,7 +85,7 @@ final class SortedShelvesProvider
   }
 }
 
-String _$sortedShelvesHash() => r'd2f8df9f37dcc7456f4602bce45e10fbc69eebce';
+String _$sortedShelvesHash() => r'e05d25266d3f6f8228c9027beca4080d54b28521';
 
 @ProviderFor(rawShelves)
 final rawShelvesProvider = RawShelvesProvider._();
@@ -124,4 +124,4 @@ final class RawShelvesProvider
   }
 }
 
-String _$rawShelvesHash() => r'0732ed9de60e9f0da01849a156e4b7614d30d95a';
+String _$rawShelvesHash() => r'b51300cf02775a190908a2cde1ee6f380030cd39';

@@ -60,7 +60,7 @@ final class PlaybackHistoryNotifierProvider
 }
 
 String _$playbackHistoryNotifierHash() =>
-    r'c26af755a33513a11b7d7273b1aa73d9097d216b';
+    r'b6662128e0b834c51526f2c328a4a79e63532f88';
 
 final class PlaybackHistoryNotifierFamily extends $Family
     with

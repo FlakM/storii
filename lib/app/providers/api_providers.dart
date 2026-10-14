@@ -11,6 +11,7 @@ import 'package:storii/app/providers/token_provider.dart';
 import 'package:storii/features/auth/logic/servers_provider.dart';
 import 'package:storii/features/auth/logic/user_session_controller.dart';
 import 'package:storii/storage/hive/boxes.dart';
+import 'package:storii/storage/local/servers_store.dart';
 
 part 'api_providers.g.dart';
 
@@ -40,9 +41,7 @@ ApiClient apiClient(Ref ref) {
     maxStale: const Duration(days: 7),
   );
 
-  final headers = ref
-      .read(serversProvider.notifier)
-      .getServerHeaders(user.serverUrl);
+  final headers = ref.read(serversStoreProvider).get(user.serverUrl)?.headers;
 
   final apiClient = ApiClient(
     baseUrl: serverUrl,

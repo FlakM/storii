@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/user_provider.dart';
+import 'package:storii/app/repositories/me_repository.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 
 part 'bookmarks_provider.g.dart';
@@ -15,49 +16,57 @@ Future<List<Bookmark>> bookmarks(Ref ref, String itemId) async {
     ..sort((a, b) => a.time.compareTo(b.time));
 }
 
-@Riverpod(keepAlive: true)
-class BookmarksController extends _$BookmarksController {
-  @override
-  void build(String itemId) {}
+class BookmarksController {
+  const new(this.repo);
 
-  Future<bool> create({required Duration time, required String title}) async {
-    final repo = ref.read(meRepositoryProvider);
+  final MeRepository repo;
+
+  Future<bool> create({
+    required String itemId,
+    required Duration time,
+    required String title,
+  }) async {
     try {
       await repo.createBookmark(
         libraryItemId: itemId,
         time: time,
         title: title,
       );
-      ref.invalidate(serverUserProvider);
       return true;
     } on AppError catch (_) {
       return false;
     }
   }
 
-  Future<bool> modify({required Duration time, required String title}) async {
-    final repo = ref.read(meRepositoryProvider);
+  Future<bool> modify({
+    required String itemId,
+    required Duration time,
+    required String title,
+  }) async {
     try {
       await repo.updateBookmark(
         libraryItemId: itemId,
         time: time,
         title: title,
       );
-      ref.invalidate(serverUserProvider);
       return true;
     } on AppError catch (_) {
       return false;
     }
   }
 
-  Future<bool> remove({required Duration time}) async {
-    final repo = ref.read(meRepositoryProvider);
+  Future<bool> remove({required String itemId, required Duration time}) async {
     try {
       await repo.removeBookmark(libraryItemId: itemId, time: time);
-      ref.invalidate(serverUserProvider);
       return true;
     } on AppError catch (_) {
       return false;
     }
   }
+}
+
+@riverpod
+BookmarksController bookmarksController(Ref ref) {
+  final repo = ref.watch(meRepositoryProvider);
+  return BookmarksController(repo);
 }

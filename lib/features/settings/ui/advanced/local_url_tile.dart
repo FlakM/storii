@@ -5,6 +5,8 @@ import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/auth/logic/servers_provider.dart';
 import 'package:storii/shared/widgets/app_bottom_sheet.dart';
 import 'package:storii/shared/widgets/app_buttons.dart';
+import 'package:storii/storage/local/servers_store.dart';
+import 'package:storii/storage/local/users_store.dart';
 
 class LocalUrlTile extends ConsumerWidget {
   const new({super.key});
@@ -22,7 +24,9 @@ class LocalUrlTile extends ConsumerWidget {
       title: Text(l10n.localUrl),
       subtitle: Text(localUrl?.toString() ?? l10n.localUrlSubtitle),
       onTap: () async {
-        final server = ref.read(serversProvider.notifier).get(user.serverUrl);
+        final serversStore = ref.read(serversStoreProvider);
+        final usersStore = ref.read(usersStoreProvider);
+        final server = serversStore.get(user.serverUrl);
         if (server == null) return;
         final result = await showModalBottomSheet<String>(
           context: context,
@@ -37,9 +41,9 @@ class LocalUrlTile extends ConsumerWidget {
 
         if (result != null && context.mounted) {
           final newLocalUrl = result.isEmpty ? null : Uri.parse(result);
-          await ref
-              .read(serversProvider.notifier)
-              .edit(server.url, server.copyWith(localUrl: newLocalUrl));
+          final updated = server.copyWith(localUrl: newLocalUrl);
+          await serversStore.add(updated);
+          await usersStore.updateServerUrl(server.url, updated.url);
         }
       },
     );

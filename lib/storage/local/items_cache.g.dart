@@ -9,17 +9,19 @@ part of 'items_cache.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ItemsCache)
+@ProviderFor(itemsCache)
 final itemsCacheProvider = ItemsCacheProvider._();
 
-final class ItemsCacheProvider extends $NotifierProvider<ItemsCache, void> {
+final class ItemsCacheProvider
+    extends $FunctionalProvider<ItemsCache, ItemsCache, ItemsCache>
+    with $Provider<ItemsCache> {
   ItemsCacheProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'itemsCacheProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -29,33 +31,21 @@ final class ItemsCacheProvider extends $NotifierProvider<ItemsCache, void> {
 
   @$internal
   @override
-  ItemsCache create() => ItemsCache();
+  $ProviderElement<ItemsCache> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ItemsCache create(Ref ref) {
+    return itemsCache(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(ItemsCache value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<ItemsCache>(value),
     );
   }
 }
 
-String _$itemsCacheHash() => r'2dbbf23d7eea0d5a359eb55c6d90b77af2ba1b84';
-
-abstract class _$ItemsCache extends $Notifier<void> {
-  void build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
+String _$itemsCacheHash() => r'fbb87eb121ca560c00358ca615ba92950afc03ba';

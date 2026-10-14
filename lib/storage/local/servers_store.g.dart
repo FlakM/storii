@@ -9,18 +9,19 @@ part of 'servers_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ServersStore)
+@ProviderFor(serversStore)
 final serversStoreProvider = ServersStoreProvider._();
 
 final class ServersStoreProvider
-    extends $StreamNotifierProvider<ServersStore, List<Server>> {
+    extends $FunctionalProvider<ServersStore, ServersStore, ServersStore>
+    with $Provider<ServersStore> {
   ServersStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'serversStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -30,25 +31,129 @@ final class ServersStoreProvider
 
   @$internal
   @override
-  ServersStore create() => ServersStore();
+  $ProviderElement<ServersStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ServersStore create(Ref ref) {
+    return serversStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ServersStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ServersStore>(value),
+    );
+  }
 }
 
-String _$serversStoreHash() => r'ca2c9bd1652b65480697ea089866cb6670c89f26';
+String _$serversStoreHash() => r'76991f1ba5ea68499015fc097e55f5921e5b7ba5';
 
-abstract class _$ServersStore extends $StreamNotifier<List<Server>> {
-  Stream<List<Server>> build();
-  @$mustCallSuper
+@ProviderFor(servers)
+final serversProvider = ServersProvider._();
+
+final class ServersProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Server>>,
+          List<Server>,
+          Stream<List<Server>>
+        >
+    with $FutureModifier<List<Server>>, $StreamProvider<List<Server>> {
+  ServersProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'serversProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
   @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<Server>>, List<Server>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Server>>, List<Server>>,
-              AsyncValue<List<Server>>,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
+  String debugGetCreateSourceHash() => _$serversHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<Server>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<Server>> create(Ref ref) {
+    return servers(ref);
   }
+}
+
+String _$serversHash() => r'83e95efa15c995d0e359389c100e5da46db5cf20';
+
+@ProviderFor(serverStream)
+final serverStreamProvider = ServerStreamFamily._();
+
+final class ServerStreamProvider
+    extends $FunctionalProvider<AsyncValue<Server?>, Server?, Stream<Server?>>
+    with $FutureModifier<Server?>, $StreamProvider<Server?> {
+  ServerStreamProvider._({
+    required ServerStreamFamily super.from,
+    required Uri super.argument,
+  }) : super(
+         retry: null,
+         name: r'serverStreamProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$serverStreamHash();
+
+  @override
+  String toString() {
+    return r'serverStreamProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<Server?> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<Server?> create(Ref ref) {
+    final argument = this.argument as Uri;
+    return serverStream(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ServerStreamProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$serverStreamHash() => r'9767e1bad6fb2b9e8493ab8d3bb7984c4ad99997';
+
+final class ServerStreamFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<Server?>, Uri> {
+  ServerStreamFamily._()
+    : super(
+        retry: null,
+        name: r'serverStreamProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ServerStreamProvider call(Uri url) =>
+      ServerStreamProvider._(argument: url, from: this);
+
+  @override
+  String toString() => r'serverStreamProvider';
 }

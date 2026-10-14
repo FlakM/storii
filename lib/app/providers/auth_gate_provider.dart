@@ -6,11 +6,11 @@ import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
-import 'package:storii/features/auth/logic/users_provider.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/server_settings_store.dart';
 import 'package:storii/storage/local/servers_store.dart';
+import 'package:storii/storage/local/users_store.dart';
 
 part 'auth_gate_provider.g.dart';
 
@@ -26,7 +26,7 @@ Future<void> authGate(Ref ref) async {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class AuthRefresher extends _$AuthRefresher {
   @override
   void build() {
@@ -64,10 +64,7 @@ Future<void> _authorizeAndPersist(Ref ref, UserDomain user) async {
     debug: true,
   );
   LogService.log('user auth success!', source: 'authGate');
-  final serverId = ref
-      .read(serversStoreProvider.notifier)
-      .get(user.serverUrl)
-      ?.id;
+  final serverId = ref.read(serversStoreProvider).get(user.serverUrl)?.id;
   if (serverId != null) {
     await ref
         .read(serverSettingsStoreProvider.notifier)
@@ -80,6 +77,6 @@ Future<void> _authorizeAndPersist(Ref ref, UserDomain user) async {
     serverUrl: user.serverUrl,
   );
   if (refreshed != user) {
-    await ref.read(usersProvider.notifier).add(refreshed);
+    await ref.read(usersStoreProvider).upsert(refreshed);
   }
 }

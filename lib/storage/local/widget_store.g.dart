@@ -9,17 +9,19 @@ part of 'widget_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(WidgetStore)
+@ProviderFor(widgetStore)
 final widgetStoreProvider = WidgetStoreProvider._();
 
-final class WidgetStoreProvider extends $NotifierProvider<WidgetStore, void> {
+final class WidgetStoreProvider
+    extends $FunctionalProvider<WidgetStore, WidgetStore, WidgetStore>
+    with $Provider<WidgetStore> {
   WidgetStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'widgetStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -29,33 +31,21 @@ final class WidgetStoreProvider extends $NotifierProvider<WidgetStore, void> {
 
   @$internal
   @override
-  WidgetStore create() => WidgetStore();
+  $ProviderElement<WidgetStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  WidgetStore create(Ref ref) {
+    return widgetStore(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(WidgetStore value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<WidgetStore>(value),
     );
   }
 }
 
-String _$widgetStoreHash() => r'53a5e93575663fada15c641fec74d1960651ea70';
-
-abstract class _$WidgetStore extends $Notifier<void> {
-  void build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
+String _$widgetStoreHash() => r'2e745ce4bb5cbd48d29dadf89a4cf290dc659ca7';

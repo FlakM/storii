@@ -52,7 +52,7 @@ Future<List<Shelf>> shelves(Ref ref) async {
 Future<List<Shelf>> sortedShelves(Ref ref) async {
   final order = ref.watch(homeShelvesProvider);
   final shelves = await ref.watch(shelvesProvider.future);
-  final sessions = ref.watch(sessionStoreProvider).value ?? [];
+  final sessions = ref.watch(localSessionsProvider).value ?? [];
 
   final latestSessionByItem = <String, PlaybackSession>{};
   for (final session in sessions) {
@@ -100,7 +100,7 @@ Future<List<Shelf>> rawShelves(Ref ref) async {
   final isConnected = ref.watch(serverConnectionProvider);
   if (!isConnected) {
     final downloads = await ref.read(downloadsProvider.future);
-    final cache = ref.read(itemsCacheProvider.notifier);
+    final cache = ref.read(itemsCacheProvider);
 
     final dAudiobooks = <LibraryItem>[];
     final dPodcasts = <LibraryItem>[];

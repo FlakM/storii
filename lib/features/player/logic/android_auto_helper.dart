@@ -45,7 +45,7 @@ class AndroidAutoHelper {
 
   CoverHelper get _helper => _container.read(coverHelperProvider);
 
-  ItemsCache get _itemsCache => _container.read(itemsCacheProvider.notifier);
+  ItemsCache get _itemsCache => _container.read(itemsCacheProvider);
 
   Future<List<MediaItem>> loadChildren(
     String parentMediaId, [

@@ -5,10 +5,8 @@ import 'package:storii/storage/hive/boxes.dart';
 
 part 'playback_history_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class PlaybackHistoryStore extends _$PlaybackHistoryStore {
-  @override
-  FutureOr<void> build() {}
+class PlaybackHistoryStore {
+  const new();
 
   Future<void> put(
     String userId,
@@ -59,3 +57,7 @@ class PlaybackHistoryStore extends _$PlaybackHistoryStore {
     };
   }
 }
+
+@riverpod
+PlaybackHistoryStore playbackHistoryStore(Ref ref) =>
+    const PlaybackHistoryStore();

@@ -36,7 +36,7 @@ class SessionNotifier extends _$SessionNotifier {
       episodeId: episodeId,
     );
 
-    await ref.read(sessionStoreProvider.notifier).save(session);
+    await ref.read(sessionStoreProvider).save(session);
 
     state = session;
     LogService.log(
@@ -52,7 +52,7 @@ class SessionNotifier extends _$SessionNotifier {
     required bool isSameUser,
   }) async {
     final existing = ref
-        .read(sessionStoreProvider.notifier)
+        .read(sessionStoreProvider)
         .getSession(item.id, episodeId);
     if (existing != null && existing.playMethod == .local) {
       state = existing;
@@ -86,8 +86,7 @@ class SessionNotifier extends _$SessionNotifier {
       );
     }
 
-    await ref.read(sessionStoreProvider.notifier).save(session);
-
+    await ref.read(sessionStoreProvider).save(session);
     state = session;
     LogService.log(
       'local session created for ${session.displayTitle}',
@@ -110,7 +109,7 @@ class SessionNotifier extends _$SessionNotifier {
     );
 
     if (isLocal) {
-      await ref.read(sessionStoreProvider.notifier).save(updated);
+      await ref.read(sessionStoreProvider).save(updated);
       state = updated;
 
       final isConnected = await ref.read(socketStatusProvider.future);
@@ -137,7 +136,7 @@ class SessionNotifier extends _$SessionNotifier {
           currentTime: position,
           updatedAt: DateTime.now(),
         );
-        await ref.read(sessionStoreProvider.notifier).save(withPosition);
+        await ref.read(sessionStoreProvider).save(withPosition);
         state = withPosition;
         throw 'No Server Connection';
       }
@@ -152,7 +151,7 @@ class SessionNotifier extends _$SessionNotifier {
       );
     }
 
-    await ref.read(sessionStoreProvider.notifier).delete(updated.id);
+    await ref.read(sessionStoreProvider).delete(updated.id);
     state = updated;
 
     log(
@@ -172,7 +171,7 @@ class SessionNotifier extends _$SessionNotifier {
       if (!isLocal) {
         final repo = ref.read(sessionRepositoryProvider);
         await repo.closeSession(sessionId: session.id);
-        await ref.read(sessionStoreProvider.notifier).delete(session.id);
+        await ref.read(sessionStoreProvider).delete(session.id);
       }
       LogService.log(
         'session closed for ${session.displayTitle}',
@@ -193,14 +192,4 @@ MediaProgress? _latestProgress(MediaProgress? a, MediaProgress? b) {
           a.lastUpdate!.isAfter(b.lastUpdate!)
       ? a
       : b;
-}
-
-@riverpod
-Stream<PlaybackSession?> localSession(
-  Ref ref,
-  String itemId, [
-  String? episodeId,
-]) async* {
-  final store = ref.watch(sessionStoreProvider.notifier);
-  yield* store.watchSession(itemId, episodeId);
 }

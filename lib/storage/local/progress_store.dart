@@ -10,7 +10,7 @@ import 'package:storii/storage/hive/boxes.dart';
 
 part 'progress_store.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class ProgressStore extends _$ProgressStore {
   String _key(String id, String? episodeId) =>
       '$userId:${mediaItemIdKey(id, episodeId)}';

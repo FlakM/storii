@@ -158,12 +158,17 @@ class _BookmarkSheetBody extends ConsumerWidget {
                             IconButton(
                               tooltip: l10n.remove,
                               icon: const Icon(Icons.delete_outline),
-                              onPressed: () => ref
-                                  .read(
-                                    bookmarksControllerProvider(itemId)
-                                        .notifier,
-                                  )
-                                  .remove(time: bookmark.time),
+                              onPressed: () async {
+                                final ok = await ref
+                                    .read(bookmarksControllerProvider)
+                                    .remove(
+                                      itemId: itemId,
+                                      time: bookmark.time,
+                                    );
+                                if (ok && context.mounted) {
+                                  ref.invalidate(serverUserProvider);
+                                }
+                              },
                             ),
                           ],
                         ),
@@ -217,15 +222,16 @@ Future<void> showBookmarkDialog(
       final time = parseTime(timeController.text);
       if (title.isEmpty || time == null) return;
 
-      final notifier = ref.read(bookmarksControllerProvider(itemId).notifier);
+      final controller = ref.read(bookmarksControllerProvider);
 
       final ok = isEditing
-          ? await notifier.modify(time: time, title: title)
-          : await notifier.create(time: time, title: title);
-
+          ? await controller.modify(itemId: itemId, time: time, title: title)
+          : await controller.create(itemId: itemId, time: time, title: title);
       if (!context.mounted) return;
 
-      if (!ok) {
+      if (ok) {
+        ref.invalidate(serverUserProvider);
+      } else {
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(l10n.bookmarkFailed)));
       }

@@ -6,10 +6,8 @@ import 'package:storii/storage/hive/boxes.dart';
 
 part 'widget_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class WidgetStore extends _$WidgetStore {
-  @override
-  void build() {}
+class WidgetStore {
+  const new();
 
   WidgetConfig? getConfig(int widgetId) {
     final json = widgetConfigBox.get('widget_$widgetId');
@@ -35,3 +33,6 @@ class WidgetStore extends _$WidgetStore {
         .toList();
   }
 }
+
+@riverpod
+WidgetStore widgetStore(Ref ref) => const WidgetStore();

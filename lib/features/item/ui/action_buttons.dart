@@ -7,11 +7,11 @@ import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/features/downloads/ui/download_button.dart';
 import 'package:storii/features/item/logic/user_progress_actions.dart';
 import 'package:storii/features/item/ui/local_session_icon.dart';
-import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/ui/bookmarks_sheet.dart';
 import 'package:storii/features/player/ui/history_button.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/widgets/app_bottom_sheet.dart';
+import 'package:storii/storage/local/session_store.dart';
 
 class ActionButtons extends ConsumerWidget {
   const new({required this.item, super.key});
@@ -28,7 +28,7 @@ class ActionButtons extends ConsumerWidget {
         mediaProgress?.isFinished == true ||
         item.isFinished ||
         mediaProgress?.progress == 1.0;
-    final localSession = ref.watch(localSessionProvider(item.id)).value;
+    final localSession = ref.watch(localSessionByIdProvider(item.id)).value;
     final canDownload =
         ref.watch(userPermissionsProvider).value?.download ?? false;
 
@@ -50,8 +50,8 @@ class ActionButtons extends ConsumerWidget {
               actionIcon: Icons.beenhere_outlined,
               onTap: () async {
                 final success = await ref
-                    .read(userProgressActionsProvider(item.id).notifier)
-                    .markComplete();
+                    .read(userProgressActionsProvider)
+                    .markComplete(itemId: item.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -87,10 +87,7 @@ class ActionButtons extends ConsumerWidget {
               isDestructive: true,
               onTap: () async {
                 final success = await ref
-                    .read(
-                      userProgressActionsProvider(mediaProgress.libraryItemId)
-                          .notifier,
-                    )
+                    .read(userProgressActionsProvider)
                     .remove(mediaProgress.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
