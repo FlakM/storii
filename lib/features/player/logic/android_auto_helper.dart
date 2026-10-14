@@ -3,8 +3,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/repositories/item_repository.dart';
@@ -117,9 +115,8 @@ class AndroidAutoHelper {
     final libraryId = _container.read(currentLibraryProvider)?.id;
     if (libraryId == null) return [];
 
-    await _container.read(authGateProvider.future);
-    final api = _container.read(libraryApiProvider);
-    final result = await api.search(libraryId, query: query);
+    final libraryRepo = _container.read(libraryRepositoryProvider);
+    final result = await libraryRepo.search(libraryId, query: query);
     final items = <LibraryItem>[
       ...result.book,
       ...result.podcast,

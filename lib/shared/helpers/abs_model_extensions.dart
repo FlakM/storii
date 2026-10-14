@@ -343,3 +343,13 @@ extension PodcastEpisodeX on PodcastEpisode {
       ? 'E$episode'
       : null;
 }
+
+extension ScanItemResultX on ScanItemResult {
+  String get label => switch (this) {
+    .added => l10n.itemScanAdded,
+    .updated => l10n.itemScanUpdated,
+    .removed => l10n.itemScanRemoved,
+    .upToDate => l10n.itemScanUpToDate,
+    .nothing => l10n.itemScanNothing,
+  };
+}

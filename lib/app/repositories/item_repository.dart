@@ -6,41 +6,42 @@ import 'package:storii/shared/helpers/api_call_logger.dart';
 
 class ItemRepository {
   final ItemApi _api;
+  final Future<void> auth;
   final Uri? serverUrl;
-  const new(this._api, {this.serverUrl});
+  const new(this._api, {required this.auth, this.serverUrl});
 
   static const _source = 'ItemRepository';
+
+  Future<T> _call<T>(Future<T> Function() call, {String? logMessage}) =>
+      callWithAuth(auth, call, source: _source, logMessage: logMessage);
 
   Future<LibraryItem> getItem(
     String itemId, {
     bool isExpanded = true,
     bool includeProgress = false,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.get(
         itemId,
         isExpanded: isExpanded,
         includeProgress: includeProgress,
       ),
-      source: _source,
       logMessage: 'Error fetching library item details',
     );
   }
 
   Future<Uint8List?> getCover(String itemId, {CancelToken? cancelToken}) {
-    return logApiCall(
+    return _call(
       () => _api.getCover(
         libraryItemId: itemId,
         cancelToken: cancelToken ?? CancelToken(),
       ),
-      source: _source,
     );
   }
 
   Future<ScanItemResult?> scanItem(String itemId) {
-    return logApiCall(
+    return _call(
       () => _api.scan(libraryItemId: itemId),
-      source: _source,
       logMessage: 'Error scanning item',
     );
   }
@@ -49,9 +50,8 @@ class ItemRepository {
     String itemId, {
     UpdateItemMediaReqParams? parameters,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.updateMedia(libraryItemId: itemId, parameters: parameters),
-      source: _source,
     );
   }
 
@@ -59,11 +59,25 @@ class ItemRepository {
     String itemId, {
     MatchItemRequestParams? parameters,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.match(libraryItemId: itemId, parameters: parameters),
-      source: _source,
     );
   }
+
+  Future<UpdateCoverResponse> uploadCover({
+    required String libraryItemId,
+    FileUpload? coverFile,
+    String? url,
+  }) => _call(
+    () => _api.uploadCover(
+      libraryItemId: libraryItemId,
+      coverFile: coverFile,
+      url: url,
+    ),
+  );
+
+  Future<void> removeCover({required String libraryItemId}) =>
+      _call(() => _api.removeCover(libraryItemId: libraryItemId));
 
   Uri? resolveCoverUri(String itemId) => serverUrl
       ?.resolve(ApiRoutes.itemCover(itemId))

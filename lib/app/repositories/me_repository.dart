@@ -3,20 +3,23 @@ import 'package:storii/shared/helpers/api_call_logger.dart';
 
 class MeRepository {
   final MeApi _api;
-  const new(this._api);
+  final Future<void> auth;
+  const new(this._api, {required this.auth});
 
   static const _source = 'MeRepository';
+
+  Future<T> _call<T>(Future<T> Function() call, {String? logMessage}) =>
+      callWithAuth(auth, call, source: _source, logMessage: logMessage);
 
   Future<MediaProgress> getMediaProgress({
     required String libraryItemId,
     String? episodeId,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.getMediaProgress(
         libraryItemId: libraryItemId,
         episodeId: episodeId,
       ),
-      source: _source,
     );
   }
 
@@ -25,42 +28,35 @@ class MeRepository {
     String? episodeId,
     UpsertProgressRequestParams? params,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.upsertMediaProgress(
         libraryItemId: libraryItemId,
         episodeId: episodeId,
         params: params,
       ),
-      source: _source,
     );
   }
 
   Future<void> removeMediaProgress({required String mediaProgressId}) {
-    return logApiCall(
+    return _call(
       () => _api.removeMediaProgress(mediaProgressId: mediaProgressId),
-      source: _source,
     );
   }
 
   Future<User> removeFromContinueListening({required String mediaProgressId}) {
-    return logApiCall(
+    return _call(
       () => _api.removeFromContinueListening(mediaProgressId: mediaProgressId),
-      source: _source,
     );
   }
 
   Future<User> removeSeriesFromContinueListening({required String seriesId}) {
-    return logApiCall(
+    return _call(
       () => _api.removeSeriesFromContinueListening(seriesId: seriesId),
-      source: _source,
     );
   }
 
   Future<User> reAddSeriesToContinueListening({required String seriesId}) {
-    return logApiCall(
-      () => _api.reAddSeriesToContinueListening(seriesId: seriesId),
-      source: _source,
-    );
+    return _call(() => _api.reAddSeriesToContinueListening(seriesId: seriesId));
   }
 
   Future<AudioBookmark> createBookmark({
@@ -68,13 +64,12 @@ class MeRepository {
     required Duration time,
     required String title,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.createBookmark(
         libraryItemId: libraryItemId,
         time: time,
         title: title,
       ),
-      source: _source,
     );
   }
 
@@ -83,13 +78,12 @@ class MeRepository {
     required Duration time,
     required String title,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.updateBookmark(
         libraryItemId: libraryItemId,
         time: time,
         title: title,
       ),
-      source: _source,
     );
   }
 
@@ -97,42 +91,29 @@ class MeRepository {
     required String libraryItemId,
     required Duration time,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.removeBookmark(libraryItemId: libraryItemId, time: time),
-      source: _source,
     );
   }
 
   Future<UserStatsResponse> getStats() {
-    return logApiCall(
-      _api.getStats,
-      source: _source,
-      logMessage: 'Error fetching stats',
-    );
+    return _call(_api.getStats, logMessage: 'Error fetching stats');
   }
 
   Future<List<LibraryItem>> getItemsInProgress({int limit = 25}) {
-    return logApiCall(
-      () => _api.getItemsInProgress(limit: limit),
-      source: _source,
-    );
+    return _call(() => _api.getItemsInProgress(limit: limit));
   }
 
   Future<User> getUser() {
-    return logApiCall(
-      _api.getUser,
-      source: _source,
-      logMessage: 'Error fetching user',
-    );
+    return _call(_api.getUser, logMessage: 'Error fetching user');
   }
 
   Future<UserSessionsResponse> getSessions({
     int itemsPerPage = 10,
     int page = 0,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.getSessions(itemsPerPage: itemsPerPage, page: page),
-      source: _source,
     );
   }
 }

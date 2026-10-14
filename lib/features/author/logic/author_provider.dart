@@ -1,6 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
@@ -9,7 +8,6 @@ part 'author_provider.g.dart';
 
 @riverpod
 Future<Author> author(Ref ref, String authorId) async {
-  await ref.watch(authGateProvider.future);
   final libraryId = (await ref.watch(activeLibraryDetailsProvider.future))
       .library
       .id;

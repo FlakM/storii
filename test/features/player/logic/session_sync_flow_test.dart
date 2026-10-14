@@ -54,7 +54,11 @@ void main() {
         socketApiProvider.overrideWith((ref) async => fakeSocketApi),
         sessionsApiProvider.overrideWithValue(fakeSessionsApi),
         sessionRepositoryProvider.overrideWith(
-          (ref) => SessionRepository(fakeItemApi, fakeSessionsApi),
+          (ref) => SessionRepository(
+            fakeItemApi,
+            fakeSessionsApi,
+            auth: Future.value(),
+          ),
         ),
       ],
     );

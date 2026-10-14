@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/shared/helpers/app_error.dart';
@@ -22,7 +21,6 @@ class BookmarksController extends _$BookmarksController {
   void build(String itemId) {}
 
   Future<bool> create({required Duration time, required String title}) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.createBookmark(
@@ -38,7 +36,6 @@ class BookmarksController extends _$BookmarksController {
   }
 
   Future<bool> modify({required Duration time, required String title}) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.updateBookmark(
@@ -54,7 +51,6 @@ class BookmarksController extends _$BookmarksController {
   }
 
   Future<bool> remove({required Duration time}) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.removeBookmark(libraryItemId: itemId, time: time);

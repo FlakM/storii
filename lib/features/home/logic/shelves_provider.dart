@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
@@ -98,7 +97,7 @@ Future<List<Shelf>> sortedShelves(Ref ref) async {
 
 @riverpod
 Future<List<Shelf>> rawShelves(Ref ref) async {
-  final isConnected = ref.read(serverConnectionProvider);
+  final isConnected = ref.watch(serverConnectionProvider);
   if (!isConnected) {
     final downloads = await ref.read(downloadsProvider.future);
     final cache = ref.read(itemsCacheProvider.notifier);
@@ -148,8 +147,6 @@ Future<List<Shelf>> rawShelves(Ref ref) async {
       .library
       .id;
 
-  await ref.watch(authGateProvider.future);
   final repo = ref.read(libraryRepositoryProvider);
-
   return repo.getShelves(libraryId);
 }

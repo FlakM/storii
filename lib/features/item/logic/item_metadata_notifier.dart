@@ -4,8 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
 
@@ -54,9 +52,8 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
     final curr = state.value;
     if (curr == null || !curr.canSave) return false;
     state = AsyncData(curr.copyWith(saving: true));
-    await ref.read(authGateProvider.future);
-    final repo = ref.read(itemRepositoryProvider);
     try {
+      final repo = ref.read(itemRepositoryProvider);
       final params = diffMedia(draft: curr.draft, original: curr.original);
       await repo.updateMetadata(id, parameters: params);
       return true;
@@ -81,10 +78,9 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
       return l10n.cancelled;
     }
 
-    await ref.read(authGateProvider.future);
-    final api = ref.read(itemApiProvider);
     try {
-      final response = await api.uploadCover(
+      final repo = ref.read(itemRepositoryProvider);
+      final response = await repo.uploadCover(
         libraryItemId: id,
         coverFile: FileUpload.fromPath(
           filename: file.name,
@@ -110,10 +106,9 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
   }
 
   Future<bool> removeCover() async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(itemApiProvider);
     try {
-      await api.removeCover(libraryItemId: id);
+      final repo = ref.read(itemRepositoryProvider);
+      await repo.removeCover(libraryItemId: id);
       state = AsyncData(state.value!.copyWith(updatedAt: DateTime.now()));
       return true;
     } catch (e, st) {

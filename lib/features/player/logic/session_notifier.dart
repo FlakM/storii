@@ -4,7 +4,6 @@ import 'dart:developer';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
@@ -28,7 +27,6 @@ class SessionNotifier extends _$SessionNotifier {
     required String itemId,
     String? episodeId,
   }) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(sessionRepositoryProvider);
     final params = await ref.read(playRequestParamsProvider.future);
 
@@ -121,7 +119,6 @@ class SessionNotifier extends _$SessionNotifier {
       }
 
       try {
-        await ref.read(authGateProvider.future);
         final repo = ref.read(sessionRepositoryProvider);
         await repo.syncLocal(localSession: updated.stripped);
       } catch (e) {
@@ -145,7 +142,6 @@ class SessionNotifier extends _$SessionNotifier {
         throw 'No Server Connection';
       }
 
-      await ref.read(authGateProvider.future);
       final repo = ref.read(sessionRepositoryProvider);
       await repo.syncSession(
         sessionId: session.id,
@@ -174,7 +170,6 @@ class SessionNotifier extends _$SessionNotifier {
 
     try {
       if (!isLocal) {
-        await ref.read(authGateProvider.future);
         final repo = ref.read(sessionRepositoryProvider);
         await repo.closeSession(sessionId: session.id);
         await ref.read(sessionStoreProvider.notifier).delete(session.id);

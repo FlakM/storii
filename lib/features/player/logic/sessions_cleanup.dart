@@ -2,7 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/user.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
@@ -26,7 +25,7 @@ class SessionsCleanup extends _$SessionsCleanup {
 
     final user = ref.read(currentUserProvider);
     if (user == null) return;
-    await ref.read(authGateProvider.future);
+
     await syncLocalSessions(user, sessions);
     LogService.log('session cleanup complete', source: _source);
   }
@@ -35,7 +34,6 @@ class SessionsCleanup extends _$SessionsCleanup {
     UserDomain user,
     List<PlaybackSession> sessions,
   ) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(sessionRepositoryProvider);
 
     for (final session in sessions) {

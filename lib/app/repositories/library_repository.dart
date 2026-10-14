@@ -4,22 +4,21 @@ import 'package:storii/shared/helpers/api_call_logger.dart';
 
 class LibraryRepository {
   final LibraryApi _api;
-  const new(this._api);
+  final Future<void> auth;
+  const new(this._api, {required this.auth});
 
   static const _source = 'LibraryRepository';
 
+  Future<T> _call<T>(Future<T> Function() call, {String? logMessage}) =>
+      callWithAuth(auth, call, source: _source, logMessage: logMessage);
+
   Future<List<Library>> getLibraries() {
-    return logApiCall(
-      _api.getAll,
-      source: _source,
-      logMessage: 'Error fetching user libraries',
-    );
+    return _call(_api.getAll, logMessage: 'Error fetching user libraries');
   }
 
   Future<LibraryResponse> get(String libraryId) {
-    return logApiCall(
+    return _call(
       () => _api.get(libraryId),
-      source: _source,
       logMessage: 'Error fetching active library details',
     );
   }
@@ -28,9 +27,8 @@ class LibraryRepository {
     String libraryId,
     LibraryItemsRequestParams? params,
   ) {
-    return logApiCall(
+    return _call(
       () => _api.getItems(libraryId, params),
-      source: _source,
       logMessage: 'Error fetching items',
     );
   }
@@ -39,21 +37,16 @@ class LibraryRepository {
     String libraryId,
     LibraryItemsRequestParams? params,
   ) {
-    return logApiCall(
-      () async {
-        final data = await _api.getItemsRaw(libraryId, params);
-        final response = await compute(LibraryItemsResponse.fromJson, data);
-        return response.results;
-      },
-      source: _source,
-      logMessage: 'Error fetching all items',
-    );
+    return _call(() async {
+      final data = await _api.getItemsRaw(libraryId, params);
+      final response = await compute(LibraryItemsResponse.fromJson, data);
+      return response.results;
+    }, logMessage: 'Error fetching all items');
   }
 
   Future<List<Shelf>> getShelves(String libraryId) {
-    return logApiCall(
+    return _call(
       () => _api.getPersonalized(libraryId),
-      source: _source,
       logMessage: 'Error getting personalized home',
     );
   }
@@ -63,9 +56,8 @@ class LibraryRepository {
     int limit = 50,
     int page = 0,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.getRecentEpisodes(libraryId, limit: limit, page: page),
-      source: _source,
       logMessage: 'Error fetching recent episodes',
     );
   }
@@ -75,9 +67,8 @@ class LibraryRepository {
     required String query,
     int? limit,
   }) {
-    return logApiCall(
+    return _call(
       () => _api.search(libraryId, query: query, limit: limit),
-      source: _source,
       logMessage: 'Error getting search results',
     );
   }
@@ -86,25 +77,22 @@ class LibraryRepository {
     String libraryId,
     SeriesRequestParams? params,
   ) {
-    return logApiCall(
+    return _call(
       () => _api.getSeries(libraryId, params),
-      source: _source,
       logMessage: 'Error fetching series list',
     );
   }
 
   Future<Series> getSeriesById(String libraryId, String seriesId) {
-    return logApiCall(
+    return _call(
       () => _api.getSeriesById(libraryId, seriesId),
-      source: _source,
       logMessage: 'Error fetching series detail',
     );
   }
 
   Future<Author> getAuthor(String authorId, String libraryId) {
-    return logApiCall(
+    return _call(
       () => _api.getAuthor(authorId, libraryId),
-      source: _source,
       logMessage: 'Error fetching author detail',
     );
   }
@@ -113,17 +101,15 @@ class LibraryRepository {
     String libraryId,
     AuthorsRequestParams? params,
   ) {
-    return logApiCall(
+    return _call(
       () => _api.getAuthors(libraryId, params),
-      source: _source,
       logMessage: 'Error getting authors',
     );
   }
 
   Future<void> scanLibrary(String libraryId, {bool forceScan = false}) {
-    return logApiCall(
+    return _call(
       () => _api.scan(libraryId, forceScan: forceScan),
-      source: _source,
       logMessage: 'Error scanning library',
     );
   }

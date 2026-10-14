@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 
@@ -14,7 +13,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   void build(String itemId, [String? episodeId]) {}
 
   Future<bool> markComplete({bool isFinished = true}) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.upsertMediaProgress(
@@ -29,7 +27,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> remove(String progressId) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.removeMediaProgress(mediaProgressId: progressId);
@@ -40,7 +37,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeEpisodeProgress() async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.upsertMediaProgress(
@@ -55,7 +51,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeFromContinueListening(String mediaProgressId) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.removeFromContinueListening(mediaProgressId: mediaProgressId);
@@ -66,7 +61,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> removeSeriesFromContinueListening(String seriesId) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.removeSeriesFromContinueListening(seriesId: seriesId);
@@ -77,7 +71,6 @@ class UserProgressActionsNotifier extends _$UserProgressActionsNotifier {
   }
 
   Future<bool> reAddSeriesToContinueListening(String seriesId) async {
-    await ref.read(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     try {
       await repo.reAddSeriesToContinueListening(seriesId: seriesId);

@@ -24,3 +24,13 @@ Future<T> logApiCall<T>(
     throw error;
   }
 }
+
+Future<T> callWithAuth<T>(
+  Future<void> auth,
+  Future<T> Function() call, {
+  required String source,
+  String? logMessage,
+}) async {
+  await auth;
+  return logApiCall(call, source: source, logMessage: logMessage);
+}

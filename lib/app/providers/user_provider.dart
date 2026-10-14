@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/shared/helpers/extensions.dart';
@@ -22,7 +21,6 @@ class ServerUser extends _$ServerUser {
       _userSub?.cancel();
     });
     await _userSub?.cancel();
-    await ref.watch(authGateProvider.future);
     final repo = ref.read(meRepositoryProvider);
     final user = await repo.getUser();
 

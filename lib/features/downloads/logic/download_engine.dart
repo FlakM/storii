@@ -3,7 +3,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/user.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/token_provider.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
@@ -197,7 +196,6 @@ class DownloadEngine extends _$DownloadEngine {
     required CancelToken cancelToken,
   }) async {
     try {
-      await ref.read(authGateProvider.future);
       final repo = ref.read(itemRepositoryProvider);
       final imageBytes = await repo.getCover(
         libraryItemId,

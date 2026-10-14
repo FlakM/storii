@@ -33,7 +33,7 @@ final class ScanLibraryProvider
   ScanLibrary create() => ScanLibrary();
 }
 
-String _$scanLibraryHash() => r'f1210f1cb013fd6811bb2ee57726b8ff44142052';
+String _$scanLibraryHash() => r'3f84204f9619e80a6687de1d66d19fc6d2aeed67';
 
 abstract class _$ScanLibrary extends $AsyncNotifier<Set<String>> {
   FutureOr<Set<String>> build();
