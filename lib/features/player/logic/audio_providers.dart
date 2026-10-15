@@ -10,6 +10,7 @@ import 'package:storii/app/providers/is_background_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/repositories/item_repository.dart';
+import 'package:storii/features/downloads/logic/cover_helper.dart';
 import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/downloads/logic/storage_service_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
@@ -19,7 +20,9 @@ import 'package:storii/features/player/logic/session_extensions.dart';
 import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/models/app_playback_error.dart';
 import 'package:storii/features/player/models/app_playback_state.dart';
+import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/app_error.dart';
+import 'package:storii/storage/local/downloads_store.dart';
 import 'package:storii/storage/local/speed_store.dart';
 
 part 'audio_providers.g.dart';
@@ -168,9 +171,22 @@ class AudioPlayerNotifier extends _$AudioPlayerNotifier {
           ? session.chapterToTrackOffset(chapter)
           : session.getIndexAndOffset(initialPosition);
 
-      final (localPaths, coverPath) = await ref.read(
-        resolveLocalPathsProvider(session).future,
-      );
+      final downloadItem = ref
+          .read(downloadsStoreProvider)
+          .get(mediaItemIdKey(session.libraryItemId, session.episodeId));
+      final Map<int, String> localPaths;
+      final String? coverPath;
+      if (downloadItem == null) {
+        localPaths = {};
+        coverPath = null;
+      } else {
+        (localPaths, coverPath) = await resolveLocalPaths(
+          session: session,
+          downloadItem: downloadItem,
+          service: ref.read(storageServiceForItemProvider(downloadItem)),
+          coverHelper: ref.read(coverHelperProvider),
+        );
+      }
 
       if (localPaths.isEmpty && isFullyDownloaded) {
         LogService.log(
