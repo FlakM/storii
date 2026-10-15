@@ -5,6 +5,7 @@ import 'package:storii/app/init.dart';
 import 'package:storii/features/settings/ui/customization/nav_label_tile.dart';
 import 'package:storii/features/settings/ui/customization/reorder_nav_tabs.dart';
 import 'package:storii/features/settings/ui/customization/scroll_thumb_tile.dart';
+import 'package:storii/features/settings/ui/customization/show_navbar_always_tile.dart';
 import 'package:storii/features/settings/ui/customization/startup_nav.dart';
 import 'package:storii/features/settings/ui/settings_header.dart';
 import 'package:storii/features/settings/ui/settings_reset_button.dart';
@@ -49,6 +50,7 @@ class CustomizationSettingsScreen extends StatelessWidget {
           SettingsHeader(
             title: l10n.navBar,
             children: const [
+              ShowNavbarAlwaysTile(),
               StartupNavTile(),
               ReorderNavTabsTile(),
               NavLabelTile(),

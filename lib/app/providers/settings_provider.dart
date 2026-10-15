@@ -180,6 +180,7 @@ class UserSettingsNotifier extends _$UserSettingsNotifier {
     if (s == null) return;
     return _save(
       s.copyWith(
+        showNavbarAlways: DefaultUserSettings.showNavbarAlways,
         startupNav: DefaultUserSettings.startupNav,
         navTargets: DefaultUserSettings.navTargets,
         navLabelBehavior: DefaultUserSettings.navLabelBehavior,

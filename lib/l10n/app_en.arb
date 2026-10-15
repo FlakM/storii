@@ -330,6 +330,7 @@
     }
   },
   "sleepDurationTitle": "Sleep timer duration",
+  "showNavbarAlways": "Show navbar on most screens",
   "settingsStartupRouteTitle": "Start on app open",
   "settingsReorderNavTitle": "Navigation tabs",
   "settingsReorderNavSubtitle": "Reorder and enable or disable tabs",

@@ -256,6 +256,8 @@ _UserSettings _$UserSettingsFromJson(
   listViewImageSize:
       (json['listViewImageSize'] as num?)?.toDouble() ??
       DefaultUserSettings.listViewImageSize,
+  showNavbarAlways:
+      json['showNavbarAlways'] as bool? ?? DefaultUserSettings.showNavbarAlways,
 );
 
 Map<String, dynamic> _$UserSettingsToJson(
@@ -349,6 +351,7 @@ Map<String, dynamic> _$UserSettingsToJson(
   'imageMaxSize': instance.imageMaxSize,
   'stackedImagesCardMaxWidth': instance.stackedImagesCardMaxWidth,
   'listViewImageSize': instance.listViewImageSize,
+  'showNavbarAlways': instance.showNavbarAlways,
 };
 
 const _$NavTargetEnumMap = {
