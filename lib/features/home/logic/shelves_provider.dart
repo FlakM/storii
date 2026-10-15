@@ -5,8 +5,8 @@ import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
-import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
+import 'package:storii/storage/local/downloads_store.dart';
 import 'package:storii/storage/local/items_cache.dart';
 import 'package:storii/storage/local/session_store.dart';
 
@@ -99,7 +99,7 @@ Future<List<Shelf>> sortedShelves(Ref ref) async {
 Future<List<Shelf>> rawShelves(Ref ref) async {
   final isConnected = ref.watch(serverConnectionProvider);
   if (!isConnected) {
-    final downloads = await ref.read(downloadsProvider.future);
+    final downloads = ref.read(downloadsStoreProvider).getAll();
     final cache = ref.read(itemsCacheProvider);
 
     final dAudiobooks = <LibraryItem>[];

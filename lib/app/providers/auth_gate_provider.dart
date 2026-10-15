@@ -67,7 +67,7 @@ Future<void> _authorizeAndPersist(Ref ref, UserDomain user) async {
   final serverId = ref.read(serversStoreProvider).get(user.serverUrl)?.id;
   if (serverId != null) {
     await ref
-        .read(serverSettingsStoreProvider.notifier)
+        .read(serverSettingsStoreProvider)
         .save(serverId, response.serverSettings);
   }
   final refreshed = UserDomain(

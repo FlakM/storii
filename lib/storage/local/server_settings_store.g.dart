@@ -9,22 +9,24 @@ part of 'server_settings_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ServerSettingsStore)
+@ProviderFor(serverSettingsStore)
 final serverSettingsStoreProvider = ServerSettingsStoreProvider._();
 
 final class ServerSettingsStoreProvider
     extends
-        $StreamNotifierProvider<
+        $FunctionalProvider<
           ServerSettingsStore,
-          Map<String, ServerSettings>
-        > {
+          ServerSettingsStore,
+          ServerSettingsStore
+        >
+    with $Provider<ServerSettingsStore> {
   ServerSettingsStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'serverSettingsStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -34,35 +36,98 @@ final class ServerSettingsStoreProvider
 
   @$internal
   @override
-  ServerSettingsStore create() => ServerSettingsStore();
+  $ProviderElement<ServerSettingsStore> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ServerSettingsStore create(Ref ref) {
+    return serverSettingsStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ServerSettingsStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ServerSettingsStore>(value),
+    );
+  }
 }
 
 String _$serverSettingsStoreHash() =>
-    r'91a9b0ca5f90ea198a45486cc3d32169108963ea';
+    r'b30e6a8e7e1631d5c15ca1ffeaf5937fe92775d7';
 
-abstract class _$ServerSettingsStore
-    extends $StreamNotifier<Map<String, ServerSettings>> {
-  Stream<Map<String, ServerSettings>> build();
-  @$mustCallSuper
+@ProviderFor(serverSettings)
+final serverSettingsProvider = ServerSettingsFamily._();
+
+final class ServerSettingsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<ServerSettings?>,
+          ServerSettings?,
+          Stream<ServerSettings?>
+        >
+    with $FutureModifier<ServerSettings?>, $StreamProvider<ServerSettings?> {
+  ServerSettingsProvider._({
+    required ServerSettingsFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'serverSettingsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
   @override
-  WhenComplete runBuild() {
-    final ref =
-        this.ref
-            as $Ref<
-              AsyncValue<Map<String, ServerSettings>>,
-              Map<String, ServerSettings>
-            >;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<Map<String, ServerSettings>>,
-                Map<String, ServerSettings>
-              >,
-              AsyncValue<Map<String, ServerSettings>>,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
+  String debugGetCreateSourceHash() => _$serverSettingsHash();
+
+  @override
+  String toString() {
+    return r'serverSettingsProvider'
+        ''
+        '($argument)';
   }
+
+  @$internal
+  @override
+  $StreamProviderElement<ServerSettings?> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<ServerSettings?> create(Ref ref) {
+    final argument = this.argument as String;
+    return serverSettings(ref, argument);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ServerSettingsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$serverSettingsHash() => r'df3413fe473db22199524f8c21eb24806d1498d2';
+
+final class ServerSettingsFamily extends $Family
+    with $FunctionalFamilyOverride<Stream<ServerSettings?>, String> {
+  ServerSettingsFamily._()
+    : super(
+        retry: null,
+        name: r'serverSettingsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ServerSettingsProvider call(String id) =>
+      ServerSettingsProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'serverSettingsProvider';
 }

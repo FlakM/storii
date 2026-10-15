@@ -9,11 +9,12 @@ part of 'progress_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ProgressStore)
+@ProviderFor(progressStore)
 final progressStoreProvider = ProgressStoreFamily._();
 
 final class ProgressStoreProvider
-    extends $StreamNotifierProvider<ProgressStore, Map<String, MediaProgress>> {
+    extends $FunctionalProvider<ProgressStore, ProgressStore, ProgressStore>
+    with $Provider<ProgressStore> {
   ProgressStoreProvider._({
     required ProgressStoreFamily super.from,
     required String super.argument,
@@ -37,7 +38,22 @@ final class ProgressStoreProvider
 
   @$internal
   @override
-  ProgressStore create() => ProgressStore();
+  $ProviderElement<ProgressStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ProgressStore create(Ref ref) {
+    final argument = this.argument as String;
+    return progressStore(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ProgressStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ProgressStore>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -50,17 +66,10 @@ final class ProgressStoreProvider
   }
 }
 
-String _$progressStoreHash() => r'0fe1acc464a0ad8dcdbd9781ff912f0896909de6';
+String _$progressStoreHash() => r'3937380afdb074c86d3c59dcd6cb46ace3d4511d';
 
 final class ProgressStoreFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          ProgressStore,
-          AsyncValue<Map<String, MediaProgress>>,
-          Map<String, MediaProgress>,
-          Stream<Map<String, MediaProgress>>,
-          String
-        > {
+    with $FunctionalFamilyOverride<ProgressStore, String> {
   ProgressStoreFamily._()
     : super(
         retry: null,
@@ -77,7 +86,75 @@ final class ProgressStoreFamily extends $Family
   String toString() => r'progressStoreProvider';
 }
 
-abstract class _$ProgressStore
+@ProviderFor(ProgressMap)
+final progressMapProvider = ProgressMapFamily._();
+
+final class ProgressMapProvider
+    extends $StreamNotifierProvider<ProgressMap, Map<String, MediaProgress>> {
+  ProgressMapProvider._({
+    required ProgressMapFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'progressMapProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$progressMapHash();
+
+  @override
+  String toString() {
+    return r'progressMapProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  ProgressMap create() => ProgressMap();
+
+  @override
+  bool operator ==(Object other) {
+    return other is ProgressMapProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$progressMapHash() => r'de2f3822b72a84c2cba914f9994bb4f4aea17151';
+
+final class ProgressMapFamily extends $Family
+    with
+        $ClassFamilyOverride<
+          ProgressMap,
+          AsyncValue<Map<String, MediaProgress>>,
+          Map<String, MediaProgress>,
+          Stream<Map<String, MediaProgress>>,
+          String
+        > {
+  ProgressMapFamily._()
+    : super(
+        retry: null,
+        name: r'progressMapProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ProgressMapProvider call(String userId) =>
+      ProgressMapProvider._(argument: userId, from: this);
+
+  @override
+  String toString() => r'progressMapProvider';
+}
+
+abstract class _$ProgressMap
     extends $StreamNotifier<Map<String, MediaProgress>> {
   late final _$args = ref.$arg as String;
   String get userId => _$args;

@@ -54,7 +54,7 @@ ServerSettings? currentServerSettings(Ref ref) {
   if (user == null) return null;
   final serverId = ref.read(serversStoreProvider).get(user.serverUrl)?.id;
   if (serverId == null) return null;
-  return ref.watch(serverSettingsStoreProvider).value?[serverId];
+  return ref.watch(serverSettingsProvider(serverId)).value;
 }
 
 @riverpod

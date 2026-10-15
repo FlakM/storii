@@ -9,6 +9,7 @@ import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/repositories/session_repository.dart';
 import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/logic/sessions_cleanup.dart';
+import 'package:storii/storage/local/progress_store.dart';
 import 'package:storii/storage/local/session_store.dart';
 
 import '../../../fakes/fake_api.dart';
@@ -18,6 +19,7 @@ import '../../../helpers/init_globals.dart';
 
 void main() {
   late FakeSessionStore sessionStore;
+  late FakeProgressStore progressStore;
   late FakeSessionsApi fakeSessionsApi;
   late FakeSocketApi fakeSocketApi;
   late FakeItemApi fakeItemApi;
@@ -27,8 +29,16 @@ void main() {
   });
   tearDownAll(disposeGlobals);
 
+  final testUser = UserDomain(
+    id: 'user-id',
+    username: 'test-user',
+    userType: 'root',
+    serverUrl: Uri.parse('http://localhost'),
+  );
+
   setUp(() {
     sessionStore = FakeSessionStore();
+    progressStore = FakeProgressStore(userId: testUser.id);
     fakeSessionsApi = FakeSessionsApi();
     fakeSocketApi = FakeSocketApi();
     fakeItemApi = FakeItemApi();
@@ -38,17 +48,11 @@ void main() {
     fakeSocketApi.dispose();
   });
 
-  final testUser = UserDomain(
-    id: 'user-id',
-    username: 'test-user',
-    userType: 'root',
-    serverUrl: Uri.parse('http://localhost'),
-  );
-
   ProviderContainer createContainer() {
     return ProviderContainer(
       overrides: [
         sessionStoreProvider.overrideWithValue(sessionStore),
+        progressStoreProvider(testUser.id).overrideWithValue(progressStore),
         currentUserProvider.overrideWithValue(testUser),
         authGateProvider.overrideWith((ref) async {}),
         socketApiProvider.overrideWith((ref) async => fakeSocketApi),

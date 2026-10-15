@@ -21,7 +21,7 @@ part 'download_queue.g.dart';
 
 @riverpod
 class DownloadQueue extends _$DownloadQueue {
-  DownloadsStore get _store => ref.read(downloadsStoreProvider.notifier);
+  DownloadsStore get _store => ref.read(downloadsStoreProvider);
 
   Completer<void>? _processing;
 
@@ -168,7 +168,7 @@ class DownloadQueue extends _$DownloadQueue {
       await DownloadsNotificationService.instance.stopForeground();
       await DownloadsNotificationService.instance.showProgressNotification(
         title:
-            ref.read(downloadsStoreProvider).value?[mediaItemKey]?.title ??
+            ref.read(downloadsStoreProvider).get(mediaItemKey)?.title ??
             mediaItemKey,
         progress: 0,
         isComplete: false,

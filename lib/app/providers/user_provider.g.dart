@@ -173,7 +173,7 @@ final class CurrentServerSettingsProvider
 }
 
 String _$currentServerSettingsHash() =>
-    r'71d8558bd2ee4f5a7c3c34e27c83edbe3388b8a9';
+    r'461e99d686fa30fededb0a5ff8fa858032b9c990';
 
 @ProviderFor(canUserUpdate)
 final canUserUpdateProvider = CanUserUpdateProvider._();

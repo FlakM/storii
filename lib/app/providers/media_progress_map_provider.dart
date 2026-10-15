@@ -14,7 +14,7 @@ part 'media_progress_map_provider.g.dart';
 Future<void> mediaProgressSyncController(Ref ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) return;
-  final store = ref.watch(progressStoreProvider(user.id).notifier);
+  final store = ref.read(progressStoreProvider(user.id));
   final serverUser = await ref.watch(serverUserProvider.future);
   store.putAll(serverUser.mediaProgress);
   ref.listen(_progressUpdateProvider, (_, next) {
@@ -37,7 +37,7 @@ Future<Map<String, MediaProgress>> mediaProgressMap(Ref ref) {
   if (user == null) {
     return Future.value({});
   }
-  return ref.watch(progressStoreProvider(user.id).future);
+  return ref.watch(progressMapProvider(user.id).future);
 }
 
 @riverpod

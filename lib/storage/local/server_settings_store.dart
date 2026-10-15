@@ -3,33 +3,47 @@ import 'dart:convert';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:storii/api/abs/abs_api.dart';
+import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/storage/hive/boxes.dart';
 
 part 'server_settings_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class ServerSettingsStore extends _$ServerSettingsStore {
-  @override
-  Stream<Map<String, ServerSettings>> build() =>
-      serverSettingsBox.watch().map((_) => _readAll()).startWith(_readAll());
-
-  Map<String, ServerSettings> _readAll() {
-    return {
-      for (final entry in serverSettingsBox.toMap().entries)
-        entry.key as String: ServerSettings.fromJson(
-          jsonDecode(entry.value) as Map<String, dynamic>,
-        ),
-    };
+ServerSettings? _decode(String? value) {
+  if (value == null) return null;
+  try {
+    return ServerSettings.fromJson(jsonDecode(value));
+  } catch (e, st) {
+    LogService.log(
+      'failed to decode server settings: $value',
+      level: .error,
+      originalError: e,
+      stackTrace: st,
+      source: 'ServerSettingsStore',
+    );
+    return null;
   }
+}
+
+class ServerSettingsStore {
+  const new();
 
   Future<void> save(String serverId, ServerSettings settings) =>
       serverSettingsBox.put(serverId, jsonEncode(settings.toJson()));
 
   Future<void> remove(String serverId) => serverSettingsBox.delete(serverId);
 
-  ServerSettings? get(String serverId) {
-    final raw = serverSettingsBox.get(serverId);
-    if (raw == null) return null;
-    return ServerSettings.fromJson(jsonDecode(raw) as Map<String, dynamic>);
-  }
+  ServerSettings? get(String serverId) =>
+      _decode(serverSettingsBox.get(serverId));
+}
+
+@riverpod
+ServerSettingsStore serverSettingsStore(Ref ref) => const ServerSettingsStore();
+
+@riverpod
+Stream<ServerSettings?> serverSettings(Ref ref, String id) {
+  final store = ref.read(serverSettingsStoreProvider);
+  return serverSettingsBox
+      .watch()
+      .map((_) => store.get(id))
+      .startWith(store.get(id));
 }

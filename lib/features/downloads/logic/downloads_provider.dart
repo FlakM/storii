@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/models/enums.dart';
@@ -61,16 +62,10 @@ class DownloadSearchQuery extends _$DownloadSearchQuery {
   void set(String value) => state = value;
 }
 
-@Riverpod(keepAlive: true)
-Stream<Map<String, DownloadItem>> downloads(Ref ref) async* {
-  final items = await ref.watch(downloadsStoreProvider.future);
-  yield items;
-}
-
 @riverpod
 DownloadItem? downloadItem(Ref ref, String libraryItemId, [String? episodeId]) {
   final key = mediaItemIdKey(libraryItemId, episodeId);
-  return ref.watch(downloadsProvider).value?[key];
+  return ref.watch(downloadsProvider.select((m) => m.value?[key]));
 }
 
 @riverpod

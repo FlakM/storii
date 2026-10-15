@@ -7,7 +7,6 @@ import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/repositories/item_repository.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
-import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/home/logic/shelves_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
@@ -18,6 +17,7 @@ import 'package:storii/features/player/logic/queue_providers.dart';
 import 'package:storii/features/player/models/android_auto_media_id.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/extensions.dart';
+import 'package:storii/storage/local/downloads_store.dart';
 import 'package:storii/storage/local/items_cache.dart';
 
 part 'android_auto_helper.g.dart';
@@ -177,7 +177,7 @@ class AndroidAutoHelper {
 
   Future<List<MediaItem>> _loadDownloads(Map<String, dynamic>? options) async {
     try {
-      final downloads = await _container.read(downloadsProvider.future);
+      final downloads = _container.read(downloadsStoreProvider).getAll();
 
       final seen = <String>{};
       final items = <LibraryItem>[];
@@ -245,7 +245,7 @@ class AndroidAutoHelper {
 
       var episodes = item.episodes;
       if (fromDownloads) {
-        final downloads = await _container.read(downloadsProvider.future);
+        final downloads = _container.read(downloadsStoreProvider).getAll();
         final downloadedIds = <String>{};
         for (final d in downloads.values) {
           if (d.libraryItemId == itemId &&

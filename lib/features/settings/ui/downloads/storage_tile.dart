@@ -202,7 +202,7 @@ class _StorageLocationWidget extends ConsumerWidget {
                   isDestructive: true,
                   onTap: () async {
                     await ref
-                        .read(downloadsStoreProvider.notifier)
+                        .read(downloadsStoreProvider)
                         .removeAllFromLocation(location.uri);
                     final current = ref.read(storageLocationsProvider);
                     final updated = current

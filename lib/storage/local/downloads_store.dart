@@ -1,78 +1,82 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/features/downloads/models/download_item.dart';
 import 'package:storii/storage/hive/boxes.dart';
 
 part 'downloads_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class DownloadsStore extends _$DownloadsStore {
-  DownloadItem? _itemFromValue(String? value) {
-    if (value == null) return null;
-    try {
-      return DownloadItem.fromJson(jsonDecode(value));
-    } catch (e) {
-      log('Failed to decode download item: $e');
-      return null;
-    }
-  }
-
-  Map<String, DownloadItem> _decode(Iterable<String> values) {
-    return Map.fromEntries(
-      values
-          .map(_itemFromValue)
-          .whereType<DownloadItem>()
-          .map((item) => MapEntry(item.key, item)),
+DownloadItem? _decode(String? value) {
+  if (value == null) return null;
+  try {
+    return DownloadItem.fromJson(jsonDecode(value));
+  } catch (e, st) {
+    LogService.log(
+      'failed to decode download item: $value',
+      level: .error,
+      originalError: e,
+      stackTrace: st,
+      source: 'DownloadsStore',
     );
+    return null;
   }
+}
 
-  @override
-  Stream<Map<String, DownloadItem>> build() {
-    final items = _decode(downloadsBox.values);
-    return downloadsBox
-        .watch()
-        .map((event) {
-          if (event.deleted) {
-            items.remove(event.key);
-          } else {
-            final item = _itemFromValue(event.value as String?);
-            if (item != null) {
-              items[item.key] = item;
-            } else {
-              items.remove(event.key);
-            }
-          }
-          return Map<String, DownloadItem>.from(items);
-        })
-        .startWith(Map<String, DownloadItem>.from(items));
-  }
+class DownloadsStore {
+  const new();
 
   Future<void> save(DownloadItem item) async {
-    try {
-      await downloadsBox.put(item.key, jsonEncode(item));
-    } catch (e) {
-      log('Failed to save download item [${item.title}]: $e');
-    }
+    await downloadsBox.put(item.key, jsonEncode(item));
   }
 
   Future<void> remove(String id) => downloadsBox.delete(id);
 
-  Map<String, DownloadItem> getAll() => _decode(downloadsBox.values);
+  DownloadItem? get(String mediaItemIdKey) =>
+      _decode(downloadsBox.get(mediaItemIdKey));
 
-  Future<void> removeAll(Iterable<String> ids) async {
-    for (final id in ids) {
-      await downloadsBox.delete(id);
-    }
-  }
+  Map<String, DownloadItem> getAll() => Map.fromEntries(
+    downloadsBox.values
+        .map(_decode)
+        .whereType<DownloadItem>()
+        .map((item) => MapEntry(item.key, item)),
+  );
 
   Future<void> removeAllFromLocation(String uri) async {
-    getAll().values
+    final keys = getAll().values
         .where((i) => i.folderPath == uri)
-        .forEach((i) => remove(i.key));
+        .map((d) => d.key);
+    await downloadsBox.deleteAll(keys);
   }
 
   Future<void> clear() => downloadsBox.clear();
+}
+
+@riverpod
+DownloadsStore downloadsStore(Ref ref) => const DownloadsStore();
+
+@riverpod
+class Downloads extends _$Downloads {
+  @override
+  Stream<Map<String, DownloadItem>> build() {
+    final initial = ref.read(downloadsStoreProvider).getAll();
+    return downloadsBox
+        .watch()
+        .map((e) {
+          final items = Map<String, DownloadItem>.from(state.value ?? {});
+          if (e.deleted) {
+            items.remove(e.key);
+          } else {
+            final item = _decode(e.value as String?);
+            if (item != null) {
+              items[item.key] = item;
+            } else {
+              items.remove(e.key);
+            }
+          }
+          return items;
+        })
+        .startWith(initial);
+  }
 }

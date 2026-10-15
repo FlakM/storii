@@ -50,7 +50,7 @@ class SessionsCleanup extends _$SessionsCleanup {
         if (session.playMethod == .local) {
           await repo.syncLocal(localSession: session.stripped);
           ref
-              .read(progressStoreProvider(user.id).notifier)
+              .read(progressStoreProvider(user.id))
               .put(session.toMediaProgress());
         } else {
           await repo.syncSession(

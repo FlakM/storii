@@ -4,7 +4,6 @@ import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/storage_location.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
-import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/downloads/logic/internal_storage_service.dart';
 import 'package:storii/features/downloads/logic/saf_storage_service.dart';
 import 'package:storii/features/downloads/logic/storage_service.dart';
@@ -12,6 +11,7 @@ import 'package:storii/features/downloads/models/download_item.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/extensions.dart';
+import 'package:storii/storage/local/downloads_store.dart';
 
 part 'storage_service_provider.g.dart';
 
@@ -55,7 +55,7 @@ Future<(Map<int, String>, String?)> resolveLocalPaths(
 ) async {
   final tracks = session.audioTracks;
   final key = mediaItemIdKey(session.libraryItemId, session.episodeId);
-  final downloadItem = ref.read(downloadsProvider).value?[key];
+  final downloadItem = ref.read(downloadsStoreProvider).get(key);
 
   final trackPaths = <int, String>{};
   if (tracks == null || tracks.isEmpty || downloadItem == null) {

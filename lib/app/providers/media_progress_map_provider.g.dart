@@ -42,7 +42,7 @@ final class MediaProgressSyncControllerProvider
 }
 
 String _$mediaProgressSyncControllerHash() =>
-    r'ffc5e742c0725d7684b95a654836755199e29b2a';
+    r'4723db3d3136c4a978e70c2214f46db36d9566bb';
 
 @ProviderFor(_progressUpdate)
 final _progressUpdateProvider = _ProgressUpdateProvider._();
@@ -122,7 +122,7 @@ final class MediaProgressMapProvider
   }
 }
 
-String _$mediaProgressMapHash() => r'32ed97a5aeef813ebfaa38b0ae61db06ab069e4c';
+String _$mediaProgressMapHash() => r'7862c315649f97c381c3ffb445ae09c25ff55ed4';
 
 @ProviderFor(totalFinishedBooks)
 final totalFinishedBooksProvider = TotalFinishedBooksProvider._();
