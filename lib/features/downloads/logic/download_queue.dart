@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/storage_location.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/downloads/logic/download_engine.dart';
 import 'package:storii/features/downloads/logic/download_extensions.dart';
@@ -20,9 +19,9 @@ import 'package:storii/storage/local/items_cache.dart';
 
 part 'download_queue.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class DownloadQueue extends _$DownloadQueue {
-  DownloadsStore get _store => ref.read(downloadsStoreProvider.notifier);
+  DownloadsStore get _store => ref.read(downloadsStoreProvider);
 
   Completer<void>? _processing;
 
@@ -57,9 +56,10 @@ class DownloadQueue extends _$DownloadQueue {
     if (state.contains(key)) return;
     try {
       final item = await ref.read(itemDetailProvider(libraryItemId).future);
-      await ref.read(itemsCacheProvider.notifier).put(item);
+      await ref.read(itemsCacheProvider).put(item);
 
-      final user = await ref.read(authenticatedUserProvider.future);
+      final user = ref.read(currentUserProvider);
+      if (user == null) throw StateError('No current user');
       final existing = _store.getAll()[key];
       final service = ref.read(storageServiceProvider(location));
 
@@ -137,7 +137,8 @@ class DownloadQueue extends _$DownloadQueue {
     );
 
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
+      final user = ref.read(currentUserProvider);
+      if (user == null) throw StateError('No current user');
 
       final stream = ref
           .read(downloadEngineProvider.notifier)
@@ -167,7 +168,7 @@ class DownloadQueue extends _$DownloadQueue {
       await DownloadsNotificationService.instance.stopForeground();
       await DownloadsNotificationService.instance.showProgressNotification(
         title:
-            ref.read(downloadsStoreProvider).value?[mediaItemKey]?.title ??
+            ref.read(downloadsStoreProvider).get(mediaItemKey)?.title ??
             mediaItemKey,
         progress: 0,
         isComplete: false,
@@ -234,7 +235,7 @@ class DownloadQueue extends _$DownloadQueue {
         );
       } else {
         await service.deleteFolder(relativePath: item.relativePath);
-        await ref.read(itemsCacheProvider.notifier).delete(item.libraryItemId);
+        await ref.read(itemsCacheProvider).delete(item.libraryItemId);
       }
     }
     unawaited(service?.cleanupEmptyFolders.call());

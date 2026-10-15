@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:storii/app/init.dart';
-import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/shared/widgets/app_bottom_sheet.dart';
 import 'package:storii/shared/widgets/app_buttons.dart';
@@ -16,7 +15,9 @@ class LocalSessionIcon extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final color = Theme.of(context).colorScheme.tertiary;
-    final session = ref.watch(localSessionProvider(itemId, episodeId)).value;
+    final session = ref
+        .watch(localSessionByIdProvider(itemId, episodeId))
+        .value;
 
     if (session?.playMethod != .local) return const SizedBox.shrink();
 
@@ -30,7 +31,7 @@ class LocalSessionIcon extends ConsumerWidget {
           body: Consumer(
             builder: (context, ref, _) {
               final session = ref
-                  .watch(localSessionProvider(itemId, episodeId))
+                  .watch(localSessionByIdProvider(itemId, episodeId))
                   .value;
               return Padding(
                 padding: const .symmetric(horizontal: 24),
@@ -68,9 +69,7 @@ class LocalSessionIcon extends ConsumerWidget {
                           isDestructive: true,
                           onPressed: () {
                             if (session != null) {
-                              ref
-                                  .read(sessionStoreProvider.notifier)
-                                  .delete(session.id);
+                              ref.read(sessionStoreProvider).delete(session.id);
                             }
                             Navigator.of(context).pop();
                           },

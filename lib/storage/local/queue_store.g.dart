@@ -9,17 +9,19 @@ part of 'queue_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(QueueStore)
+@ProviderFor(queueStore)
 final queueStoreProvider = QueueStoreProvider._();
 
-final class QueueStoreProvider extends $NotifierProvider<QueueStore, void> {
+final class QueueStoreProvider
+    extends $FunctionalProvider<QueueStore, QueueStore, QueueStore>
+    with $Provider<QueueStore> {
   QueueStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'queueStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -29,33 +31,21 @@ final class QueueStoreProvider extends $NotifierProvider<QueueStore, void> {
 
   @$internal
   @override
-  QueueStore create() => QueueStore();
+  $ProviderElement<QueueStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  QueueStore create(Ref ref) {
+    return queueStore(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(QueueStore value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<QueueStore>(value),
     );
   }
 }
 
-String _$queueStoreHash() => r'ab3c4364418a3a2bdb5a5581098586c5cc8d0102';
-
-abstract class _$QueueStore extends $Notifier<void> {
-  void build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
+String _$queueStoreHash() => r'db737aa3be7acca8e6024a5332b7689f3d00e858';

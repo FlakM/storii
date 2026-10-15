@@ -26,7 +26,7 @@ Future<String> bugReportBody(Ref ref) async {
   final user = ref.read(currentUserProvider);
   if (user != null) {
     try {
-      final activeUrl = await ref.read(activeServerUrlProvider(user).future);
+      final activeUrl = ref.read(activeServerUrlProvider);
       final serverStatus = await ref.watch(
         serverStatusProvider(activeUrl).future,
       );

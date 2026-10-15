@@ -1,13 +1,12 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
-import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
+import 'package:storii/storage/local/downloads_store.dart';
 import 'package:storii/storage/local/items_cache.dart';
 import 'package:storii/storage/local/session_store.dart';
 
@@ -53,7 +52,7 @@ Future<List<Shelf>> shelves(Ref ref) async {
 Future<List<Shelf>> sortedShelves(Ref ref) async {
   final order = ref.watch(homeShelvesProvider);
   final shelves = await ref.watch(shelvesProvider.future);
-  final sessions = ref.watch(sessionStoreProvider).value ?? [];
+  final sessions = ref.watch(localSessionsProvider).value ?? [];
 
   final latestSessionByItem = <String, PlaybackSession>{};
   for (final session in sessions) {
@@ -98,11 +97,10 @@ Future<List<Shelf>> sortedShelves(Ref ref) async {
 
 @riverpod
 Future<List<Shelf>> rawShelves(Ref ref) async {
-  ref.invalidateOnReconnect();
-  final isConnected = ref.readConnection();
+  final isConnected = ref.watch(serverConnectionProvider);
   if (!isConnected) {
-    final downloads = await ref.read(downloadsProvider.future);
-    final cache = ref.read(itemsCacheProvider.notifier);
+    final downloads = ref.read(downloadsStoreProvider).getAll();
+    final cache = ref.read(itemsCacheProvider);
 
     final dAudiobooks = <LibraryItem>[];
     final dPodcasts = <LibraryItem>[];
@@ -149,12 +147,6 @@ Future<List<Shelf>> rawShelves(Ref ref) async {
       .library
       .id;
 
-  final user = await ref.watch(authenticatedUserProvider.future);
-  final api = await ref.watch(libraryApiProvider(user).future);
-
-  return ref.logApiCall(
-    () => api.getPersonalized(libraryId),
-    source: 'rawShelves',
-    logMessage: 'Error getting personalized home',
-  );
+  final repo = ref.read(libraryRepositoryProvider);
+  return repo.getShelves(libraryId);
 }

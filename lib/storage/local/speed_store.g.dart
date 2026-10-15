@@ -9,17 +9,19 @@ part of 'speed_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SpeedStore)
+@ProviderFor(speedStore)
 final speedStoreProvider = SpeedStoreProvider._();
 
-final class SpeedStoreProvider extends $NotifierProvider<SpeedStore, void> {
+final class SpeedStoreProvider
+    extends $FunctionalProvider<SpeedStore, SpeedStore, SpeedStore>
+    with $Provider<SpeedStore> {
   SpeedStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'speedStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -29,33 +31,21 @@ final class SpeedStoreProvider extends $NotifierProvider<SpeedStore, void> {
 
   @$internal
   @override
-  SpeedStore create() => SpeedStore();
+  $ProviderElement<SpeedStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SpeedStore create(Ref ref) {
+    return speedStore(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(SpeedStore value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<SpeedStore>(value),
     );
   }
 }
 
-String _$speedStoreHash() => r'6c0d736675adb35f611f9cf248d0f437327930e3';
-
-abstract class _$SpeedStore extends $Notifier<void> {
-  void build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
+String _$speedStoreHash() => r'6eaf72c0e0127a25438d9d6c523ffda37d27eda0';

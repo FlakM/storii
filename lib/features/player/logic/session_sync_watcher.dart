@@ -12,7 +12,7 @@ import 'package:storii/shared/helpers/abs_model_extensions.dart';
 
 part 'session_sync_watcher.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class SessionSyncWatcher extends _$SessionSyncWatcher {
   PlaybackSyncService? _service;
 
@@ -43,13 +43,11 @@ class SessionSyncWatcher extends _$SessionSyncWatcher {
             ref.read(sessionProvider.notifier).sync(listened, position),
         onClose: () => ref.read(sessionProvider.notifier).close(),
         onMarkComplete: () => ref
-            .read(
-              userProgressActionsProvider(
-                session.libraryItemId,
-                session.episodeId,
-              ).notifier,
-            )
-            .markComplete(),
+            .read(userProgressActionsProvider)
+            .markComplete(
+              itemId: session.libraryItemId,
+              episodeId: session.episodeId,
+            ),
       );
     });
 

@@ -167,47 +167,6 @@ abstract class _$DownloadSearchQuery extends $Notifier<String> {
   }
 }
 
-@ProviderFor(downloads)
-final downloadsProvider = DownloadsProvider._();
-
-final class DownloadsProvider
-    extends
-        $FunctionalProvider<
-          AsyncValue<Map<String, DownloadItem>>,
-          Map<String, DownloadItem>,
-          Stream<Map<String, DownloadItem>>
-        >
-    with
-        $FutureModifier<Map<String, DownloadItem>>,
-        $StreamProvider<Map<String, DownloadItem>> {
-  DownloadsProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'downloadsProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$downloadsHash();
-
-  @$internal
-  @override
-  $StreamProviderElement<Map<String, DownloadItem>> $createElement(
-    $ProviderPointer pointer,
-  ) => $StreamProviderElement(pointer);
-
-  @override
-  Stream<Map<String, DownloadItem>> create(Ref ref) {
-    return downloads(ref);
-  }
-}
-
-String _$downloadsHash() => r'62cd18e91b41c5412085b1e894abeb9ba4e4d97f';
-
 @ProviderFor(downloadItem)
 final downloadItemProvider = DownloadItemFamily._();
 
@@ -265,7 +224,7 @@ final class DownloadItemProvider
   }
 }
 
-String _$downloadItemHash() => r'c5e510e3296111b95c91030dd93e4b3c30f6ee44';
+String _$downloadItemHash() => r'0bc79be41569a3f377c8b909dfb9a6d2f05c7a42';
 
 final class DownloadItemFamily extends $Family
     with $FunctionalFamilyOverride<DownloadItem?, (String, String?)> {
@@ -584,4 +543,4 @@ final class DownloadedItemsProvider
   }
 }
 
-String _$downloadedItemsHash() => r'57f65289cdefded306de0c797ace17822209a19c';
+String _$downloadedItemsHash() => r'403a398c13dca78616dacc01a3d84795379192e9';

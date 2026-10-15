@@ -1,16 +1,14 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/storage_location.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
-import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/downloads/logic/internal_storage_service.dart';
 import 'package:storii/features/downloads/logic/saf_storage_service.dart';
 import 'package:storii/features/downloads/logic/storage_service.dart';
 import 'package:storii/features/downloads/models/download_item.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
-import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 
 part 'storage_service_provider.g.dart';
@@ -48,28 +46,22 @@ Future<bool> isItemFullyDownloaded(Ref ref, DownloadItem item) async {
   return results.every((intact) => intact);
 }
 
-@riverpod
-Future<(Map<int, String>, String?)> resolveLocalPaths(
-  Ref ref,
-  PlaybackSession session,
-) async {
+Future<(Map<int, String>, String?)> resolveLocalPaths({
+  required PlaybackSession session,
+  required DownloadItem downloadItem,
+  required StorageService? service,
+  required CoverHelper coverHelper,
+}) async {
   final tracks = session.audioTracks;
-  final key = mediaItemIdKey(session.libraryItemId, session.episodeId);
-  final downloadItem = ref.read(downloadsProvider).value?[key];
-
   final trackPaths = <int, String>{};
-  if (tracks == null || tracks.isEmpty || downloadItem == null) {
+  if (tracks == null || tracks.isEmpty || service == null) {
     return (trackPaths, null);
   }
-  final service = ref.read(storageServiceForItemProvider(downloadItem));
-  if (service == null) return (trackPaths, null);
 
-  final coverPath = await ref
-      .read(coverHelperProvider)
-      .coverPathIfExists(
-        session.libraryItemId,
-        isPodcast: session.isPodcastEpisode,
-      );
+  final coverPath = await coverHelper.coverPathIfExists(
+    session.libraryItemId,
+    isPodcast: session.isPodcastEpisode,
+  );
 
   for (final track in tracks) {
     final String? local;

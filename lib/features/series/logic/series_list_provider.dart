@@ -1,11 +1,10 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/library/logic/library_filters_provider.dart';
@@ -44,14 +43,9 @@ class SeriesListNotifier extends _$SeriesListNotifier {
       libraryFiltersProvider(.series).select((s) => s.toSeriesParams()),
     );
     final params = baseParams.copyWith(page: page, limit: pageSize);
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(libraryApiProvider(user).future);
+    final repo = ref.read(libraryRepositoryProvider);
 
-    final response = await ref.logApiCall(
-      () => api.getSeries(libraryId, params),
-      logMessage: 'Error fetching series list',
-      source: 'seriesList',
-    );
+    final response = await repo.getSeries(libraryId, params);
 
     final progressMap = await ref.watch(mediaProgressMapProvider.future);
     final processed = _applyProgress(response.results, progressMap);

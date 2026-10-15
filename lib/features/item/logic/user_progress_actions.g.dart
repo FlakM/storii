@@ -9,107 +9,50 @@ part of 'user_progress_actions.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(UserProgressActionsNotifier)
-final userProgressActionsProvider = UserProgressActionsNotifierFamily._();
+@ProviderFor(userProgressActions)
+final userProgressActionsProvider = UserProgressActionsProvider._();
 
-final class UserProgressActionsNotifierProvider
-    extends $NotifierProvider<UserProgressActionsNotifier, void> {
-  UserProgressActionsNotifierProvider._({
-    required UserProgressActionsNotifierFamily super.from,
-    required (String, String?) super.argument,
-  }) : super(
-         retry: null,
-         name: r'userProgressActionsProvider',
-         isAutoDispose: false,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
+final class UserProgressActionsProvider
+    extends
+        $FunctionalProvider<
+          UserProgressActions,
+          UserProgressActions,
+          UserProgressActions
+        >
+    with $Provider<UserProgressActions> {
+  UserProgressActionsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'userProgressActionsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
-  String debugGetCreateSourceHash() => _$userProgressActionsNotifierHash();
-
-  @override
-  String toString() {
-    return r'userProgressActionsProvider'
-        ''
-        '$argument';
-  }
+  String debugGetCreateSourceHash() => _$userProgressActionsHash();
 
   @$internal
   @override
-  UserProgressActionsNotifier create() => UserProgressActionsNotifier();
+  $ProviderElement<UserProgressActions> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  UserProgressActions create(Ref ref) {
+    return userProgressActions(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(UserProgressActions value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<UserProgressActions>(value),
     );
   }
-
-  @override
-  bool operator ==(Object other) {
-    return other is UserProgressActionsNotifierProvider &&
-        other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
 }
 
-String _$userProgressActionsNotifierHash() =>
-    r'b7eb3b80845e104206e3fff5caf011a49d7276e8';
-
-final class UserProgressActionsNotifierFamily extends $Family
-    with
-        $ClassFamilyOverride<
-          UserProgressActionsNotifier,
-          void,
-          void,
-          void,
-          (String, String?)
-        > {
-  UserProgressActionsNotifierFamily._()
-    : super(
-        retry: null,
-        name: r'userProgressActionsProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: false,
-      );
-
-  UserProgressActionsNotifierProvider call(
-    String itemId, [
-    String? episodeId,
-  ]) => UserProgressActionsNotifierProvider._(
-    argument: (itemId, episodeId),
-    from: this,
-  );
-
-  @override
-  String toString() => r'userProgressActionsProvider';
-}
-
-abstract class _$UserProgressActionsNotifier extends $Notifier<void> {
-  late final _$args = ref.$arg as (String, String?);
-  String get itemId => _$args.$1;
-  String? get episodeId => _$args.$2;
-
-  void build(String itemId, [String? episodeId]);
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, () => build(_$args.$1, _$args.$2));
-  }
-}
+String _$userProgressActionsHash() =>
+    r'c29728ba317e20f19a42db575707cbc893cf79bc';

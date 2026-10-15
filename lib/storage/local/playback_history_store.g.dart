@@ -9,18 +9,24 @@ part of 'playback_history_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(PlaybackHistoryStore)
+@ProviderFor(playbackHistoryStore)
 final playbackHistoryStoreProvider = PlaybackHistoryStoreProvider._();
 
 final class PlaybackHistoryStoreProvider
-    extends $AsyncNotifierProvider<PlaybackHistoryStore, void> {
+    extends
+        $FunctionalProvider<
+          PlaybackHistoryStore,
+          PlaybackHistoryStore,
+          PlaybackHistoryStore
+        >
+    with $Provider<PlaybackHistoryStore> {
   PlaybackHistoryStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'playbackHistoryStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -30,26 +36,23 @@ final class PlaybackHistoryStoreProvider
 
   @$internal
   @override
-  PlaybackHistoryStore create() => PlaybackHistoryStore();
+  $ProviderElement<PlaybackHistoryStore> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  PlaybackHistoryStore create(Ref ref) {
+    return playbackHistoryStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(PlaybackHistoryStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<PlaybackHistoryStore>(value),
+    );
+  }
 }
 
 String _$playbackHistoryStoreHash() =>
-    r'2c39baf9ddbecac50eb61299c52bb8cbb5fdff5e';
-
-abstract class _$PlaybackHistoryStore extends $AsyncNotifier<void> {
-  FutureOr<void> build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
+    r'2e19d693e4d94c404fba4d4f9763509c1bb64d0f';

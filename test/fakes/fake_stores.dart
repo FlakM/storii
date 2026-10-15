@@ -1,6 +1,7 @@
-import 'package:abs_api/abs_api.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/models/playback_event.dart';
 import 'package:storii/storage/local/playback_history_store.dart';
+import 'package:storii/storage/local/progress_store.dart';
 import 'package:storii/storage/local/session_store.dart';
 
 class FakePlaybackHistoryStore extends PlaybackHistoryStore {
@@ -65,5 +66,20 @@ class FakeSessionStore extends SessionStore {
       }
     }
     return null;
+  }
+}
+
+class FakeProgressStore extends ProgressStore {
+  new({required super.userId});
+
+  final Map<String, MediaProgress> _progress = {};
+  int saveCalls = 0;
+
+  Map<String, MediaProgress> get progressMap => _progress;
+
+  @override
+  Future<void> put(MediaProgress progress) async {
+    saveCalls++;
+    _progress[progress.id] = progress;
   }
 }

@@ -1,7 +1,7 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/config/nav_targets.dart';
 import 'package:storii/app/config/theme.dart';
 import 'package:storii/app/models/app_settings.dart';
@@ -18,7 +18,7 @@ part 'settings_provider.g.dart';
 
 @Riverpod(keepAlive: true)
 class AppSettingsNotifier extends _$AppSettingsNotifier {
-  SettingsStore get _store => ref.read(settingsStoreProvider.notifier);
+  SettingsStore get _store => ref.read(settingsStoreProvider);
 
   @override
   AppSettings build() {
@@ -68,7 +68,7 @@ class AppSettingsNotifier extends _$AppSettingsNotifier {
 
 @riverpod
 class UserSettingsNotifier extends _$UserSettingsNotifier {
-  SettingsStore get _store => ref.read(settingsStoreProvider.notifier);
+  SettingsStore get _store => ref.read(settingsStoreProvider);
 
   @override
   UserSettings? build() {

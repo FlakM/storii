@@ -7,8 +7,7 @@ part 'playback_history.g.dart';
 
 @Riverpod(keepAlive: true)
 class PlaybackHistoryNotifier extends _$PlaybackHistoryNotifier {
-  PlaybackHistoryStore get _store =>
-      ref.read(playbackHistoryStoreProvider.notifier);
+  PlaybackHistoryStore get _store => ref.read(playbackHistoryStoreProvider);
 
   @override
   List<PlaybackEvent> build(String mediaItemId) {

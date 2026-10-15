@@ -48,4 +48,4 @@ final class StatsProvider
   }
 }
 
-String _$statsHash() => r'db449104dbbf9ec10767011d7a633edcde94bd73';
+String _$statsHash() => r'94736df8d02af327baa0be954ad108abedbfe61d';

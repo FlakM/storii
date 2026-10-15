@@ -9,50 +9,6 @@ part of 'servers_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(ServersNotifier)
-final serversProvider = ServersNotifierProvider._();
-
-final class ServersNotifierProvider
-    extends $StreamNotifierProvider<ServersNotifier, List<Server>> {
-  ServersNotifierProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'serversProvider',
-        isAutoDispose: false,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$serversNotifierHash();
-
-  @$internal
-  @override
-  ServersNotifier create() => ServersNotifier();
-}
-
-String _$serversNotifierHash() => r'e6e932c32deac3ddeca6361c98d2deaec0715af4';
-
-abstract class _$ServersNotifier extends $StreamNotifier<List<Server>> {
-  Stream<List<Server>> build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<List<Server>>, List<Server>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<List<Server>>, List<Server>>,
-              AsyncValue<List<Server>>,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
-
 @ProviderFor(pingServer)
 final pingServerProvider = PingServerFamily._();
 
@@ -120,75 +76,6 @@ final class PingServerFamily extends $Family
 
   @override
   String toString() => r'pingServerProvider';
-}
-
-@ProviderFor(serverStream)
-final serverStreamProvider = ServerStreamFamily._();
-
-final class ServerStreamProvider
-    extends $FunctionalProvider<AsyncValue<Server?>, Server?, Stream<Server?>>
-    with $FutureModifier<Server?>, $StreamProvider<Server?> {
-  ServerStreamProvider._({
-    required ServerStreamFamily super.from,
-    required Uri super.argument,
-  }) : super(
-         retry: null,
-         name: r'serverStreamProvider',
-         isAutoDispose: true,
-         dependencies: null,
-         $allTransitiveDependencies: null,
-       );
-
-  @override
-  String debugGetCreateSourceHash() => _$serverStreamHash();
-
-  @override
-  String toString() {
-    return r'serverStreamProvider'
-        ''
-        '($argument)';
-  }
-
-  @$internal
-  @override
-  $StreamProviderElement<Server?> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(pointer);
-
-  @override
-  Stream<Server?> create(Ref ref) {
-    final argument = this.argument as Uri;
-    return serverStream(ref, argument);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ServerStreamProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$serverStreamHash() => r'937796e117d3167f02ffbb6f2f44ac28d0b5c4cc';
-
-final class ServerStreamFamily extends $Family
-    with $FunctionalFamilyOverride<Stream<Server?>, Uri> {
-  ServerStreamFamily._()
-    : super(
-        retry: null,
-        name: r'serverStreamProvider',
-        dependencies: null,
-        $allTransitiveDependencies: null,
-        isAutoDispose: true,
-      );
-
-  ServerStreamProvider call(Uri uri) =>
-      ServerStreamProvider._(argument: uri, from: this);
-
-  @override
-  String toString() => r'serverStreamProvider';
 }
 
 @ProviderFor(TempServer)

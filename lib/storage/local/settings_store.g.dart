@@ -9,18 +9,19 @@ part of 'settings_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SettingsStore)
+@ProviderFor(settingsStore)
 final settingsStoreProvider = SettingsStoreProvider._();
 
 final class SettingsStoreProvider
-    extends $NotifierProvider<SettingsStore, void> {
+    extends $FunctionalProvider<SettingsStore, SettingsStore, SettingsStore>
+    with $Provider<SettingsStore> {
   SettingsStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'settingsStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -30,33 +31,21 @@ final class SettingsStoreProvider
 
   @$internal
   @override
-  SettingsStore create() => SettingsStore();
+  $ProviderElement<SettingsStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SettingsStore create(Ref ref) {
+    return settingsStore(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(void value) {
+  Override overrideWithValue(SettingsStore value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<SettingsStore>(value),
     );
   }
 }
 
-String _$settingsStoreHash() => r'114b6b20582e33f731e7497210b90dcaf206965c';
-
-abstract class _$SettingsStore extends $Notifier<void> {
-  void build();
-  @$mustCallSuper
-  @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<void, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<void, void>,
-              void,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
-  }
-}
+String _$settingsStoreHash() => r'97f081c2112392be0dd1194c32459e8c06e06da3';

@@ -1,26 +1,20 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/api/abs/abs_api.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'recent_episodes_provider.g.dart';
 
 @riverpod
 Future<List<PodcastEpisode>> recentEpisodes(Ref ref) async {
-  ref.invalidateOnReconnect();
   final libraryId = (await ref.watch(activeLibraryDetailsProvider.future))
       .library
       .id;
 
-  final user = await ref.watch(authenticatedUserProvider.future);
-  final api = await ref.read(libraryApiProvider(user).future);
+  await ref.watch(authGateProvider.future);
+  final repo = ref.read(libraryRepositoryProvider);
 
-  final response = await ref.logApiCall(
-    () => api.getRecentEpisodes(libraryId),
-    logMessage: 'Error fetching recent episodes',
-    source: 'recentEpisodes',
-  );
+  final response = await repo.getRecentEpisodes(libraryId);
   return response.episodes;
 }

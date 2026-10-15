@@ -1,19 +1,17 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/player/logic/play_request_params.dart';
 import 'package:storii/features/player/logic/session_extensions.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/extensions.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/session_store.dart';
 
 part 'session_notifier.g.dart';
@@ -29,20 +27,16 @@ class SessionNotifier extends _$SessionNotifier {
     required String itemId,
     String? episodeId,
   }) async {
-    final user = await ref.read(authenticatedUserProvider.future);
+    final repo = ref.read(sessionRepositoryProvider);
     final params = await ref.read(playRequestParamsProvider.future);
 
-    final session = await ref.logApiCall(
-      () async => (await ref.read(itemApiProvider(user).future)).createSession(
-        libraryItemId: itemId,
-        params: params,
-        episodeId: episodeId,
-      ),
-      source: 'SessionNotifier',
-      logMessage: 'Failed to create playback session',
+    final session = await repo.createSession(
+      itemId: itemId,
+      params: params,
+      episodeId: episodeId,
     );
 
-    await ref.read(sessionStoreProvider.notifier).save(session);
+    await ref.read(sessionStoreProvider).save(session);
 
     state = session;
     LogService.log(
@@ -58,7 +52,7 @@ class SessionNotifier extends _$SessionNotifier {
     required bool isSameUser,
   }) async {
     final existing = ref
-        .read(sessionStoreProvider.notifier)
+        .read(sessionStoreProvider)
         .getSession(item.id, episodeId);
     if (existing != null && existing.playMethod == .local) {
       state = existing;
@@ -92,8 +86,7 @@ class SessionNotifier extends _$SessionNotifier {
       );
     }
 
-    await ref.read(sessionStoreProvider.notifier).save(session);
-
+    await ref.read(sessionStoreProvider).save(session);
     state = session;
     LogService.log(
       'local session created for ${session.displayTitle}',
@@ -116,7 +109,7 @@ class SessionNotifier extends _$SessionNotifier {
     );
 
     if (isLocal) {
-      await ref.read(sessionStoreProvider.notifier).save(updated);
+      await ref.read(sessionStoreProvider).save(updated);
       state = updated;
 
       final isConnected = await ref.read(socketStatusProvider.future);
@@ -125,13 +118,8 @@ class SessionNotifier extends _$SessionNotifier {
       }
 
       try {
-        final user = await ref.read(authenticatedUserProvider.future);
-        await ref.logApiCall(
-          () async =>
-              (await ref.read(sessionsApiProvider(user).future))
-                  .syncLocal(localSession: updated.stripped),
-          source: 'SessionNotifier',
-        );
+        final repo = ref.read(sessionRepositoryProvider);
+        await repo.syncLocal(localSession: updated.stripped);
       } catch (e) {
         LogService.log(
           'Local session saved locally, server sync deferred',
@@ -148,26 +136,22 @@ class SessionNotifier extends _$SessionNotifier {
           currentTime: position,
           updatedAt: DateTime.now(),
         );
-        await ref.read(sessionStoreProvider.notifier).save(withPosition);
+        await ref.read(sessionStoreProvider).save(withPosition);
         state = withPosition;
         throw 'No Server Connection';
       }
 
-      final user = await ref.read(authenticatedUserProvider.future);
-      await ref.logApiCall(
-        () async =>
-            (await ref.read(sessionsApiProvider(user).future)).syncSession(
-              sessionId: session.id,
-              params: SyncSessionRequestParams(
-                currentTime: position,
-                timeListened: totalListened,
-              ),
-            ),
-        source: 'SessionNotifier',
+      final repo = ref.read(sessionRepositoryProvider);
+      await repo.syncSession(
+        sessionId: session.id,
+        params: SyncSessionRequestParams(
+          currentTime: position,
+          timeListened: totalListened,
+        ),
       );
     }
 
-    await ref.read(sessionStoreProvider.notifier).delete(updated.id);
+    await ref.read(sessionStoreProvider).delete(updated.id);
     state = updated;
 
     log(
@@ -184,16 +168,10 @@ class SessionNotifier extends _$SessionNotifier {
     }
 
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
       if (!isLocal) {
-        await ref.logApiCall(
-          () async =>
-              (await ref.read(sessionsApiProvider(user).future))
-                  .closeSession(sessionId: session.id),
-          source: 'SessionNotifier',
-          logMessage: 'session close failed for ${session.displayTitle}',
-        );
-        await ref.read(sessionStoreProvider.notifier).delete(session.id);
+        final repo = ref.read(sessionRepositoryProvider);
+        await repo.closeSession(sessionId: session.id);
+        await ref.read(sessionStoreProvider).delete(session.id);
       }
       LogService.log(
         'session closed for ${session.displayTitle}',
@@ -214,14 +192,4 @@ MediaProgress? _latestProgress(MediaProgress? a, MediaProgress? b) {
           a.lastUpdate!.isAfter(b.lastUpdate!)
       ? a
       : b;
-}
-
-@riverpod
-Stream<PlaybackSession?> localSession(
-  Ref ref,
-  String itemId, [
-  String? episodeId,
-]) async* {
-  final store = ref.watch(sessionStoreProvider.notifier);
-  yield* store.watchSession(itemId, episodeId);
 }

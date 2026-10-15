@@ -7,10 +7,10 @@ import 'package:storii/app/models/server.dart';
 import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/auth/logic/user_auth_status.dart';
-import 'package:storii/features/auth/logic/users_provider.dart';
 import 'package:storii/features/auth/ui/add_user_sheet.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/shared/widgets/app_dialog.dart';
+import 'package:storii/storage/local/users_store.dart';
 
 class UserTile extends ConsumerWidget {
   const new({super.key, required this.user, required this.server});
@@ -84,7 +84,7 @@ class UserTile extends ConsumerWidget {
                   isDestructive: true,
                   actionLabel: l10n.delete,
                   onTap: () async {
-                    await ref.read(usersProvider.notifier).delete(user);
+                    await ref.read(usersStoreProvider).delete(user.id);
                   },
                 );
               },

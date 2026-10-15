@@ -2,11 +2,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
+import 'package:storii/app/repositories/session_repository.dart';
 import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/logic/sessions_cleanup.dart';
+import 'package:storii/storage/local/progress_store.dart';
 import 'package:storii/storage/local/session_store.dart';
 
 import '../../../fakes/fake_api.dart';
@@ -16,23 +19,15 @@ import '../../../helpers/init_globals.dart';
 
 void main() {
   late FakeSessionStore sessionStore;
+  late FakeProgressStore progressStore;
   late FakeSessionsApi fakeSessionsApi;
   late FakeSocketApi fakeSocketApi;
+  late FakeItemApi fakeItemApi;
 
   setUpAll(() async {
     await initGlobals();
   });
   tearDownAll(disposeGlobals);
-
-  setUp(() {
-    sessionStore = FakeSessionStore();
-    fakeSessionsApi = FakeSessionsApi();
-    fakeSocketApi = FakeSocketApi();
-  });
-
-  tearDown(() {
-    fakeSocketApi.dispose();
-  });
 
   final testUser = UserDomain(
     id: 'user-id',
@@ -41,15 +36,34 @@ void main() {
     serverUrl: Uri.parse('http://localhost'),
   );
 
+  setUp(() {
+    sessionStore = FakeSessionStore();
+    progressStore = FakeProgressStore(userId: testUser.id);
+    fakeSessionsApi = FakeSessionsApi();
+    fakeSocketApi = FakeSocketApi();
+    fakeItemApi = FakeItemApi();
+  });
+
+  tearDown(() {
+    fakeSocketApi.dispose();
+  });
+
   ProviderContainer createContainer() {
     return ProviderContainer(
       overrides: [
-        sessionStoreProvider.overrideWith(() => sessionStore),
+        sessionStoreProvider.overrideWithValue(sessionStore),
+        progressStoreProvider(testUser.id).overrideWithValue(progressStore),
         currentUserProvider.overrideWithValue(testUser),
-        authenticatedUserProvider.overrideWith((ref) async => testUser),
-        socketApiProvider(testUser).overrideWith((ref) async => fakeSocketApi),
-        sessionsApiProvider(testUser)
-            .overrideWithValue(AsyncData(fakeSessionsApi)),
+        authGateProvider.overrideWith((ref) async {}),
+        socketApiProvider.overrideWith((ref) async => fakeSocketApi),
+        sessionsApiProvider.overrideWithValue(fakeSessionsApi),
+        sessionRepositoryProvider.overrideWith(
+          (ref) => SessionRepository(
+            fakeItemApi,
+            fakeSessionsApi,
+            auth: Future.value(),
+          ),
+        ),
       ],
     );
   }

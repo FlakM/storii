@@ -1,13 +1,12 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
+import 'package:storii/app/repositories/item_repository.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
-import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/home/logic/shelves_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
@@ -18,6 +17,7 @@ import 'package:storii/features/player/logic/queue_providers.dart';
 import 'package:storii/features/player/models/android_auto_media_id.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/extensions.dart';
+import 'package:storii/storage/local/downloads_store.dart';
 import 'package:storii/storage/local/items_cache.dart';
 
 part 'android_auto_helper.g.dart';
@@ -37,12 +37,15 @@ class AndroidAutoHelper {
 
   final ProviderContainer _container;
 
-  Uri? get _serverUrl =>
-      _container.read(authenticatedUserProvider).value?.serverUrl;
+  ItemRepository? _itemRepository() {
+    final user = _container.read(currentUserProvider);
+    if (user == null) return null;
+    return _container.read(itemRepositoryProvider);
+  }
 
   CoverHelper get _helper => _container.read(coverHelperProvider);
 
-  ItemsCache get _itemsCache => _container.read(itemsCacheProvider.notifier);
+  ItemsCache get _itemsCache => _container.read(itemsCacheProvider);
 
   Future<List<MediaItem>> loadChildren(
     String parentMediaId, [
@@ -109,12 +112,11 @@ class AndroidAutoHelper {
     String query, [
     Map<String, dynamic>? options,
   ]) async {
-    final user = await _container.read(authenticatedUserProvider.future);
     final libraryId = _container.read(currentLibraryProvider)?.id;
     if (libraryId == null) return [];
 
-    final api = await _container.read(libraryApiProvider(user).future);
-    final result = await api.search(libraryId, query: query);
+    final libraryRepo = _container.read(libraryRepositoryProvider);
+    final result = await libraryRepo.search(libraryId, query: query);
     final items = <LibraryItem>[
       ...result.book,
       ...result.podcast,
@@ -124,10 +126,10 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
+    final repo = _itemRepository();
     return Future.wait(
       paged.map(
-        (item) =>
-            item.toAndroidAutoMediaItem(serverUrl: _serverUrl, helper: _helper),
+        (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
       ),
     );
   }
@@ -165,17 +167,17 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
+    final repo = _itemRepository();
     return Future.wait(
       paged.map(
-        (item) =>
-            item.toAndroidAutoMediaItem(serverUrl: _serverUrl, helper: _helper),
+        (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
       ),
     );
   }
 
   Future<List<MediaItem>> _loadDownloads(Map<String, dynamic>? options) async {
     try {
-      final downloads = await _container.read(downloadsProvider.future);
+      final downloads = _container.read(downloadsStoreProvider).getAll();
 
       final seen = <String>{};
       final items = <LibraryItem>[];
@@ -192,8 +194,7 @@ class AndroidAutoHelper {
       );
       final mediaItems = await Future.wait(
         paged.map(
-          (item) =>
-              item.toAndroidAutoMediaItem(serverUrl: null, helper: _helper),
+          (item) => item.toAndroidAutoMediaItem(repo: null, helper: _helper),
         ),
       );
       return mediaItems.map((mediaItem) {
@@ -220,10 +221,10 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
+    final repo = _itemRepository();
     return Future.wait(
       paged.map(
-        (item) =>
-            item.toAndroidAutoMediaItem(serverUrl: _serverUrl, helper: _helper),
+        (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
       ),
     );
   }
@@ -236,17 +237,15 @@ class AndroidAutoHelper {
     try {
       final item = await _container.read(itemDetailProvider(itemId).future);
       if (item.isBook) {
+        final repo = _itemRepository();
         return applyAndroidAutoPaging([
-          await item.toAndroidAutoMediaItem(
-            serverUrl: _serverUrl,
-            helper: _helper,
-          ),
+          await item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
         ], androidAutoPagingFromOptions(options));
       }
 
       var episodes = item.episodes;
       if (fromDownloads) {
-        final downloads = await _container.read(downloadsProvider.future);
+        final downloads = _container.read(downloadsStoreProvider).getAll();
         final downloadedIds = <String>{};
         for (final d in downloads.values) {
           if (d.libraryItemId == itemId &&
@@ -262,12 +261,13 @@ class AndroidAutoHelper {
         episodes,
         androidAutoPagingFromOptions(options),
       );
+      final repo = _itemRepository();
       return await Future.wait(
         paged.map(
           (e) => e.toAndroidAutoMediaItem(
             itemId: itemId,
             podcastTitle: item.title,
-            serverUrl: _serverUrl,
+            repo: repo,
             helper: _helper,
           ),
         ),

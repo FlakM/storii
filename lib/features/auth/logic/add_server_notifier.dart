@@ -1,13 +1,14 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/server.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/features/auth/logic/servers_provider.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/shared/helpers/local_network.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
+import 'package:storii/storage/local/servers_store.dart';
+import 'package:storii/storage/local/users_store.dart';
 
 part 'add_server_notifier.g.dart';
 
@@ -38,13 +39,15 @@ class AddServerNotifier extends _$AddServerNotifier {
         await authApi.healthCheck();
         LogService.log('server is reachable at $url', level: .info);
         if (server != null) {
+          final updated = server.copyWith(url: url, headers: headers);
+          await ref.read(serversStoreProvider).add(updated);
           await ref
-              .read(serversProvider.notifier)
-              .edit(server.url, server.copyWith(url: url, headers: headers));
+              .read(usersStoreProvider)
+              .updateServerUrl(server.url, updated.url);
         } else {
           final id = DateTime.now().microsecondsSinceEpoch.toString();
           final server = Server(id: id, url: url, headers: headers);
-          await ref.read(serversProvider.notifier).add(server);
+          await ref.read(serversStoreProvider).add(server);
         }
         state = const ServerState(status: .available);
       }, source: 'AddServerNotifier');

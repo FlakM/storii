@@ -1,24 +1,38 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_cache_interceptor/dio_cache_interceptor.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/logs/logs_interceptor.dart';
-import 'package:storii/app/models/user.dart';
 import 'package:storii/app/network/offline_cache_interceptor.dart';
 import 'package:storii/app/providers/connection_providers.dart';
+import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/providers/token_provider.dart';
 import 'package:storii/features/auth/logic/servers_provider.dart';
 import 'package:storii/features/auth/logic/user_session_controller.dart';
 import 'package:storii/storage/hive/boxes.dart';
+import 'package:storii/storage/local/servers_store.dart';
 
 part 'api_providers.g.dart';
 
 @Riverpod(keepAlive: true)
-Future<ApiClient> apiClient(Ref ref, UserDomain user) async {
-  final tokenService = ref.watch(tokenProvider);
+CancelToken apiCancelToken(Ref ref) {
+  ref.watch(currentUserProvider);
   final cancelToken = CancelToken();
-  final serverUrl = await ref.watch(activeServerUrlProvider(user).future);
+  ref.onDispose(() {
+    cancelToken.cancel('User session disposed or logged out');
+  });
+  return cancelToken;
+}
+
+@Riverpod(keepAlive: true)
+ApiClient apiClient(Ref ref) {
+  final user = ref.watch(currentUserProvider);
+  if (user == null) throw StateError('No current user');
+
+  final tokenService = ref.watch(tokenProvider);
+  final cancelToken = ref.watch(apiCancelTokenProvider);
+  final serverUrl = ref.watch(activeServerUrlProvider);
 
   final cacheOptions = CacheOptions(
     store: networkCacheStore,
@@ -27,9 +41,7 @@ Future<ApiClient> apiClient(Ref ref, UserDomain user) async {
     maxStale: const Duration(days: 7),
   );
 
-  final headers = ref
-      .read(serversProvider.notifier)
-      .getServerHeaders(user.serverUrl);
+  final headers = ref.read(serversStoreProvider).get(user.serverUrl)?.headers;
 
   final apiClient = ApiClient(
     baseUrl: serverUrl,
@@ -61,10 +73,6 @@ Future<ApiClient> apiClient(Ref ref, UserDomain user) async {
     },
   );
 
-  ref.onDispose(() {
-    cancelToken.cancel('User session disposed or logged out');
-  });
-
   return apiClient;
 }
 
@@ -81,46 +89,29 @@ AuthApi authApi(Ref ref, Uri baseUrl) {
 }
 
 @riverpod
-Future<ServerApi> serverApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return ServerApi(apiClient);
-}
+ServerApi serverApi(Ref ref) => ServerApi(ref.watch(apiClientProvider));
 
 @riverpod
-Future<LibraryApi> libraryApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return LibraryApi(apiClient);
-}
+LibraryApi libraryApi(Ref ref) => LibraryApi(ref.watch(apiClientProvider));
 
 @riverpod
-Future<ItemApi> itemApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return ItemApi(apiClient);
-}
+ItemApi itemApi(Ref ref) => ItemApi(ref.watch(apiClientProvider));
 
 @riverpod
-Future<AuthorApi> authorApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return AuthorApi(apiClient);
-}
+MeApi meApi(Ref ref) => MeApi(ref.watch(apiClientProvider));
 
 @riverpod
-Future<MeApi> meApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return MeApi(apiClient);
-}
+SessionsApi sessionsApi(Ref ref) => SessionsApi(ref.watch(apiClientProvider));
 
-@riverpod
-Future<SessionsApi> sessionsApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return SessionsApi(apiClient);
-}
+@Riverpod(keepAlive: true)
+Future<SocketApi> socketApi(Ref ref) async {
+  final user = ref.watch(currentUserProvider);
+  if (user == null) throw StateError('No current user');
 
-@riverpod
-Future<SocketApi> socketApi(Ref ref, UserDomain user) async {
   final tokenService = ref.read(tokenProvider);
   final token = await tokenService.getAccessToken(user.id);
-  final serverUrl = await ref.watch(activeServerUrlProvider(user).future);
+  final serverUrl = ref.watch(activeServerUrlProvider);
+
   final api = SocketApi(
     baseUrl: serverUrl.toString(),
     token: token,
@@ -134,19 +125,12 @@ Future<SocketApi> socketApi(Ref ref, UserDomain user) async {
 }
 
 @riverpod
-Future<CollectionsApi> collectionsApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return CollectionsApi(apiClient);
-}
+CollectionsApi collectionsApi(Ref ref) =>
+    CollectionsApi(ref.watch(apiClientProvider));
 
 @riverpod
-Future<PlaylistsApi> playlistsApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return PlaylistsApi(apiClient);
-}
+PlaylistsApi playlistsApi(Ref ref) =>
+    PlaylistsApi(ref.watch(apiClientProvider));
 
 @riverpod
-Future<SearchApi> searchApi(Ref ref, UserDomain user) async {
-  final apiClient = await ref.watch(apiClientProvider(user).future);
-  return SearchApi(apiClient);
-}
+SearchApi searchApi(Ref ref) => SearchApi(ref.watch(apiClientProvider));

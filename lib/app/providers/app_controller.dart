@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/deep_link_controller.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/widget_controller.dart';
@@ -22,6 +23,7 @@ void appController(Ref ref) {
     ..watch(sessionSyncWatcherProvider)
     ..watch(audioSettingsWatcherProvider)
     ..watch(queueControllerProvider)
+    ..watch(authRefresherProvider)
     ..watch(appStartThemeUpdateProvider)
     ..watch(downloadQueueProvider)
     ..watch(mediaProgressSyncControllerProvider)

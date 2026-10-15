@@ -1,13 +1,12 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/shared/helpers/app_error.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/items_cache.dart';
 
 part 'item_detail_provider.g.dart';
@@ -16,7 +15,7 @@ part 'item_detail_provider.g.dart';
 class ItemDetail extends _$ItemDetail {
   @override
   Future<LibraryItem> build(String id) async {
-    final cache = ref.read(itemsCacheProvider.notifier);
+    final cache = ref.read(itemsCacheProvider);
     ref.listen(libraryItemUpdatedProvider, (_, next) {
       final updated = next.value;
       if (updated == null || updated.id != id || !state.hasValue) return;
@@ -31,14 +30,9 @@ class ItemDetail extends _$ItemDetail {
       throw l10n.connectionServerDisconnected;
     }
 
-    final user = await ref.watch(authenticatedUserProvider.future);
-    final api = await ref.read(itemApiProvider(user).future);
+    final repo = ref.read(itemRepositoryProvider);
     try {
-      final remoteItem = await ref.logApiCall(
-        () => api.get(id, includeProgress: true),
-        source: 'itemDetail',
-        logMessage: 'Error fetching library item details',
-      );
+      final remoteItem = await repo.getItem(id, includeProgress: true);
       unawaited(cache.put(remoteItem));
       return remoteItem;
     } on AppError catch (error) {
@@ -53,7 +47,6 @@ class ItemDetail extends _$ItemDetail {
 
 @riverpod
 Stream<LibraryItem?> libraryItemUpdated(Ref ref) async* {
-  final userDomain = await ref.watch(authenticatedUserProvider.future);
-  final socket = await ref.watch(socketApiProvider(userDomain).future);
+  final socket = await ref.watch(socketApiProvider.future);
   yield* socket.itemEvents.onItemUpdated;
 }

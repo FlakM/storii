@@ -1,13 +1,11 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'item_metadata_notifier.freezed.dart';
 part 'item_metadata_notifier.g.dart';
@@ -55,12 +53,9 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
     if (curr == null || !curr.canSave) return false;
     state = AsyncData(curr.copyWith(saving: true));
     try {
+      final repo = ref.read(itemRepositoryProvider);
       final params = diffMedia(draft: curr.draft, original: curr.original);
-      await ref.logApiCall(() async {
-        final user = await ref.read(authenticatedUserProvider.future);
-        final api = await ref.read(itemApiProvider(user).future);
-        await api.updateMedia(libraryItemId: id, parameters: params);
-      }, source: 'ItemMetadataNotifier');
+      await repo.updateMetadata(id, parameters: params);
       return true;
     } catch (e) {
       return false;
@@ -84,9 +79,8 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
     }
 
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
-      final api = await ref.read(itemApiProvider(user).future);
-      final response = await api.uploadCover(
+      final repo = ref.read(itemRepositoryProvider);
+      final response = await repo.uploadCover(
         libraryItemId: id,
         coverFile: FileUpload.fromPath(
           filename: file.name,
@@ -113,9 +107,8 @@ class ItemMetadataNotifier extends _$ItemMetadataNotifier {
 
   Future<bool> removeCover() async {
     try {
-      final user = await ref.read(authenticatedUserProvider.future);
-      final api = await ref.read(itemApiProvider(user).future);
-      await api.removeCover(libraryItemId: id);
+      final repo = ref.read(itemRepositoryProvider);
+      await repo.removeCover(libraryItemId: id);
       state = AsyncData(state.value!.copyWith(updatedAt: DateTime.now()));
       return true;
     } catch (e, st) {

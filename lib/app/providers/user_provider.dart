@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/storage/local/server_settings_store.dart';
@@ -21,12 +21,10 @@ class ServerUser extends _$ServerUser {
       _userSub?.cancel();
     });
     await _userSub?.cancel();
-    final userDomain = await ref.watch(authenticatedUserProvider.future);
-    final user = await ref
-        .read(meApiProvider(userDomain).future)
-        .then((api) => api.getUser());
+    final repo = ref.read(meRepositoryProvider);
+    final user = await repo.getUser();
 
-    final socket = await ref.watch(socketApiProvider(userDomain).future);
+    final socket = await ref.watch(socketApiProvider.future);
     _userSub = socket.user.onUserUpdated.listen((update) {
       state = AsyncData(update);
     });
@@ -43,7 +41,7 @@ Future<UserPermissions?> userPermissions(Ref ref) async {
 
 @riverpod
 bool isUserAdmin(Ref ref) {
-  final user = ref.watch(authenticatedUserProvider).value;
+  final user = ref.watch(currentUserProvider);
   if (user == null) return false;
   final type = UserType.values.firstWhereOrNull((t) => t.name == user.userType);
   if (type == null) return false;
@@ -54,12 +52,9 @@ bool isUserAdmin(Ref ref) {
 ServerSettings? currentServerSettings(Ref ref) {
   final user = ref.watch(currentUserProvider);
   if (user == null) return null;
-  final serverId = ref
-      .read(serversStoreProvider.notifier)
-      .get(user.serverUrl)
-      ?.id;
+  final serverId = ref.read(serversStoreProvider).get(user.serverUrl)?.id;
   if (serverId == null) return null;
-  return ref.watch(serverSettingsStoreProvider).value?[serverId];
+  return ref.watch(serverSettingsProvider(serverId)).value;
 }
 
 @riverpod

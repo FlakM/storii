@@ -1,8 +1,9 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:audio_service/audio_service.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/config/constants.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/models/chapter.dart';
+import 'package:storii/app/repositories/item_repository.dart';
 import 'package:storii/features/player/logic/android_auto_extensions.dart';
 import 'package:storii/features/player/models/app_audio_source.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
@@ -15,7 +16,7 @@ extension PlaybackSessionX on PlaybackSession {
       episodeId != null ? '$libraryItemId$episodeId' : libraryItemId;
 
   Future<List<AppAudioSource>> toAudioSources(
-    Uri? serverUrl, {
+    ItemRepository? repo, {
     String? coverPath,
     Map<int, String> localPaths = const {},
     bool forAndroidAuto = false,
@@ -23,10 +24,8 @@ extension PlaybackSessionX on PlaybackSession {
     Uri? coverUri;
     if (coverPath != null) {
       coverUri = Uri.file(coverPath);
-    } else if (serverUrl != null) {
-      coverUri = serverUrl
-          .resolve(ApiRoutes.itemCover(libraryItemId))
-          .replace(queryParameters: {'raw': '1'});
+    } else {
+      coverUri = repo?.resolveCoverUri(libraryItemId);
     }
     final coverUriForPlayback = forAndroidAuto && coverUri != null
         ? await wrapContentUri(coverUri)
@@ -79,16 +78,16 @@ extension PlaybackSessionX on PlaybackSession {
         uri = localPath.startsWith('content:')
             ? Uri.parse(localPath)
             : Uri.file(localPath);
-      } else if (serverUrl != null) {
-        uri = serverUrl.resolve(
-          ApiRoutes.sessionOpenTrack(id, '${track.index}'),
-        );
       } else {
-        throw StateError(
-          'Missing URI for track index=${track.index} title=${track.title}; '
-          '$displayTitle.\n'
-          'serverUrl is null and no local path was resolved',
-        );
+        final resolved = repo?.resolveTrackUri(this, track);
+        if (resolved == null) {
+          throw StateError(
+            'Missing URI for track index=${track.index} title=${track.title}; '
+            '$displayTitle.\n'
+            'no ItemRepository was provided and no local path was resolved',
+          );
+        }
+        uri = resolved;
       }
 
       final isEpisode = mediaType == .podcast && episodeId != null;

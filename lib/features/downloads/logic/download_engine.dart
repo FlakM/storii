@@ -1,15 +1,14 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/user.dart';
-import 'package:storii/app/providers/api_providers.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/token_provider.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
 import 'package:storii/features/downloads/logic/storage_service_provider.dart';
 import 'package:storii/features/downloads/models/download_item.dart';
 import 'package:storii/shared/helpers/app_error.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 
 part 'download_engine.g.dart';
 
@@ -48,7 +47,6 @@ class DownloadEngine extends _$DownloadEngine {
     await _downloadCover(
       libraryItemId: item.libraryItemId,
       isPodcast: item.episodeId != null,
-      user: user,
       cancelToken: coverToken,
     );
     _coverTokens.remove(item.libraryItemId);
@@ -193,17 +191,15 @@ class DownloadEngine extends _$DownloadEngine {
   }
 
   Future<void> _downloadCover({
-    required UserDomain user,
     required String libraryItemId,
     required bool isPodcast,
     required CancelToken cancelToken,
   }) async {
     try {
-      final imageBytes = await ref.logApiCall(
-        () async => (await ref.read(itemApiProvider(user).future))
-            .getCover(libraryItemId: libraryItemId, cancelToken: cancelToken),
-        source: 'DownloadEngine',
-        logMessage: 'Failed to download cover for $libraryItemId',
+      final repo = ref.read(itemRepositoryProvider);
+      final imageBytes = await repo.getCover(
+        libraryItemId,
+        cancelToken: cancelToken,
       );
       if (imageBytes != null) {
         final coverHelper = ref.read(coverHelperProvider);

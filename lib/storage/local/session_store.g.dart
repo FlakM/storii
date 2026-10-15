@@ -9,18 +9,19 @@ part of 'session_store.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(SessionStore)
+@ProviderFor(sessionStore)
 final sessionStoreProvider = SessionStoreProvider._();
 
 final class SessionStoreProvider
-    extends $StreamNotifierProvider<SessionStore, List<PlaybackSession>> {
+    extends $FunctionalProvider<SessionStore, SessionStore, SessionStore>
+    with $Provider<SessionStore> {
   SessionStoreProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'sessionStoreProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -30,30 +31,138 @@ final class SessionStoreProvider
 
   @$internal
   @override
-  SessionStore create() => SessionStore();
+  $ProviderElement<SessionStore> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  SessionStore create(Ref ref) {
+    return sessionStore(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SessionStore value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<SessionStore>(value),
+    );
+  }
 }
 
-String _$sessionStoreHash() => r'f7167ac455ec07dafa5bde4e179776a2e1719512';
+String _$sessionStoreHash() => r'ae6ea1e7ebdab3dcd5f144825aae92f68b18bd10';
 
-abstract class _$SessionStore extends $StreamNotifier<List<PlaybackSession>> {
-  Stream<List<PlaybackSession>> build();
-  @$mustCallSuper
+@ProviderFor(localSessions)
+final localSessionsProvider = LocalSessionsProvider._();
+
+final class LocalSessionsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<PlaybackSession>>,
+          List<PlaybackSession>,
+          Stream<List<PlaybackSession>>
+        >
+    with
+        $FutureModifier<List<PlaybackSession>>,
+        $StreamProvider<List<PlaybackSession>> {
+  LocalSessionsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'localSessionsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
   @override
-  WhenComplete runBuild() {
-    final ref =
-        this.ref
-            as $Ref<AsyncValue<List<PlaybackSession>>, List<PlaybackSession>>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<
-                AsyncValue<List<PlaybackSession>>,
-                List<PlaybackSession>
-              >,
-              AsyncValue<List<PlaybackSession>>,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
+  String debugGetCreateSourceHash() => _$localSessionsHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<List<PlaybackSession>> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<List<PlaybackSession>> create(Ref ref) {
+    return localSessions(ref);
   }
+}
+
+String _$localSessionsHash() => r'373cb035d496abc0c9909643ab78e726c2b1ccdc';
+
+@ProviderFor(localSessionById)
+final localSessionByIdProvider = LocalSessionByIdFamily._();
+
+final class LocalSessionByIdProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<PlaybackSession?>,
+          PlaybackSession?,
+          Stream<PlaybackSession?>
+        >
+    with $FutureModifier<PlaybackSession?>, $StreamProvider<PlaybackSession?> {
+  LocalSessionByIdProvider._({
+    required LocalSessionByIdFamily super.from,
+    required (String, String?) super.argument,
+  }) : super(
+         retry: null,
+         name: r'localSessionByIdProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$localSessionByIdHash();
+
+  @override
+  String toString() {
+    return r'localSessionByIdProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $StreamProviderElement<PlaybackSession?> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<PlaybackSession?> create(Ref ref) {
+    final argument = this.argument as (String, String?);
+    return localSessionById(ref, argument.$1, argument.$2);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LocalSessionByIdProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$localSessionByIdHash() => r'db1f342ea5736963db0f65f1b59e27ae539c496e';
+
+final class LocalSessionByIdFamily extends $Family
+    with
+        $FunctionalFamilyOverride<Stream<PlaybackSession?>, (String, String?)> {
+  LocalSessionByIdFamily._()
+    : super(
+        retry: null,
+        name: r'localSessionByIdProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  LocalSessionByIdProvider call(String itemId, [String? episodeId]) =>
+      LocalSessionByIdProvider._(argument: (itemId, episodeId), from: this);
+
+  @override
+  String toString() => r'localSessionByIdProvider';
 }

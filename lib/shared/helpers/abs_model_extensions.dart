@@ -1,7 +1,7 @@
 //* app-layer extensions on API models
 
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter/widgets.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/models/enums.dart';
 import 'package:storii/shared/helpers/extensions.dart';
@@ -342,4 +342,14 @@ extension PodcastEpisodeX on PodcastEpisode {
       : episode != null
       ? 'E$episode'
       : null;
+}
+
+extension ScanItemResultX on ScanItemResult {
+  String get label => switch (this) {
+    .added => l10n.itemScanAdded,
+    .updated => l10n.itemScanUpdated,
+    .removed => l10n.itemScanRemoved,
+    .upToDate => l10n.itemScanUpToDate,
+    .nothing => l10n.itemScanNothing,
+  };
 }

@@ -1,5 +1,6 @@
-import 'package:abs_api/abs_api.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/models/enums.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
@@ -61,16 +62,10 @@ class DownloadSearchQuery extends _$DownloadSearchQuery {
   void set(String value) => state = value;
 }
 
-@Riverpod(keepAlive: true)
-Stream<Map<String, DownloadItem>> downloads(Ref ref) async* {
-  final items = await ref.watch(downloadsStoreProvider.future);
-  yield items;
-}
-
 @riverpod
 DownloadItem? downloadItem(Ref ref, String libraryItemId, [String? episodeId]) {
   final key = mediaItemIdKey(libraryItemId, episodeId);
-  return ref.watch(downloadsProvider).value?[key];
+  return ref.watch(downloadsProvider.select((m) => m.value?[key]));
 }
 
 @riverpod
@@ -131,7 +126,7 @@ List<DownloadItem> _filterDownloads(
   List<DownloadItem> items,
   String query,
 ) {
-  final cache = ref.read(itemsCacheProvider.notifier);
+  final cache = ref.read(itemsCacheProvider);
   return items.where((item) {
     final title = cache.get(item.libraryItemId)?.title ?? item.title;
     final author = cache.get(item.libraryItemId)?.authorName ?? item.author;
@@ -146,7 +141,7 @@ List<DownloadItem> _sortDownloads(
   DownloadSort sort,
   bool ascending,
 ) {
-  final cache = ref.read(itemsCacheProvider.notifier);
+  final cache = ref.read(itemsCacheProvider);
   final settings = ref.watch(currentServerSettingsProvider);
   final prefixes = settings?.sortingIgnorePrefix == true
       ? settings?.sortingPrefixes ?? <String>[]
@@ -200,7 +195,7 @@ String _sortKey(String value, List<String> prefixes) {
 
 DateTime _lastListenedTime(Ref ref, DownloadItem item) {
   final session = ref
-      .watch(sessionStoreProvider.notifier)
+      .read(sessionStoreProvider)
       .getSession(item.libraryItemId, item.episodeId);
   if (session?.updatedAt != null) return session!.updatedAt;
   final progress = ref
@@ -214,7 +209,7 @@ DateTime _lastListenedTime(Ref ref, DownloadItem item) {
 @riverpod
 List<LibraryItem> downloadedItems(Ref ref) {
   final items = ref.watch(sortedCompletedDownloadsProvider);
-  final cache = ref.watch(itemsCacheProvider.notifier);
+  final cache = ref.watch(itemsCacheProvider);
 
   final libraryItems = <LibraryItem>[];
   final seen = <String>{};

@@ -5,17 +5,8 @@ import 'package:storii/storage/hive/boxes.dart';
 
 part 'users_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class UsersStore extends _$UsersStore {
-  Stream<List<UserDomain>> _watch() {
-    return usersBox
-        .watch()
-        .map((_) => usersBox.values.toList())
-        .startWith(usersBox.values.toList());
-  }
-
-  @override
-  Stream<List<UserDomain>> build() => _watch();
+class UsersStore {
+  const new();
 
   Future<void> upsert(UserDomain user) => usersBox.put(user.id, user);
 
@@ -48,4 +39,21 @@ class UsersStore extends _$UsersStore {
     }
     return keysToDelete;
   }
+}
+
+@riverpod
+UsersStore usersStore(Ref ref) => const UsersStore();
+
+@riverpod
+Stream<List<UserDomain>> users(Ref ref) {
+  return usersBox
+      .watch()
+      .map((_) => usersBox.values.toList())
+      .startWith(usersBox.values.toList());
+}
+
+@riverpod
+Future<List<UserDomain>> usersOfServer(Ref ref, Uri url) async {
+  final users = await ref.watch(usersProvider.future);
+  return users.where((u) => u.serverUrl == url).toList();
 }

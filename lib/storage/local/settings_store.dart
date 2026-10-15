@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
@@ -11,10 +10,8 @@ part 'settings_store.g.dart';
 
 const _appSettingsKey = 'app_settings_key';
 
-@Riverpod(keepAlive: true)
-class SettingsStore extends _$SettingsStore {
-  @override
-  void build() {}
+class SettingsStore {
+  const new();
 
   Future<void> updateAppSettings(AppSettings settings) async {
     await appSettingsBox.put(_appSettingsKey, jsonEncode(settings));
@@ -56,3 +53,6 @@ class SettingsStore extends _$SettingsStore {
   Future<void> deleteUsers(List<String> userIds) =>
       userSettingsBox.deleteAll(userIds);
 }
+
+@riverpod
+SettingsStore settingsStore(Ref ref) => const SettingsStore();

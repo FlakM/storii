@@ -34,7 +34,7 @@ final class SeriesListNotifierProvider
 }
 
 String _$seriesListNotifierHash() =>
-    r'9e0e751f8ff8c314f895d8c6ea23a66d448146cd';
+    r'8eabc65fa129d946a5d96a086552dd5e9b2591dd';
 
 abstract class _$SeriesListNotifier
     extends $AsyncNotifier<PaginatedSeriesItems> {

@@ -5,7 +5,6 @@ import 'package:storii/app/config/constants.dart';
 import 'package:storii/app/config/router.dart';
 import 'package:storii/app/config/theme.dart';
 import 'package:storii/app/init.dart';
-import 'package:storii/features/auth/logic/servers_provider.dart';
 import 'package:storii/features/auth/ui/add_server_sheet.dart';
 import 'package:storii/features/auth/ui/add_user_sheet.dart';
 import 'package:storii/features/auth/ui/server_tile.dart';
@@ -15,6 +14,7 @@ import 'package:storii/shared/widgets/app_buttons.dart';
 import 'package:storii/shared/widgets/empty_state.dart';
 import 'package:storii/shared/widgets/error_retry.dart';
 import 'package:storii/shared/widgets/waveform.dart';
+import 'package:storii/storage/local/servers_store.dart';
 
 class ServerListScreen extends ConsumerWidget {
   const new({super.key});

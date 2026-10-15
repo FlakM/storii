@@ -6,17 +6,8 @@ import 'package:storii/storage/hive/boxes.dart';
 
 part 'servers_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class ServersStore extends _$ServersStore {
-  Stream<List<Server>> _watch() {
-    return serversBox
-        .watch()
-        .map((_) => serversBox.values.toList())
-        .startWith(serversBox.values.toList());
-  }
-
-  @override
-  Stream<List<Server>> build() => _watch();
+class ServersStore {
+  const new();
 
   Future<void> add(Server server) => serversBox.put(server.id, server);
 
@@ -27,8 +18,23 @@ class ServersStore extends _$ServersStore {
   Server? get(Uri url) {
     return serversBox.values.firstWhereOrNull((s) => s.url == url);
   }
+}
 
-  Stream<Server?> watch(Uri url) {
-    return serversBox.watch().map((_) => get(url)).startWith(get(url));
-  }
+@riverpod
+ServersStore serversStore(Ref ref) => const ServersStore();
+
+@riverpod
+Stream<List<Server>> servers(Ref ref) {
+  return serversBox
+      .watch()
+      .map((_) => serversBox.values.toList())
+      .startWith(serversBox.values.toList());
+}
+
+@riverpod
+Stream<Server?> serverStream(Ref ref, Uri url) {
+  return serversBox
+      .watch()
+      .map((_) => serversBox.values.firstWhereOrNull((s) => s.url == url))
+      .startWith(serversBox.values.firstWhereOrNull((s) => s.url == url));
 }

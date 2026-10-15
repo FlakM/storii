@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/auth/logic/servers_provider.dart';
+import 'package:storii/storage/local/servers_store.dart';
 
 part 'connection_providers.g.dart';
 
@@ -18,7 +18,7 @@ Stream<bool> socketStatus(Ref ref) async* {
     return;
   }
 
-  final socketApi = await ref.watch(socketApiProvider(user).future);
+  final socketApi = await ref.watch(socketApiProvider.future);
   yield* socketApi.isConnected;
 }
 
@@ -58,36 +58,37 @@ ConnectionType connectionType(Ref ref) {
 @Riverpod(keepAlive: true)
 class ActiveServerUrl extends _$ActiveServerUrl {
   @override
-  Future<Uri> build(UserDomain user) async {
-    final server = await ref.watch(serverStreamProvider(user.serverUrl).future);
+  Uri build() {
+    final user = ref.watch(currentUserProvider);
+    if (user == null) throw StateError('No current user');
+
+    final server = ref.watch(serverStreamProvider(user.serverUrl)).value;
     final localUrl = server?.localUrl;
     if (localUrl == null) return user.serverUrl;
 
-    ref.listen(connectionTypeProvider, (_, conn) async {
+    ref.listen(connectionTypeProvider, (_, conn) {
       final canCheck = conn == .wifi || conn == .ethernet;
       if (!canCheck) {
-        state = AsyncData(user.serverUrl);
+        state = user.serverUrl;
         return;
       }
-      final url = await _ping(localUrl);
-      state = AsyncData(url);
+      _resolve(localUrl, user.serverUrl);
     });
 
     final canCheck = ref.read(
       connectionTypeProvider.select((c) => c == .wifi || c == .ethernet),
     );
-    if (!canCheck) return user.serverUrl;
+    if (canCheck) _resolve(localUrl, user.serverUrl);
 
-    return _ping(localUrl);
+    return user.serverUrl;
   }
 
-  Future<Uri> _ping(Uri localUrl) async {
+  Future<void> _resolve(Uri localUrl, Uri remoteUrl) async {
     final error = await ref
         .read(pingServerProvider(localUrl).future)
         .timeout(const Duration(seconds: 2), onTimeout: () => 'error');
-    if (error == null) return localUrl;
-
-    return user.serverUrl;
+    if (!ref.mounted) return;
+    state = error == null ? localUrl : remoteUrl;
   }
 }
 

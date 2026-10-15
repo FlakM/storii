@@ -1,9 +1,10 @@
 import 'dart:convert';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:audio_service/audio_service.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
+import 'package:storii/app/repositories/item_repository.dart';
 import 'package:storii/features/downloads/logic/cover_helper.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 
@@ -25,12 +26,13 @@ Future<Uri> wrapContentUri(Uri url) async {
 
 extension LibraryItemAndroidAutoX on LibraryItem {
   Future<MediaItem> toAndroidAutoMediaItem({
-    required Uri? serverUrl,
+    required ItemRepository? repo,
     required CoverHelper helper,
   }) async {
+    final coverUri = repo?.resolveCoverUri(id);
     final Uri? artUri;
-    if (serverUrl != null) {
-      artUri = await wrapContentUri(serverUrl.resolve(ApiRoutes.itemCover(id)));
+    if (coverUri != null) {
+      artUri = await wrapContentUri(coverUri);
     } else {
       final coverPath = await helper.coverPathIfExists(id, isPodcast: false);
       artUri = coverPath != null
@@ -53,17 +55,16 @@ extension PodcastEpisodeAndroidAutoX on PodcastEpisode {
   Future<MediaItem> toAndroidAutoMediaItem({
     required String itemId,
     String? podcastTitle,
-    Uri? serverUrl,
+    required ItemRepository? repo,
     required CoverHelper helper,
   }) async {
-    final Uri? coverUri;
-    if (serverUrl != null) {
-      coverUri = await wrapContentUri(
-        serverUrl.resolve(ApiRoutes.itemCover(itemId)),
-      );
+    final coverUri = repo?.resolveCoverUri(itemId);
+    final Uri? artUri;
+    if (coverUri != null) {
+      artUri = await wrapContentUri(coverUri);
     } else {
       final coverPath = await helper.coverPathIfExists(itemId, isPodcast: true);
-      coverUri = coverPath != null
+      artUri = coverPath != null
           ? await wrapContentUri(Uri.file(coverPath))
           : null;
     }
@@ -72,7 +73,7 @@ extension PodcastEpisodeAndroidAutoX on PodcastEpisode {
       id: 'episode:$itemId:$id',
       title: title ?? l10n.noTitle,
       artist: podcastTitle,
-      artUri: coverUri,
+      artUri: artUri,
       duration: duration ?? Duration.zero,
     );
   }

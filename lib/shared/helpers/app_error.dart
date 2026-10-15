@@ -1,4 +1,4 @@
-import 'package:abs_api/abs_api.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 
 class AppError implements Exception {

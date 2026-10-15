@@ -110,10 +110,12 @@ class ReorderableItemCard extends ConsumerWidget {
                 actionLabel: l10n.confirm,
                 onTap: () async {
                   await ref
-                      .read(
-                        userProgressActionsProvider(itemId, episodeId).notifier,
-                      )
-                      .markComplete(isFinished: !isFinished);
+                      .read(userProgressActionsProvider)
+                      .markComplete(
+                        itemId: itemId,
+                        episodeId: episodeId,
+                        isFinished: !isFinished,
+                      );
                 },
               ),
               icon: Icon(

@@ -131,6 +131,7 @@ Since Storii is not available on the Play Store, you need to enable unknown sour
 - **[Audiobookshelf](https://github.com/advplyr/audiobookshelf)**: The open-source, self-hosted audiobook and podcast server this app is built for
 - **[Finamp](https://github.com/unicornsonlsd/finamp)**: Inspiration for settings architecture
 - **[yaabsa](https://github.com/Vito0912/yaabsa)**: Bootstrapped the initial app structure
+- **[audiobookshelf_api](https://github.com/audiobookshelf-flutter/audiobookshelf_api)**: The now in-app `lib/api/abs` client was adapted and extended from this original API structure, migrating from http to Dio and adding interceptors and improved error handling. Full credit to the original contributors for the foundation
 
 ## Contributing
 

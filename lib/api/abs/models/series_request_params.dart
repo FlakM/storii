@@ -1,0 +1,22 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:storii/api/abs/models/filter.dart';
+import 'package:storii/api/abs/models/json_converters.dart';
+
+part 'series_request_params.freezed.dart';
+part 'series_request_params.g.dart';
+
+@freezed
+abstract class SeriesRequestParams with _$SeriesRequestParams {
+  const new _();
+
+  const factory({
+    @Default(0) int limit,
+    @Default(0) int page,
+    String? sort,
+    @BoolBinaryConverter() bool? desc,
+    @FilterConverter() Filter? filter,
+  }) = _SeriesRequestParams;
+
+  factory fromJson(Map<String, dynamic> json) =>
+      _$SeriesRequestParamsFromJson(json);
+}

@@ -1,18 +1,18 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter/services.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/providers/token_provider.dart';
-import 'package:storii/features/auth/logic/users_provider.dart';
 import 'package:storii/shared/helpers/app_error.dart';
 import 'package:storii/shared/helpers/local_network.dart';
 import 'package:storii/shared/helpers/oauth_helpers.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
+import 'package:storii/storage/local/users_store.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 part 'add_user_notifier.g.dart';
@@ -133,7 +133,7 @@ class AddUserNotifier extends _$AddUserNotifier {
       userType: response.user.type.name,
       serverUrl: serverUrl,
     );
-    await ref.read(usersProvider.notifier).add(user);
+    await ref.read(usersStoreProvider).upsert(user);
     await ref
         .read(tokenProvider)
         .saveTokens(

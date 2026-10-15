@@ -508,7 +508,7 @@ final class AudioPlayerNotifierProvider
 }
 
 String _$audioPlayerNotifierHash() =>
-    r'1f62a7e15794daa297d3644055fd0418a2ac0bae';
+    r'ef318b0acfd78a91fa52ca3ee7b8d78db2f1509c';
 
 abstract class _$AudioPlayerNotifier extends $Notifier<AudioPlayerState> {
   AudioPlayerState build();
@@ -698,7 +698,7 @@ final class LocalSpeedProvider extends $NotifierProvider<LocalSpeed, double> {
         argument: null,
         retry: null,
         name: r'localSpeedProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -719,7 +719,7 @@ final class LocalSpeedProvider extends $NotifierProvider<LocalSpeed, double> {
   }
 }
 
-String _$localSpeedHash() => r'3f495550a5baef26599d605dfecc0ab6b0f3ec69';
+String _$localSpeedHash() => r'fe171ae51f44ece70312f8eda80cb37c9e1b8274';
 
 abstract class _$LocalSpeed extends $Notifier<double> {
   double build();

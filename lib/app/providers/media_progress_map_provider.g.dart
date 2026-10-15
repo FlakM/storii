@@ -9,19 +9,20 @@ part of 'media_progress_map_provider.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(MediaProgressSyncController)
+@ProviderFor(mediaProgressSyncController)
 final mediaProgressSyncControllerProvider =
     MediaProgressSyncControllerProvider._();
 
 final class MediaProgressSyncControllerProvider
-    extends $AsyncNotifierProvider<MediaProgressSyncController, void> {
+    extends $FunctionalProvider<AsyncValue<void>, void, FutureOr<void>>
+    with $FutureModifier<void>, $FutureProvider<void> {
   MediaProgressSyncControllerProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
         name: r'mediaProgressSyncControllerProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -31,29 +32,56 @@ final class MediaProgressSyncControllerProvider
 
   @$internal
   @override
-  MediaProgressSyncController create() => MediaProgressSyncController();
+  $FutureProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(pointer);
+
+  @override
+  FutureOr<void> create(Ref ref) {
+    return mediaProgressSyncController(ref);
+  }
 }
 
 String _$mediaProgressSyncControllerHash() =>
-    r'183c69cd7832a1492c4402385dfc57622efcfef3';
+    r'4723db3d3136c4a978e70c2214f46db36d9566bb';
 
-abstract class _$MediaProgressSyncController extends $AsyncNotifier<void> {
-  FutureOr<void> build();
-  @$mustCallSuper
+@ProviderFor(_progressUpdate)
+final _progressUpdateProvider = _ProgressUpdateProvider._();
+
+final class _ProgressUpdateProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<MediaProgress>,
+          MediaProgress,
+          Stream<MediaProgress>
+        >
+    with $FutureModifier<MediaProgress>, $StreamProvider<MediaProgress> {
+  _ProgressUpdateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'_progressUpdateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
   @override
-  WhenComplete runBuild() {
-    final ref = this.ref as $Ref<AsyncValue<void>, void>;
-    final element =
-        ref.element
-            as $ClassProviderElement<
-              AnyNotifier<AsyncValue<void>, void>,
-              AsyncValue<void>,
-              Object?,
-              Object?
-            >;
-    return element.handleCreate(ref, build);
+  String debugGetCreateSourceHash() => _$_progressUpdateHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<MediaProgress> $createElement(
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
+
+  @override
+  Stream<MediaProgress> create(Ref ref) {
+    return _progressUpdate(ref);
   }
 }
+
+String _$_progressUpdateHash() => r'99f6ddf397d9491fa61882a38d90b53c9f7e8e01';
 
 @ProviderFor(mediaProgressMap)
 final mediaProgressMapProvider = MediaProgressMapProvider._();
@@ -94,7 +122,7 @@ final class MediaProgressMapProvider
   }
 }
 
-String _$mediaProgressMapHash() => r'32ed97a5aeef813ebfaa38b0ae61db06ab069e4c';
+String _$mediaProgressMapHash() => r'7862c315649f97c381c3ffb445ae09c25ff55ed4';
 
 @ProviderFor(totalFinishedBooks)
 final totalFinishedBooksProvider = TotalFinishedBooksProvider._();

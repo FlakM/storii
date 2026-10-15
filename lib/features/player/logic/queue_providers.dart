@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
@@ -15,12 +15,12 @@ import 'package:storii/storage/local/queue_store.dart';
 
 part 'queue_providers.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 class QueueNotifier extends _$QueueNotifier {
-  QueueStore get _store => ref.read(queueStoreProvider.notifier);
+  QueueStore get _store => ref.read(queueStoreProvider);
 
   @override
-  QueueState build() => _store.get();
+  QueueState build() => ref.watch(queueStoreProvider).get();
 
   void _persist() => unawaited(_store.save(state));
 
@@ -220,6 +220,8 @@ int queueCount(Ref ref) => ref.watch(queueProvider).items.length;
 
 @riverpod
 void queueController(Ref ref) {
+  ref.watch(queueProvider);
+
   ref.listen(audioHandlerEventsProvider, (_, next) {
     if (next.value == .stop) {
       unawaited(ref.read(queueProvider.notifier).clear());

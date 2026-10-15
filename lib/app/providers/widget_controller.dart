@@ -9,10 +9,9 @@ import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/widget_config.dart';
-import 'package:storii/app/providers/api_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
-import 'package:storii/shared/helpers/ref_extensions.dart';
 import 'package:storii/storage/local/widget_store.dart';
 
 part 'widget_controller.g.dart';
@@ -25,7 +24,7 @@ class WidgetController extends _$WidgetController {
 
   @override
   void build() {
-    final configs = ref.read(widgetStoreProvider.notifier).getAllConfigs();
+    final configs = ref.read(widgetStoreProvider).getAllConfigs();
     if (configs.isNotEmpty) {
       configs.forEach(_refreshWidget);
     }
@@ -78,9 +77,7 @@ class WidgetController extends _$WidgetController {
 
       for (final config in configs) {
         if (!installedIds.contains(config.widgetId)) {
-          await ref
-              .read(widgetStoreProvider.notifier)
-              .clearConfig(config.widgetId);
+          await ref.read(widgetStoreProvider).clearConfig(config.widgetId);
         }
       }
     } catch (e, st) {
@@ -94,7 +91,7 @@ class WidgetController extends _$WidgetController {
   }
 
   Future<void> _saveAndUpdateWidget(WidgetConfig config) async {
-    await ref.read(widgetStoreProvider.notifier).saveConfig(config);
+    await ref.read(widgetStoreProvider).saveConfig(config);
     await HomeWidget.saveWidgetData<String>(
       'widget_${config.widgetId}',
       jsonEncode(config),
@@ -144,11 +141,10 @@ class WidgetController extends _$WidgetController {
 
     try {
       final cancelToken = CancelToken();
-      final bytes = await ref.logApiCall(
-        () async => (await ref.read(itemApiProvider(user).future))
-            .getCover(libraryItemId: libraryItemId, cancelToken: cancelToken),
-        source: 'WidgetController',
-        logMessage: 'Failed to download cover for widget',
+      final repo = ref.read(itemRepositoryProvider);
+      final bytes = await repo.getCover(
+        libraryItemId,
+        cancelToken: cancelToken,
       );
       if (bytes == null) return null;
 

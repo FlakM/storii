@@ -1,7 +1,7 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/config/keys.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
@@ -89,13 +89,11 @@ class EpisodeActionButtons extends ConsumerWidget {
                               actionIcon: Icons.beenhere_outlined,
                               onTap: () async {
                                 final success = await ref
-                                    .read(
-                                      userProgressActionsProvider(
-                                        episode.libraryItemId,
-                                        episode.id,
-                                      ).notifier,
-                                    )
-                                    .markComplete();
+                                    .read(userProgressActionsProvider)
+                                    .markComplete(
+                                      itemId: episode.libraryItemId,
+                                      episodeId: episode.id,
+                                    );
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -134,12 +132,7 @@ class EpisodeActionButtons extends ConsumerWidget {
                               isDestructive: true,
                               onTap: () async {
                                 final success = await ref
-                                    .read(
-                                      userProgressActionsProvider(
-                                        episode.libraryItemId,
-                                        episode.id,
-                                      ).notifier,
-                                    )
+                                    .read(userProgressActionsProvider)
                                     .remove(progress.id);
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(

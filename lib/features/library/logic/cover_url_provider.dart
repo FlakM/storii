@@ -1,5 +1,5 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 
 part 'cover_url_provider.g.dart';

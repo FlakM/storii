@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'dart:developer';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/chapter.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
-import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/is_background_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
+import 'package:storii/app/repositories/item_repository.dart';
+import 'package:storii/features/downloads/logic/cover_helper.dart';
 import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/downloads/logic/storage_service_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
@@ -19,7 +20,9 @@ import 'package:storii/features/player/logic/session_extensions.dart';
 import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/models/app_playback_error.dart';
 import 'package:storii/features/player/models/app_playback_state.dart';
+import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/app_error.dart';
+import 'package:storii/storage/local/downloads_store.dart';
 import 'package:storii/storage/local/speed_store.dart';
 
 part 'audio_providers.g.dart';
@@ -144,7 +147,7 @@ class AudioPlayerNotifier extends _$AudioPlayerNotifier {
           await ref.read(isItemFullyDownloadedProvider(download).future);
 
       final PlaybackSession session;
-      Uri? serverUrl;
+      ItemRepository? repo;
 
       if (isFullyDownloaded) {
         final item = await ref.read(itemDetailProvider(itemId).future);
@@ -158,8 +161,7 @@ class AudioPlayerNotifier extends _$AudioPlayerNotifier {
               isSameUser: isSameUser,
             );
       } else {
-        final user = await ref.read(authenticatedUserProvider.future);
-        serverUrl = await ref.read(activeServerUrlProvider(user).future);
+        repo = ref.read(itemRepositoryProvider);
         session = await ref
             .read(sessionProvider.notifier)
             .create(itemId: itemId, episodeId: episodeId);
@@ -169,9 +171,22 @@ class AudioPlayerNotifier extends _$AudioPlayerNotifier {
           ? session.chapterToTrackOffset(chapter)
           : session.getIndexAndOffset(initialPosition);
 
-      final (localPaths, coverPath) = await ref.read(
-        resolveLocalPathsProvider(session).future,
-      );
+      final downloadItem = ref
+          .read(downloadsStoreProvider)
+          .get(mediaItemIdKey(session.libraryItemId, session.episodeId));
+      final Map<int, String> localPaths;
+      final String? coverPath;
+      if (downloadItem == null) {
+        localPaths = {};
+        coverPath = null;
+      } else {
+        (localPaths, coverPath) = await resolveLocalPaths(
+          session: session,
+          downloadItem: downloadItem,
+          service: ref.read(storageServiceForItemProvider(downloadItem)),
+          coverHelper: ref.read(coverHelperProvider),
+        );
+      }
 
       if (localPaths.isEmpty && isFullyDownloaded) {
         LogService.log(
@@ -181,7 +196,7 @@ class AudioPlayerNotifier extends _$AudioPlayerNotifier {
       }
 
       final sources = await session.toAudioSources(
-        serverUrl,
+        repo,
         localPaths: localPaths,
         coverPath: coverPath,
         forAndroidAuto: forAndroidAuto,
@@ -268,14 +283,14 @@ class VolumeControl extends _$VolumeControl {
   }
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 class LocalSpeed extends _$LocalSpeed {
   @override
   double build() {
     final session = ref.watch(sessionProvider);
     if (session == null) return ref.watch(speedProvider);
     final storedSpeed = ref
-        .read(speedStoreProvider.notifier)
+        .read(speedStoreProvider)
         .getSpeed(session.libraryItemId);
     return storedSpeed ?? ref.watch(speedProvider);
   }
@@ -284,7 +299,7 @@ class LocalSpeed extends _$LocalSpeed {
     final session = ref.read(sessionProvider);
     if (session != null) {
       await ref
-          .read(speedStoreProvider.notifier)
+          .read(speedStoreProvider)
           .saveSpeed(session.libraryItemId, speed);
     }
     state = speed;

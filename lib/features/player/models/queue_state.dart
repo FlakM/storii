@@ -1,5 +1,5 @@
-import 'package:abs_api/abs_api.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 
 part 'queue_state.freezed.dart';
 part 'queue_state.g.dart';

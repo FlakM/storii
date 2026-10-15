@@ -47,7 +47,7 @@ void main() {
       overrides: [
         currentUserProvider.overrideWithValue(user),
         historyLimitProvider.overrideWithValue(10),
-        playbackHistoryStoreProvider.overrideWith(() => store),
+        playbackHistoryStoreProvider.overrideWithValue(store),
       ],
     );
     addTearDown(container.dispose);
@@ -65,7 +65,7 @@ void main() {
         overrides: [
           currentUserProvider.overrideWithValue(null),
           historyLimitProvider.overrideWithValue(10),
-          playbackHistoryStoreProvider.overrideWith(() => store),
+          playbackHistoryStoreProvider.overrideWithValue(store),
         ],
       );
       addTearDown(container.dispose);
@@ -81,7 +81,7 @@ void main() {
         overrides: [
           currentUserProvider.overrideWithValue(user),
           historyLimitProvider.overrideWithValue(10),
-          playbackHistoryStoreProvider.overrideWith(() => store),
+          playbackHistoryStoreProvider.overrideWithValue(store),
         ],
       );
       addTearDown(container.dispose);
@@ -110,7 +110,7 @@ void main() {
         overrides: [
           currentUserProvider.overrideWithValue(user),
           historyLimitProvider.overrideWithValue(2),
-          playbackHistoryStoreProvider.overrideWith(() => store),
+          playbackHistoryStoreProvider.overrideWithValue(store),
         ],
       );
       addTearDown(container.dispose);

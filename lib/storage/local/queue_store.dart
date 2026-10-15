@@ -7,16 +7,12 @@ import 'package:storii/storage/hive/boxes.dart';
 
 part 'queue_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class QueueStore extends _$QueueStore {
-  String? _userId;
+class QueueStore {
+  const new({this._userId});
+
+  final String? _userId;
 
   String get _queueKey => '$_userId:current_queue';
-
-  @override
-  void build() {
-    _userId = ref.watch(currentUserProvider)?.id;
-  }
 
   Future<void> save(QueueState queue) async {
     await playbackQueueBox.put(_queueKey, jsonEncode(queue.toJson()));
@@ -35,4 +31,10 @@ class QueueStore extends _$QueueStore {
   Future<void> clear() async {
     await playbackQueueBox.delete(_queueKey);
   }
+}
+
+@riverpod
+QueueStore queueStore(Ref ref) {
+  final user = ref.watch(currentUserProvider);
+  return QueueStore(userId: user?.id);
 }

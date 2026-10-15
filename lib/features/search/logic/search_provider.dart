@@ -1,10 +1,9 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/models/enums.dart';
-import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/authenticated_user_provider.dart';
+import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
 
@@ -34,13 +33,8 @@ class SearchNotifier extends _$SearchNotifier {
     final libraryId = ref.read(currentLibraryProvider)?.id;
     if (libraryId == null) return null;
 
-    final user = await ref.read(authenticatedUserProvider.future);
-    final api = await ref.read(libraryApiProvider(user).future);
+    final repo = ref.read(libraryRepositoryProvider);
 
-    return ref.logApiCall(
-      () => api.search(libraryId, query: query),
-      logMessage: 'Error getting search results',
-      source: 'SearchNotifier',
-    );
+    return repo.search(libraryId, query: query);
   }
 }

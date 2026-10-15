@@ -3,10 +3,8 @@ import 'package:storii/storage/hive/boxes.dart';
 
 part 'speed_store.g.dart';
 
-@Riverpod(keepAlive: true)
-class SpeedStore extends _$SpeedStore {
-  @override
-  void build() {}
+class SpeedStore {
+  const new();
 
   double? getSpeed(String libraryItemId) => speedsBox.get(libraryItemId);
 
@@ -18,3 +16,6 @@ class SpeedStore extends _$SpeedStore {
     await speedsBox.clear();
   }
 }
+
+@riverpod
+SpeedStore speedStore(Ref ref) => const SpeedStore();

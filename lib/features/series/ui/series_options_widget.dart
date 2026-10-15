@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:abs_api/abs_api.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/config/keys.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/models/storage_location.dart';
@@ -98,7 +98,7 @@ class SeriesOptionsWidget extends ConsumerWidget {
             leading: const Icon(Icons.playlist_add),
             onTap: () async {
               final success = await ref
-                  .read(userProgressActionsProvider(series.id).notifier)
+                  .read(userProgressActionsProvider)
                   .reAddSeriesToContinueListening(series.id);
               globalMessengerKey.currentState?.hideCurrentSnackBar();
               globalMessengerKey.currentState?.showAppSnackBar(

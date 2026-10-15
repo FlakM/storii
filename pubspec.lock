@@ -9,13 +9,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "108.0.0"
-  abs_api:
-    dependency: "direct main"
-    description:
-      path: "packages/abs_api"
-      relative: true
-    source: path
-    version: "1.0.0"
   analysis_server_plugin:
     dependency: transitive
     description:
@@ -894,7 +887,7 @@ packages:
     source: hosted
     version: "1.19.0"
   mime:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: mime
       sha256: bd47de35f07e27267e69c8c8b22edf9473bfee170a60d60fcc93730c5144b7f6
@@ -1219,7 +1212,7 @@ packages:
     source: sdk
     version: "0.0.0"
   socket_io_client:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: socket_io_client
       sha256: f5990ff303d385e7b2150f0e57cca097a8d20c6a2ae0a22cb2d496661ea8ed9b
