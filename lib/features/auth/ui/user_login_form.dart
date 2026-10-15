@@ -29,6 +29,7 @@ class UserLoginForm extends ConsumerStatefulWidget {
 class _UserLoginFormState extends ConsumerState<UserLoginForm> {
   late final TextEditingController _usernameController;
   final _passwordController = TextEditingController();
+  bool _passwordVisible = false;
 
   @override
   void initState() {
@@ -181,6 +182,7 @@ class _UserLoginFormState extends ConsumerState<UserLoginForm> {
             const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
+              obscureText: !_passwordVisible,
               enabled: !widget.isLoading,
               textInputAction: .done,
               autofillHints: const [AutofillHints.password],
@@ -189,6 +191,16 @@ class _UserLoginFormState extends ConsumerState<UserLoginForm> {
               decoration: InputDecoration(
                 labelText: l10n.password,
                 labelStyle: textTheme.titleSmall,
+                suffixIcon: IconButton(
+                  onPressed: () => setState(() {
+                    _passwordVisible = !_passwordVisible;
+                  }),
+                  icon: Icon(
+                    _passwordVisible
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 16),
