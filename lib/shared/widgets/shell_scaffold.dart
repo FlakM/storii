@@ -92,6 +92,7 @@ class _ShellBottomBar extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     if (factor >= 0.4) return const SizedBox.shrink();
+    final showNavAlways = ref.watch(showNavbarAlwaysProvider);
 
     if (target != null) {
       final index = navTargets.indexOf(target!);
@@ -101,9 +102,9 @@ class _ShellBottomBar extends ConsumerWidget {
     }
     final displayIndex = ref.watch(lastNavIndexProvider);
 
-    final isTargetNull = target == null;
+    final hideNav = target == null && !showNavAlways;
     final factorVisibility = (1.0 - (factor / 0.3)).clamp(0.0, 1.0);
-    final targetHeightFactor = isTargetNull ? 0.0 : factorVisibility;
+    final targetHeightFactor = hideNav ? 0.0 : factorVisibility;
 
     return AnimatedAlign(
       alignment: .topCenter,
@@ -113,7 +114,7 @@ class _ShellBottomBar extends ConsumerWidget {
           : const Duration(milliseconds: 300),
       curve: Curves.easeOutCubic,
       child: AnimatedOpacity(
-        opacity: isTargetNull ? 0.0 : 1.0,
+        opacity: hideNav ? 0.0 : 1.0,
         duration: const Duration(milliseconds: 200),
         child: RepaintBoundary(
           child: NavBar(

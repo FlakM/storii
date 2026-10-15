@@ -82,6 +82,7 @@ class DefaultUserSettings {
   static const playOnStartup = false;
   static const imageResolutionGridView = 600;
   static const imageResolutionListView = 200;
+  static const showNavbarAlways = false;
 }
 
 @freezed
@@ -271,6 +272,8 @@ sealed class UserSettings with _$UserSettings {
     double stackedImagesCardMaxWidth,
 
     @Default(DefaultUserSettings.listViewImageSize) double listViewImageSize,
+
+    @Default(DefaultUserSettings.showNavbarAlways) bool showNavbarAlways,
   }) = _UserSettings;
 
   factory fromJson(Map<String, dynamic> json) => _$UserSettingsFromJson(json);

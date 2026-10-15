@@ -95,7 +95,7 @@ final class UserSettingsNotifierProvider
 }
 
 String _$userSettingsNotifierHash() =>
-    r'b13ccfa5ebbf268a740ede87d653a3adc93a795e';
+    r'cefbbfdf8895c82b8e13bb963f125b32f8c521af';
 
 abstract class _$UserSettingsNotifier extends $Notifier<UserSettings?> {
   UserSettings? build();
@@ -443,6 +443,9 @@ extension UserSettingsSetters on UserSettingsNotifier {
 
   Future<void> setListViewImageSize(double value) =>
       _save(state?.copyWith(listViewImageSize: value));
+
+  Future<void> setShowNavbarAlways(bool value) =>
+      _save(state?.copyWith(showNavbarAlways: value));
 }
 
 final currentLibraryProvider = Provider<Library?>(
@@ -1135,4 +1138,13 @@ final listViewImageSizeProvider = Provider<double>(
     ),
   ),
   name: 'listViewImageSizeProvider',
+);
+
+final showNavbarAlwaysProvider = Provider<bool>(
+  (ref) => ref.watch(
+    userSettingsProvider.select(
+      (s) => s?.showNavbarAlways ?? DefaultUserSettings.showNavbarAlways,
+    ),
+  ),
+  name: 'showNavbarAlwaysProvider',
 );
