@@ -326,25 +326,21 @@ final routerProvider = Provider<GoRouter>((ref) {
             routes: [
               GoRoute(
                 path: '/item',
+                builder: (_, _) => const NotFoundScreen(path: '/item'),
+              ),
+              GoRoute(
+                path: '/item/:id',
                 builder: (context, state) {
-                  return const NotFoundScreen(path: '/item');
+                  final id = state.pathParameters['id']!;
+                  return ItemDetailScreen(id: id);
                 },
                 routes: [
                   GoRoute(
-                    path: ':id',
+                    path: 'metadata',
                     builder: (context, state) {
                       final id = state.pathParameters['id']!;
-                      return ItemDetailScreen(id: id);
+                      return EditMetadataScreen(id: id);
                     },
-                    routes: [
-                      GoRoute(
-                        path: 'metadata',
-                        builder: (context, state) {
-                          final id = state.pathParameters['id']!;
-                          return EditMetadataScreen(id: id);
-                        },
-                      ),
-                    ],
                   ),
                 ],
               ),
