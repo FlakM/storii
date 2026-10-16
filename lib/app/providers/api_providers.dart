@@ -15,7 +15,7 @@ import 'package:storii/storage/local/servers_store.dart';
 
 part 'api_providers.g.dart';
 
-@Riverpod(keepAlive: true)
+@riverpod
 CancelToken apiCancelToken(Ref ref) {
   ref.watch(currentUserProvider);
   final cancelToken = CancelToken();
@@ -25,7 +25,7 @@ CancelToken apiCancelToken(Ref ref) {
   return cancelToken;
 }
 
-@Riverpod(keepAlive: true)
+@riverpod
 ApiClient apiClient(Ref ref) {
   final user = ref.watch(currentUserProvider);
   if (user == null) throw StateError('No current user');

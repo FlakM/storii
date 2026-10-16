@@ -21,7 +21,7 @@ final class ApiCancelTokenProvider
         argument: null,
         retry: null,
         name: r'apiCancelTokenProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -48,7 +48,7 @@ final class ApiCancelTokenProvider
   }
 }
 
-String _$apiCancelTokenHash() => r'f4d619e4ce453737a8950de39c08d37e83d7f20f';
+String _$apiCancelTokenHash() => r'dd8913a44ddd2c64f9c7e658d852c00dc8c13101';
 
 @ProviderFor(apiClient)
 final apiClientProvider = ApiClientProvider._();
@@ -62,7 +62,7 @@ final class ApiClientProvider
         argument: null,
         retry: null,
         name: r'apiClientProvider',
-        isAutoDispose: false,
+        isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -89,7 +89,7 @@ final class ApiClientProvider
   }
 }
 
-String _$apiClientHash() => r'737d3b274c1331d746551e800227d920c53f9914';
+String _$apiClientHash() => r'3c0dd473dc9a98c4e5ff6bacf2d0e651a9ae2a21';
 
 @ProviderFor(authApi)
 final authApiProvider = AuthApiFamily._();
