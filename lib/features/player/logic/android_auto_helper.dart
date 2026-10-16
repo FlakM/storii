@@ -13,7 +13,9 @@ import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/library/logic/library_items_provider.dart';
 import 'package:storii/features/player/logic/android_auto_extensions.dart';
 import 'package:storii/features/player/logic/android_auto_paging.dart';
+import 'package:storii/features/player/logic/audio_providers.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
+import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/models/android_auto_media_id.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/extensions.dart';
@@ -94,9 +96,18 @@ class AndroidAutoHelper {
     required bool autoplay,
   }) async {
     try {
+      if (autoplay && _isPausedOnSameItem(itemId, episodeId)) {
+        await audioHandler.play();
+        return;
+      }
       await _container
           .read(queueProvider.notifier)
-          .play(itemId: itemId, episodeId: episodeId, forAndroidAuto: true);
+          .play(
+            itemId: itemId,
+            episodeId: episodeId,
+            forAndroidAuto: true,
+            autoplay: autoplay,
+          );
     } catch (e, st) {
       LogService.log(
         'Android Auto play failed: $e',
@@ -106,6 +117,13 @@ class AndroidAutoHelper {
         stackTrace: st,
       );
     }
+  }
+
+  bool _isPausedOnSameItem(String itemId, String? episodeId) {
+    final session = _container.read(sessionProvider);
+    final isSameItem =
+        session?.libraryItemId == itemId && session?.episodeId == episodeId;
+    return isSameItem && !_container.read(isPlayingProvider);
   }
 
   Future<List<MediaItem>> search(
