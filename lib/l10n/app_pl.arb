@@ -594,5 +594,13 @@
         "type": "String"
       }
     }
-  }
+  },
+  "editMetadata": "Edytuj metadane",
+  "podcastType": "Typ podcastu",
+  "episodic": "Epizodyczny",
+  "serial": "Odcinkowy",
+  "pageNotFound": "Nie znaleziono strony",
+  "upload": "Wyślij",
+  "confirmRemoveCoverQ": "Usunąć okładkę?",
+  "imageResolutionSubtitle": "Serwer zmieni rozdzielczość obrazów by zaoszczędzić dane i przyspieszyć ładowanie"
 }
