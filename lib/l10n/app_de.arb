@@ -602,5 +602,6 @@
       }
     }
   },
-  "themePreview": "Design Vorschau"
+  "themePreview": "Design Vorschau",
+  "showNavbarAlways": "Zeige Navigationsleiste auf den meisten Seiten"
 }
