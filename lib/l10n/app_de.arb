@@ -584,5 +584,23 @@
       }
     }
   },
-  "pagination": "seitenweises Nachladen"
+  "pagination": "seitenweises Nachladen",
+  "copy": "Kopieren",
+  "podcastType": "Podcast Typ",
+  "episodic": "Episodisch",
+  "serial": "Seriell",
+  "pageNotFound": "Seite nicht gefunden",
+  "upload": "Hochladen",
+  "confirmRemoveCoverQ": "Coverbild löschen?",
+  "imageResolutionSubtitle": "Server reduziert Bilder bis zu deinem Pixellimit um Daten zu sparen und schneller zu laden",
+  "editMetadata": "Metadaten bearbeiten",
+  "selectedCount": "{count} ausgewählt",
+  "@selectedCount": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "themePreview": "Design Vorschau"
 }
