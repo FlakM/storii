@@ -32,7 +32,12 @@ class PlayerScreen extends ConsumerWidget {
           ..hideCurrentSnackBar()
           ..showSnackBar(
             SnackBar(
-              content: Text(type.label),
+              content: Text(
+                type.label,
+                style: defaultTheme.textTheme.bodyMedium?.copyWith(
+                  color: type == .network ? scheme.onTertiary : scheme.onError,
+                ),
+              ),
               backgroundColor: type == .network
                   ? scheme.tertiary
                   : scheme.error,
