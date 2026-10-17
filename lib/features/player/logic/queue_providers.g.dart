@@ -20,7 +20,7 @@ final class QueueNotifierProvider
         argument: null,
         retry: null,
         name: r'queueProvider',
-        isAutoDispose: true,
+        isAutoDispose: false,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
@@ -41,7 +41,7 @@ final class QueueNotifierProvider
   }
 }
 
-String _$queueNotifierHash() => r'6d621324f88096e0d8d1b02d4c566c26c6f7a79f';
+String _$queueNotifierHash() => r'9f8c069d462407cffbec4995300b5a5d4df24134';
 
 abstract class _$QueueNotifier extends $Notifier<QueueState> {
   QueueState build();
@@ -140,4 +140,4 @@ final class QueueControllerProvider
   }
 }
 
-String _$queueControllerHash() => r'f6b25103c2a7d900c939b67b33dea2e2054272b9';
+String _$queueControllerHash() => r'449905cd94dc3aa3dfda104c109f4c5b5415a373';

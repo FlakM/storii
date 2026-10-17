@@ -15,7 +15,7 @@ import 'package:storii/storage/local/queue_store.dart';
 
 part 'queue_providers.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class QueueNotifier extends _$QueueNotifier {
   QueueStore get _store => ref.read(queueStoreProvider);
 
@@ -220,8 +220,6 @@ int queueCount(Ref ref) => ref.watch(queueProvider).items.length;
 
 @riverpod
 void queueController(Ref ref) {
-  ref.watch(queueProvider);
-
   ref.listen(audioHandlerEventsProvider, (_, next) {
     if (next.value == .stop) {
       unawaited(ref.read(queueProvider.notifier).clear());

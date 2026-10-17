@@ -16,22 +16,12 @@ import 'package:storii/storage/local/servers_store.dart';
 part 'api_providers.g.dart';
 
 @riverpod
-CancelToken apiCancelToken(Ref ref) {
-  ref.watch(currentUserProvider);
-  final cancelToken = CancelToken();
-  ref.onDispose(() {
-    cancelToken.cancel('User session disposed or logged out');
-  });
-  return cancelToken;
-}
-
-@riverpod
 ApiClient apiClient(Ref ref) {
   final user = ref.watch(currentUserProvider);
   if (user == null) throw StateError('No current user');
 
   final tokenService = ref.watch(tokenProvider);
-  final cancelToken = ref.watch(apiCancelTokenProvider);
+  final cancelToken = CancelToken();
   final serverUrl = ref.watch(activeServerUrlProvider);
 
   final cacheOptions = CacheOptions(
@@ -72,6 +62,10 @@ ApiClient apiClient(Ref ref) {
           .forceLogout(user, reason: 'Token refresh failed');
     },
   );
+
+  ref.onDispose(() {
+    cancelToken.cancel('User session disposed or logged out');
+  });
 
   return apiClient;
 }

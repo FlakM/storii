@@ -9,47 +9,6 @@ part of 'api_providers.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 
-@ProviderFor(apiCancelToken)
-final apiCancelTokenProvider = ApiCancelTokenProvider._();
-
-final class ApiCancelTokenProvider
-    extends $FunctionalProvider<CancelToken, CancelToken, CancelToken>
-    with $Provider<CancelToken> {
-  ApiCancelTokenProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'apiCancelTokenProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
-
-  @override
-  String debugGetCreateSourceHash() => _$apiCancelTokenHash();
-
-  @$internal
-  @override
-  $ProviderElement<CancelToken> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  CancelToken create(Ref ref) {
-    return apiCancelToken(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(CancelToken value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<CancelToken>(value),
-    );
-  }
-}
-
-String _$apiCancelTokenHash() => r'dd8913a44ddd2c64f9c7e658d852c00dc8c13101';
-
 @ProviderFor(apiClient)
 final apiClientProvider = ApiClientProvider._();
 
@@ -89,7 +48,7 @@ final class ApiClientProvider
   }
 }
 
-String _$apiClientHash() => r'3c0dd473dc9a98c4e5ff6bacf2d0e651a9ae2a21';
+String _$apiClientHash() => r'156f25c5a106fec5d317c48464a85c70e04f65a5';
 
 @ProviderFor(authApi)
 final authApiProvider = AuthApiFamily._();

@@ -57,8 +57,9 @@ class AuthRefresher extends _$AuthRefresher {
 }
 
 Future<void> _authorizeAndPersist(Ref ref, UserDomain user) async {
+  final api = ref.read(serverApiProvider);
   final response = await ref.logApiCall(
-    () async => ref.read(serverApiProvider).authorize(),
+    api.authorize,
     source: 'authGate',
     logMessage: 'Error authenticating user',
     debug: true,

@@ -9,10 +9,9 @@ part 'deep_link_controller.g.dart';
 
 @riverpod
 void deepLinkController(Ref ref) {
-  final router = ref.watch(routerProvider);
-
   Future<void> handle(Uri url) async {
     LogService.log('$url', source: 'deepLinkController');
+    final router = ref.read(routerProvider);
     switch (url.host) {
       case 'oauth':
         router.go('/oauth${url.path}', extra: url);

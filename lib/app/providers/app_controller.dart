@@ -3,7 +3,6 @@ import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/deep_link_controller.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/widget_controller.dart';
-import 'package:storii/features/downloads/logic/download_queue.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/player/logic/audio_providers.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
@@ -25,7 +24,6 @@ void appController(Ref ref) {
     ..watch(queueControllerProvider)
     ..watch(authRefresherProvider)
     ..watch(appStartThemeUpdateProvider)
-    ..watch(downloadQueueProvider)
     ..watch(mediaProgressSyncControllerProvider)
     ..watch(sleepWindowConsumerProvider);
 }
