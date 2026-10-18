@@ -33,7 +33,7 @@ final class ServerUserProvider
   ServerUser create() => ServerUser();
 }
 
-String _$serverUserHash() => r'd49a17ce2efb61a937cbd2385ed35d1a914e67a9';
+String _$serverUserHash() => r'8b3937b029a85f8cadf4f89d2031fee0b05a91b5';
 
 abstract class _$ServerUser extends $AsyncNotifier<User> {
   FutureOr<User> build();

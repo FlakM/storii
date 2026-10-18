@@ -1,4 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/admin/logic/task_stream_provider.dart';
 
@@ -28,8 +29,8 @@ class ScanLibrary extends _$ScanLibrary {
   }
 
   Future<void> scan(String libraryId) async {
-    final repo = ref.read(libraryRepositoryProvider);
-
+    final user = await ref.read(authenticatedUserProvider.future);
+    final repo = ref.read(libraryRepositoryProvider(user));
     return repo.scanLibrary(libraryId);
   }
 }

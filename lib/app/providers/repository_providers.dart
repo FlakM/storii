@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/repositories/item_repository.dart';
 import 'package:storii/app/repositories/library_repository.dart';
@@ -10,35 +10,27 @@ import 'package:storii/app/repositories/session_repository.dart';
 part 'repository_providers.g.dart';
 
 @riverpod
-LibraryRepository libraryRepository(Ref ref) {
-  return LibraryRepository(
-    ref.read(libraryApiProvider),
-    auth: ref.read(authGateProvider.future),
-  );
+LibraryRepository libraryRepository(Ref ref, UserDomain user) {
+  return LibraryRepository(ref.watch(libraryApiProvider(user)));
 }
 
 @riverpod
-ItemRepository itemRepository(Ref ref) {
+ItemRepository itemRepository(Ref ref, UserDomain user) {
   return ItemRepository(
-    ref.read(itemApiProvider),
-    auth: ref.read(authGateProvider.future),
-    serverUrl: ref.read(activeServerUrlProvider),
+    ref.watch(itemApiProvider(user)),
+    serverUrl: ref.watch(activeServerUrlProvider),
   );
 }
 
 @riverpod
-MeRepository meRepository(Ref ref) {
-  return MeRepository(
-    ref.read(meApiProvider),
-    auth: ref.read(authGateProvider.future),
-  );
+MeRepository meRepository(Ref ref, UserDomain user) {
+  return MeRepository(ref.watch(meApiProvider(user)));
 }
 
 @riverpod
-SessionRepository sessionRepository(Ref ref) {
+SessionRepository sessionRepository(Ref ref, UserDomain user) {
   return SessionRepository(
-    ref.read(itemApiProvider),
-    ref.read(sessionsApiProvider),
-    auth: ref.read(authGateProvider.future),
+    ref.watch(itemApiProvider(user)),
+    ref.watch(sessionsApiProvider(user)),
   );
 }

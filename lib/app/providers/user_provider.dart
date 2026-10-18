@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/shared/helpers/extensions.dart';
@@ -21,15 +22,16 @@ class ServerUser extends _$ServerUser {
       _userSub?.cancel();
     });
     await _userSub?.cancel();
-    final repo = ref.read(meRepositoryProvider);
-    final user = await repo.getUser();
+    final userDomain = await ref.watch(authenticatedUserProvider.future);
+    final repo = ref.watch(meRepositoryProvider(userDomain));
+    final serverUser = await repo.getUser();
 
-    final socket = await ref.watch(socketApiProvider.future);
+    final socket = await ref.watch(socketApiProvider(userDomain).future);
     _userSub = socket.user.onUserUpdated.listen((update) {
       state = AsyncData(update);
     });
 
-    return user;
+    return serverUser;
   }
 }
 

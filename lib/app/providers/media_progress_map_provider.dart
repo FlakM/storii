@@ -27,7 +27,9 @@ Future<void> mediaProgressSyncController(Ref ref) async {
 
 @riverpod
 Stream<MediaProgress> _progressUpdate(Ref ref) async* {
-  final socket = await ref.watch(socketApiProvider.future);
+  final user = ref.watch(currentUserProvider);
+  if (user == null) return;
+  final socket = await ref.watch(socketApiProvider(user).future);
   yield* socket.user.onProgressUpdate.map((e) => e.data);
 }
 

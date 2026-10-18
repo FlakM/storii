@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/app/repositories/me_repository.dart';
@@ -66,7 +67,8 @@ class BookmarksController {
 }
 
 @riverpod
-BookmarksController bookmarksController(Ref ref) {
-  final repo = ref.watch(meRepositoryProvider);
+Future<BookmarksController> bookmarksController(Ref ref) async {
+  final user = await ref.watch(authenticatedUserProvider.future);
+  final repo = ref.watch(meRepositoryProvider(user));
   return BookmarksController(repo);
 }

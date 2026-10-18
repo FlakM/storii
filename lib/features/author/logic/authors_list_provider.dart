@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/library/logic/library_filters_provider.dart';
@@ -16,6 +17,7 @@ Future<List<Author>> authorsList(Ref ref) async {
     libraryFiltersProvider(.authors).select((s) => s.toAuthorParams()),
   );
 
-  final repo = ref.read(libraryRepositoryProvider);
+  final user = await ref.watch(authenticatedUserProvider.future);
+  final repo = ref.watch(libraryRepositoryProvider(user));
   return repo.getAuthors(libraryId, params);
 }

@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/features/item/logic/item_detail_provider.dart';
@@ -13,7 +14,8 @@ Future<LibraryResponse> activeLibraryDetails(Ref ref) async {
   final currentLibrary = ref.watch(currentLibraryProvider);
 
   Future<LibraryResponse> fetchFullLibrary(Library lib) async {
-    final repo = ref.read(libraryRepositoryProvider);
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final repo = ref.watch(libraryRepositoryProvider(user));
     return repo.get(lib.id);
   }
 

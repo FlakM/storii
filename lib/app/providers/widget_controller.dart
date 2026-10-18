@@ -9,6 +9,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/widget_config.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
@@ -141,7 +142,8 @@ class WidgetController extends _$WidgetController {
 
     try {
       final cancelToken = CancelToken();
-      final repo = ref.read(itemRepositoryProvider);
+      final user = await ref.read(authenticatedUserProvider.future);
+      final repo = ref.read(itemRepositoryProvider(user));
       final bytes = await repo.getCover(
         libraryItemId,
         cancelToken: cancelToken,

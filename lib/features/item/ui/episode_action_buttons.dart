@@ -88,12 +88,13 @@ class EpisodeActionButtons extends ConsumerWidget {
                               actionLabel: l10n.confirm,
                               actionIcon: Icons.beenhere_outlined,
                               onTap: () async {
-                                final success = await ref
-                                    .read(userProgressActionsProvider)
-                                    .markComplete(
-                                      itemId: episode.libraryItemId,
-                                      episodeId: episode.id,
-                                    );
+                                final actions = await ref.read(
+                                  userProgressActionsProvider.future,
+                                );
+                                final success = await actions.markComplete(
+                                  itemId: episode.libraryItemId,
+                                  episodeId: episode.id,
+                                );
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -131,9 +132,12 @@ class EpisodeActionButtons extends ConsumerWidget {
                               actionIcon: Icons.delete_outline,
                               isDestructive: true,
                               onTap: () async {
-                                final success = await ref
-                                    .read(userProgressActionsProvider)
-                                    .remove(progress.id);
+                                final actions = await ref.read(
+                                  userProgressActionsProvider.future,
+                                );
+                                final success = await actions.remove(
+                                  progress.id,
+                                );
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

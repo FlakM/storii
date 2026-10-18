@@ -35,7 +35,7 @@ final class LibraryItemsNotifierProvider
 }
 
 String _$libraryItemsNotifierHash() =>
-    r'352f8e3e0870088873f197d670a32ef455263a9f';
+    r'6f51f33eade4cca289f199212709d20f18d8a3a2';
 
 abstract class _$LibraryItemsNotifier
     extends $AsyncNotifier<PaginatedLibraryItems> {
@@ -100,4 +100,4 @@ final class AllLibraryItemsProvider
   }
 }
 
-String _$allLibraryItemsHash() => r'4081dcef7546cc9a0f4d2fd9a4924bf7e9a02ed7';
+String _$allLibraryItemsHash() => r'0a3b65b8ef4cd0e823bbb43e0ce9d54cdd21f433';

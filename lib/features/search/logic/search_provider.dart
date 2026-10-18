@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/models/enums.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/shared/helpers/ref_extensions.dart';
@@ -32,8 +33,8 @@ class SearchNotifier extends _$SearchNotifier {
   Future<SearchResponse?> _fetchSearch(String query) async {
     final libraryId = ref.read(currentLibraryProvider)?.id;
     if (libraryId == null) return null;
-
-    final repo = ref.read(libraryRepositoryProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final repo = ref.read(libraryRepositoryProvider(user));
 
     return repo.search(libraryId, query: query);
   }

@@ -6,6 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/models/chapter.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/is_background_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
@@ -161,7 +162,8 @@ class AudioPlayerNotifier extends _$AudioPlayerNotifier {
               isSameUser: isSameUser,
             );
       } else {
-        repo = ref.read(itemRepositoryProvider);
+        final user = await ref.read(authenticatedUserProvider.future);
+        repo = ref.read(itemRepositoryProvider(user));
         session = await ref
             .read(sessionProvider.notifier)
             .create(itemId: itemId, episodeId: episodeId);

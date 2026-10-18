@@ -81,7 +81,7 @@ final class _ProgressUpdateProvider
   }
 }
 
-String _$_progressUpdateHash() => r'99f6ddf397d9491fa61882a38d90b53c9f7e8e01';
+String _$_progressUpdateHash() => r'a8954a4fcea71479262868f91d502c231aba5f65';
 
 @ProviderFor(mediaProgressMap)
 final mediaProgressMapProvider = MediaProgressMapProvider._();

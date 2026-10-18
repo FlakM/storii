@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
@@ -146,7 +147,7 @@ Future<List<Shelf>> rawShelves(Ref ref) async {
   final libraryId = (await ref.watch(activeLibraryDetailsProvider.future))
       .library
       .id;
-
-  final repo = ref.read(libraryRepositoryProvider);
+  final user = await ref.watch(authenticatedUserProvider.future);
+  final repo = ref.watch(libraryRepositoryProvider(user));
   return repo.getShelves(libraryId);
 }

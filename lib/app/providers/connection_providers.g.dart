@@ -40,7 +40,7 @@ final class SocketStatusProvider
   }
 }
 
-String _$socketStatusHash() => r'28d2710c62c6c4dffff3c8abf39e565d08d3b7fd';
+String _$socketStatusHash() => r'c5cd6a92e3767afdf9ed2d07918125accdafcb57';
 
 @ProviderFor(connectivityStream)
 final connectivityStreamProvider = ConnectivityStreamProvider._();

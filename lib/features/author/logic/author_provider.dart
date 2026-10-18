@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
@@ -11,8 +12,8 @@ Future<Author> author(Ref ref, String authorId) async {
   final libraryId = (await ref.watch(activeLibraryDetailsProvider.future))
       .library
       .id;
-
-  final repo = ref.read(libraryRepositoryProvider);
+  final user = await ref.watch(authenticatedUserProvider.future);
+  final repo = ref.watch(libraryRepositoryProvider(user));
   final progressMap = await ref.watch(mediaProgressMapProvider.future);
 
   final author = await repo.getAuthor(authorId, libraryId);

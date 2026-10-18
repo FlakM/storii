@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
@@ -27,7 +28,8 @@ class SessionNotifier extends _$SessionNotifier {
     required String itemId,
     String? episodeId,
   }) async {
-    final repo = ref.read(sessionRepositoryProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final repo = ref.read(sessionRepositoryProvider(user));
     final params = await ref.read(playRequestParamsProvider.future);
 
     final session = await repo.createSession(
@@ -118,7 +120,8 @@ class SessionNotifier extends _$SessionNotifier {
       }
 
       try {
-        final repo = ref.read(sessionRepositoryProvider);
+        final user = await ref.read(authenticatedUserProvider.future);
+        final repo = ref.read(sessionRepositoryProvider(user));
         await repo.syncLocal(localSession: updated.stripped);
       } catch (e) {
         LogService.log(
@@ -141,7 +144,8 @@ class SessionNotifier extends _$SessionNotifier {
         throw 'No Server Connection';
       }
 
-      final repo = ref.read(sessionRepositoryProvider);
+      final user = await ref.read(authenticatedUserProvider.future);
+      final repo = ref.read(sessionRepositoryProvider(user));
       await repo.syncSession(
         sessionId: session.id,
         params: SyncSessionRequestParams(
@@ -169,7 +173,8 @@ class SessionNotifier extends _$SessionNotifier {
 
     try {
       if (!isLocal) {
-        final repo = ref.read(sessionRepositoryProvider);
+        final user = await ref.read(authenticatedUserProvider.future);
+        final repo = ref.read(sessionRepositoryProvider(user));
         await repo.closeSession(sessionId: session.id);
         await ref.read(sessionStoreProvider).delete(session.id);
       }

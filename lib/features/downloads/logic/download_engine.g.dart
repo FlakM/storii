@@ -41,7 +41,7 @@ final class DownloadEngineProvider
   }
 }
 
-String _$downloadEngineHash() => r'06e3b8dc7312cb3d371cef81d5e36f0c5d2e9cfd';
+String _$downloadEngineHash() => r'6e95bd8f9fdc841d7da2b450b66de678c2204a75';
 
 abstract class _$DownloadEngine extends $Notifier<void> {
   void build();

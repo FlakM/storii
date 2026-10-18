@@ -90,11 +90,13 @@ final bookmarksControllerProvider = BookmarksControllerProvider._();
 final class BookmarksControllerProvider
     extends
         $FunctionalProvider<
+          AsyncValue<BookmarksController>,
           BookmarksController,
-          BookmarksController,
-          BookmarksController
+          FutureOr<BookmarksController>
         >
-    with $Provider<BookmarksController> {
+    with
+        $FutureModifier<BookmarksController>,
+        $FutureProvider<BookmarksController> {
   BookmarksControllerProvider._()
     : super(
         from: null,
@@ -111,23 +113,15 @@ final class BookmarksControllerProvider
 
   @$internal
   @override
-  $ProviderElement<BookmarksController> $createElement(
+  $FutureProviderElement<BookmarksController> $createElement(
     $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  ) => $FutureProviderElement(pointer);
 
   @override
-  BookmarksController create(Ref ref) {
+  FutureOr<BookmarksController> create(Ref ref) {
     return bookmarksController(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(BookmarksController value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<BookmarksController>(value),
-    );
   }
 }
 
 String _$bookmarksControllerHash() =>
-    r'ddc1c8941cc914d5d6241534a43bc957c0f0c1e0';
+    r'7fdbb1c55255cc3cadd6e243e2b9bbda75c34dc5';

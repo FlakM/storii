@@ -47,7 +47,7 @@ final class ActiveLibraryDetailsProvider
 }
 
 String _$activeLibraryDetailsHash() =>
-    r'1f53735d0f7ee1fbbdb02fe6488bc87f7c3277b0';
+    r'244e2363cd7160e82fb5e8751d883efa1fa0a8a7';
 
 @ProviderFor(librarySyncController)
 final librarySyncControllerProvider = LibrarySyncControllerProvider._();
