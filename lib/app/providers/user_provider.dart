@@ -14,25 +14,29 @@ part 'user_provider.g.dart';
 
 @riverpod
 class ServerUser extends _$ServerUser {
-  StreamSubscription? _userSub;
-
   @override
   Future<User> build() async {
-    ref.onDispose(() {
-      _userSub?.cancel();
-    });
-    await _userSub?.cancel();
-    final userDomain = await ref.watch(authenticatedUserProvider.future);
-    final repo = ref.watch(meRepositoryProvider(userDomain));
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final repo = ref.watch(meRepositoryProvider(user));
     final serverUser = await repo.getUser();
 
-    final socket = await ref.watch(socketApiProvider(userDomain).future);
-    _userSub = socket.user.onUserUpdated.listen((update) {
-      state = AsyncData(update);
+    ref.listen(_userUpdateProvider, (_, next) {
+      final updatedUser = next.value;
+      if (updatedUser != null) {
+        state = AsyncData(updatedUser);
+      }
     });
 
     return serverUser;
   }
+}
+
+@riverpod
+Stream<User> _userUpdate(Ref ref) async* {
+  final user = ref.watch(currentUserProvider);
+  if (user == null) return;
+  final socket = await ref.watch(socketApiProvider(user).future);
+  yield* socket.user.onUserUpdated;
 }
 
 @riverpod

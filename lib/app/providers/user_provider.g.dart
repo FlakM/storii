@@ -33,7 +33,7 @@ final class ServerUserProvider
   ServerUser create() => ServerUser();
 }
 
-String _$serverUserHash() => r'8b3937b029a85f8cadf4f89d2031fee0b05a91b5';
+String _$serverUserHash() => r'9eff57f43e85510bfd9851b18cd4e181e822271b';
 
 abstract class _$ServerUser extends $AsyncNotifier<User> {
   FutureOr<User> build();
@@ -52,6 +52,39 @@ abstract class _$ServerUser extends $AsyncNotifier<User> {
     return element.handleCreate(ref, build);
   }
 }
+
+@ProviderFor(_userUpdate)
+final _userUpdateProvider = _UserUpdateProvider._();
+
+final class _UserUpdateProvider
+    extends $FunctionalProvider<AsyncValue<User>, User, Stream<User>>
+    with $FutureModifier<User>, $StreamProvider<User> {
+  _UserUpdateProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'_userUpdateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$_userUpdateHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<User> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(pointer);
+
+  @override
+  Stream<User> create(Ref ref) {
+    return _userUpdate(ref);
+  }
+}
+
+String _$_userUpdateHash() => r'8c4270b497b6770cadc3ee5ecd01c43e403ae839';
 
 @ProviderFor(userPermissions)
 final userPermissionsProvider = UserPermissionsProvider._();

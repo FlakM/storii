@@ -60,23 +60,18 @@ DownloadsStore downloadsStore(Ref ref) => const DownloadsStore();
 class Downloads extends _$Downloads {
   @override
   Stream<Map<String, DownloadItem>> build() {
-    final initial = ref.read(downloadsStoreProvider).getAll();
+    final map = ref.read(downloadsStoreProvider).getAll();
     return downloadsBox
         .watch()
         .map((e) {
-          final items = Map<String, DownloadItem>.from(state.value ?? {});
-          if (e.deleted) {
-            items.remove(e.key);
+          final item = e.deleted ? null : _decode(e.value);
+          if (item != null) {
+            map[item.key] = item;
           } else {
-            final item = _decode(e.value as String?);
-            if (item != null) {
-              items[item.key] = item;
-            } else {
-              items.remove(e.key);
-            }
+            map.remove(e.key);
           }
-          return items;
+          return Map<String, DownloadItem>.from(map);
         })
-        .startWith(initial);
+        .startWith(Map<String, DownloadItem>.from(map));
   }
 }

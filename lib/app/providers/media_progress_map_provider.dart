@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/providers/user_provider.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
@@ -12,8 +13,7 @@ part 'media_progress_map_provider.g.dart';
 
 @riverpod
 Future<void> mediaProgressSyncController(Ref ref) async {
-  final user = ref.watch(currentUserProvider);
-  if (user == null) return;
+  final user = await ref.watch(authenticatedUserProvider.future);
   final store = ref.read(progressStoreProvider(user.id));
   final serverUser = await ref.watch(serverUserProvider.future);
   store.putAll(serverUser.mediaProgress);
@@ -34,12 +34,13 @@ Stream<MediaProgress> _progressUpdate(Ref ref) async* {
 }
 
 @riverpod
-Future<Map<String, MediaProgress>> mediaProgressMap(Ref ref) {
+Future<Map<String, MediaProgress>> mediaProgressMap(Ref ref) async {
   final user = ref.watch(currentUserProvider);
   if (user == null) {
     return Future.value({});
   }
-  return ref.watch(progressMapProvider(user.id).future);
+  final map = await ref.watch(progressMapProvider(user.id).future);
+  return map;
 }
 
 @riverpod
@@ -64,6 +65,9 @@ Future<MediaProgress?> mediaProgressFromMap(
   String libraryItemId, [
   String? episodeId,
 ]) async {
-  final map = await ref.watch(mediaProgressMapProvider.future);
-  return map[mediaItemIdKey(libraryItemId, episodeId)];
+  final key = mediaItemIdKey(libraryItemId, episodeId);
+  final progress = await ref.watch(
+    mediaProgressMapProvider.selectAsync((s) => s[key]),
+  );
+  return progress;
 }
