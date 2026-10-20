@@ -32,13 +32,16 @@ class SocketApi {
     required Stream<String?> tokenUpdates,
     this.getToken,
     this.onAuthFailure,
-  }) : socket = io(
-         baseUrl,
-         OptionBuilder()
-             .setTransports(['websocket'])
-             .disableAutoConnect()
-             .build(),
-       ),
+    Socket? socketOverride,
+  }) : socket =
+           socketOverride ??
+           io(
+             baseUrl,
+             OptionBuilder()
+                 .setTransports(['websocket'])
+                 .disableAutoConnect()
+                 .build(),
+           ),
        _currentToken = token {
     user = UserSocketEvents(socket);
     taskEvents = TaskEvents(socket);
