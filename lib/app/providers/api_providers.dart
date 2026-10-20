@@ -109,6 +109,7 @@ Future<SocketApi> socketApi(Ref ref, UserDomain user) async {
     baseUrl: serverUrl.toString(),
     token: token,
     tokenUpdates: tokenService.tokenStream(user.id),
+    getToken: () => tokenService.getAccessToken(user.id),
     onAuthFailure: () {
       LogService.log('Socket authentication failed');
     },

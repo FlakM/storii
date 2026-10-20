@@ -24,11 +24,13 @@ class SocketApi {
 
   String? _currentToken;
   bool _isDisposed = false;
+  final Future<String?> Function()? getToken;
 
   new({
     required String baseUrl,
     required String? token,
     required Stream<String?> tokenUpdates,
+    this.getToken,
     this.onAuthFailure,
   }) : socket = io(
          baseUrl,
@@ -47,23 +49,30 @@ class SocketApi {
     _connController = StreamController<bool>.broadcast();
     isConnected = _connController.stream;
 
-    socket.onConnect((_) {
+    socket.onConnect((_) async {
       if (_isDisposed) return;
       _connController.add(true);
+      // Always authenticate with the token currently in storage: it may have
+      // been refreshed while the socket was disconnected.
+      final latestToken = await getToken?.call();
+      if (_isDisposed) return;
+      if (latestToken != null) _currentToken = latestToken;
       _authenticate();
     });
     socket.onDisconnect((_) {
       if (_isDisposed) return;
       _connController.add(false);
-      _currentToken = null;
+      // Keep _currentToken: socket.io reconnects on its own and _authenticate()
+      // must still have a token when it does. Nulling it here made every
+      // reconnect unauthenticated until the app process was restarted.
     });
     socket.onConnectError((_) {
       if (_isDisposed) return;
       _connController.add(false);
-      _currentToken = null;
     });
     socket.on('auth_failed', (_) {
-      _currentToken = null;
+      // Keep the token so a reconnect after a token refresh can authenticate.
+      // onAuthFailure triggers a refresh; the new token arrives via tokenUpdates.
       return onAuthFailure?.call();
     });
 
