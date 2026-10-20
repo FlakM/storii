@@ -2,8 +2,8 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/config/router.dart';
 import 'package:storii/app/init.dart' as init;
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/widget_controller.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
+import 'package:storii/features/widget/logic/widget_controller.dart';
 
 part 'deep_link_controller.g.dart';
 

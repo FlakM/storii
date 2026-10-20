@@ -38,4 +38,32 @@
         android:max="10000"
         android:progressDrawable="@drawable/widget_progress_green"
         android:visibility="gone" />
+
+    <ProgressBar
+        android:id="@+id/widget_badge_loading"
+        style="@style/Widget.AppCompat.ProgressBar"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignBottom="@id/widget_cover"
+        android:layout_alignEnd="@id/widget_cover"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:indeterminate="true"
+        android:indeterminateTint="@android:color/white"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/widget_badge"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignBottom="@id/widget_cover"
+        android:layout_alignEnd="@id/widget_cover"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/widget_badge_background"
+        android:contentDescription="@string/app_name"
+        android:padding="4dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/widget_badge_play"
+        android:visibility="gone" />
 </RelativeLayout>
