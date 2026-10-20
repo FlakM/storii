@@ -18,6 +18,7 @@ class PlayButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final scheme = Theme.of(context).colorScheme;
     final isLoading = ref.watch(
       audioPlayerProvider.select((s) => s.loadingItemId == item.id),
     );
@@ -64,19 +65,42 @@ class PlayButton extends ConsumerWidget {
           : l10n.play;
     }
 
-    return AppFilledButton(
-      loading: isLoading,
-      onPressed: () async {
-        if (isCurrentItem) {
-          await audioHandler.togglePlay();
-        } else {
-          await ref
-              .read(queueProvider.notifier)
-              .play(itemId: item.id, episodeId: episodeId);
-        }
-      },
-      icon: Icon(isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded),
-      text: label,
+    return Row(
+      spacing: 8,
+      children: [
+        Expanded(
+          child: AppFilledButton(
+            loading: isLoading,
+            onPressed: () async {
+              if (isCurrentItem) {
+                await audioHandler.togglePlay();
+              } else {
+                await ref
+                    .read(queueProvider.notifier)
+                    .play(itemId: item.id, episodeId: episodeId);
+              }
+            },
+            icon: Icon(
+              isPlaying ? Icons.pause_rounded : Icons.play_arrow_rounded,
+            ),
+            text: label,
+          ),
+        ),
+        if (isCurrentItem)
+          IconButton.outlined(
+            tooltip: l10n.stop,
+            icon: const Icon(Icons.stop_outlined),
+            onPressed: () async {
+              await audioHandler.stop();
+            },
+            style: OutlinedButton.styleFrom(
+              shape: RoundedRectangleBorder(borderRadius: .circular(kRadius)),
+              side: .new(color: scheme.onError),
+              backgroundColor: scheme.error,
+              foregroundColor: scheme.onError,
+            ),
+          ),
+      ],
     );
   }
 }
