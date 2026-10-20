@@ -7,16 +7,17 @@ import 'package:storii/app/config/keys.dart';
 import 'package:storii/app/config/router.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/models/storage_location.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/user_provider.dart';
-import 'package:storii/app/providers/widget_controller.dart';
 import 'package:storii/features/downloads/logic/download_queue.dart';
 import 'package:storii/features/downloads/logic/downloads_provider.dart';
 import 'package:storii/features/downloads/logic/storage_locations_provider.dart';
 import 'package:storii/features/downloads/ui/download_button.dart';
 import 'package:storii/features/item/logic/user_progress_actions.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
+import 'package:storii/features/widget/logic/widget_controller.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/shared/widgets/app_bottom_sheet.dart';
@@ -118,7 +119,10 @@ class _MoreOptionsWidgetState extends ConsumerState<_MoreOptionsWidget> {
         title: l10n.removeProgress,
         icon: Icons.delete_outline,
         onTap: () => _runWithLoading(
-          () => ref.read(userProgressActionsProvider).remove(mediaProgress.id),
+          () async {
+            final actions = await ref.read(userProgressActionsProvider.future);
+            return actions.remove(mediaProgress.id);
+          },
           l10n.progressRemoved,
           l10n.progressRemoveFailed,
         ),
@@ -130,9 +134,13 @@ class _MoreOptionsWidgetState extends ConsumerState<_MoreOptionsWidget> {
         title: l10n.markAsComplete,
         icon: Icons.beenhere_outlined,
         onTap: () => _runWithLoading(
-          () => ref
-              .read(userProgressActionsProvider)
-              .markComplete(itemId: widget.itemId, episodeId: widget.episodeId),
+          () async {
+            final actions = await ref.read(userProgressActionsProvider.future);
+            return actions.markComplete(
+              itemId: widget.itemId,
+              episodeId: widget.episodeId,
+            );
+          },
           l10n.progressMarkedComplete,
           l10n.progressMarkCompleteFailed,
         ),
@@ -144,9 +152,10 @@ class _MoreOptionsWidgetState extends ConsumerState<_MoreOptionsWidget> {
         title: l10n.removeFromContinueListening,
         icon: Icons.playlist_remove,
         onTap: () => _runWithLoading(
-          () => ref
-              .read(userProgressActionsProvider)
-              .removeFromContinueListening(mediaProgress.id),
+          () async {
+            final actions = await ref.read(userProgressActionsProvider.future);
+            return actions.removeFromContinueListening(mediaProgress.id);
+          },
           l10n.removedFromContinueListening,
           l10n.removeFromContinueListeningFailed,
         ),
@@ -158,9 +167,10 @@ class _MoreOptionsWidgetState extends ConsumerState<_MoreOptionsWidget> {
         title: l10n.removeSeriesFromContinueListening,
         icon: Icons.playlist_remove,
         onTap: () => _runWithLoading(
-          () => ref
-              .read(userProgressActionsProvider)
-              .removeSeriesFromContinueListening(widget.seriesId!),
+          () async {
+            final actions = await ref.read(userProgressActionsProvider.future);
+            return actions.removeSeriesFromContinueListening(widget.seriesId!);
+          },
           l10n.seriesRemovedFromContinueListening,
           l10n.removeSeriesFromContinueListeningFailed,
         ),
@@ -221,8 +231,9 @@ class _MoreOptionsWidgetState extends ConsumerState<_MoreOptionsWidget> {
           onTap: () async {
             if (_isBusy) return;
             setState(() => _isBusy = true);
+            final user = await ref.watch(authenticatedUserProvider.future);
             final result = await ref
-                .read(itemRepositoryProvider)
+                .read(itemRepositoryProvider(user))
                 .scanItem(widget.itemId);
             if (!mounted) return;
             setState(() => _isBusy = false);

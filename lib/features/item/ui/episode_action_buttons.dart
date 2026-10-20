@@ -5,13 +5,13 @@ import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/config/keys.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
-import 'package:storii/app/providers/widget_controller.dart';
 import 'package:storii/features/downloads/ui/download_button.dart';
 import 'package:storii/features/item/logic/user_progress_actions.dart';
 import 'package:storii/features/item/ui/episode_metadata_sheet.dart';
 import 'package:storii/features/item/ui/episode_play_button.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
 import 'package:storii/features/player/ui/history_button.dart';
+import 'package:storii/features/widget/logic/widget_controller.dart';
 import 'package:storii/shared/helpers/extensions.dart';
 import 'package:storii/shared/widgets/app_bottom_sheet.dart';
 
@@ -88,12 +88,13 @@ class EpisodeActionButtons extends ConsumerWidget {
                               actionLabel: l10n.confirm,
                               actionIcon: Icons.beenhere_outlined,
                               onTap: () async {
-                                final success = await ref
-                                    .read(userProgressActionsProvider)
-                                    .markComplete(
-                                      itemId: episode.libraryItemId,
-                                      episodeId: episode.id,
-                                    );
+                                final actions = await ref.read(
+                                  userProgressActionsProvider.future,
+                                );
+                                final success = await actions.markComplete(
+                                  itemId: episode.libraryItemId,
+                                  episodeId: episode.id,
+                                );
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
@@ -131,9 +132,12 @@ class EpisodeActionButtons extends ConsumerWidget {
                               actionIcon: Icons.delete_outline,
                               isDestructive: true,
                               onTap: () async {
-                                final success = await ref
-                                    .read(userProgressActionsProvider)
-                                    .remove(progress.id);
+                                final actions = await ref.read(
+                                  userProgressActionsProvider.future,
+                                );
+                                final success = await actions.remove(
+                                  progress.id,
+                                );
                                 if (context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(

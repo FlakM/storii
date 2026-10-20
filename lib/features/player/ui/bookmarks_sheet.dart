@@ -159,12 +159,13 @@ class _BookmarkSheetBody extends ConsumerWidget {
                               tooltip: l10n.remove,
                               icon: const Icon(Icons.delete_outline),
                               onPressed: () async {
-                                final ok = await ref
-                                    .read(bookmarksControllerProvider)
-                                    .remove(
-                                      itemId: itemId,
-                                      time: bookmark.time,
-                                    );
+                                final controller = await ref.read(
+                                  bookmarksControllerProvider.future,
+                                );
+                                final ok = await controller.remove(
+                                  itemId: itemId,
+                                  time: bookmark.time,
+                                );
                                 if (ok && context.mounted) {
                                   ref.invalidate(serverUserProvider);
                                 }
@@ -222,8 +223,7 @@ Future<void> showBookmarkDialog(
       final time = parseTime(timeController.text);
       if (title.isEmpty || time == null) return;
 
-      final controller = ref.read(bookmarksControllerProvider);
-
+      final controller = await ref.read(bookmarksControllerProvider.future);
       final ok = isEditing
           ? await controller.modify(itemId: itemId, time: time, title: title)
           : await controller.create(itemId: itemId, time: time, title: title);

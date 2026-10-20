@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
@@ -41,8 +42,9 @@ class LibraryItemsNotifier extends _$LibraryItemsNotifier {
       libraryFiltersProvider(.library).select((s) => s.toItemParams()),
     );
     final params = baseParams.copyWith(page: page, limit: pageSize);
-    final repo = ref.read(libraryRepositoryProvider);
 
+    final user = await ref.read(authenticatedUserProvider.future);
+    final repo = ref.read(libraryRepositoryProvider(user));
     final response = await repo.getItems(libraryId, params);
 
     final progressMap = await ref.watch(mediaProgressMapProvider.future);
@@ -113,7 +115,7 @@ Future<List<LibraryItem>> allLibraryItems(Ref ref) async {
   final params = ref.watch(
     libraryFiltersProvider(.library).select((s) => s.toItemParams()),
   );
-  final repo = ref.read(libraryRepositoryProvider);
-
+  final user = await ref.watch(authenticatedUserProvider.future);
+  final repo = ref.watch(libraryRepositoryProvider(user));
   return repo.getAllItems(libraryId, params);
 }

@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
@@ -41,9 +41,8 @@ class Playlists extends _$Playlists {
       if (removed == null || !state.hasValue) return;
       state = AsyncData(state.value!.where((p) => p.id != removed.id).toList());
     });
-
-    await ref.watch(authGateProvider.future);
-    final api = ref.read(libraryApiProvider);
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final api = ref.watch(libraryApiProvider(user));
 
     return ref.logApiCall(
       () => api.getUserPlaylists(libraryId: libraryId),
@@ -70,8 +69,8 @@ class PlaylistDetail extends _$PlaylistDetail {
       state = AsyncError(Exception(l10n.errorNotFound), StackTrace.current);
     });
 
-    await ref.read(authGateProvider.future);
-    final api = ref.read(playlistsApiProvider);
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final api = ref.watch(playlistsApiProvider(user));
     return ref.logApiCall(
       () => api.get(playlistId: id),
       source: 'playlist',
@@ -87,8 +86,8 @@ class PlaylistDetail extends _$PlaylistDetail {
     items.insert(newIndex, moved);
     state = AsyncData(current.copyWith(items: items));
     try {
-      await ref.read(authGateProvider.future);
-      final api = ref.read(playlistsApiProvider);
+      final user = await ref.read(authenticatedUserProvider.future);
+      final api = ref.read(playlistsApiProvider(user));
       await ref.logApiCall(
         () => api.reorder(playlistId: current.id, items: items),
         source: 'PlaylistDetail',
@@ -115,8 +114,8 @@ class PlaylistDetail extends _$PlaylistDetail {
     String? episodeId,
   }) async {
     final activeLibrary = await ref.watch(activeLibraryDetailsProvider.future);
-    await ref.read(authGateProvider.future);
-    final api = ref.read(playlistsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(playlistsApiProvider(user));
     return ref.logApiCall(
       () => api.create(
         params: CreatePlaylistRequestParams(
@@ -137,8 +136,8 @@ class PlaylistDetail extends _$PlaylistDetail {
     required String name,
     String? description,
   }) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(playlistsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(playlistsApiProvider(user));
     return ref.logApiCall(
       () => api.updateMetadata(
         playlistId: playlistId,
@@ -151,8 +150,8 @@ class PlaylistDetail extends _$PlaylistDetail {
   }
 
   Future<void> delete(String playlistId) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(playlistsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(playlistsApiProvider(user));
     return ref.logApiCall(
       () => api.delete(playlistId: playlistId),
       source: 'PlaylistDetail',
@@ -165,8 +164,8 @@ class PlaylistDetail extends _$PlaylistDetail {
     required String libraryItemId,
     String? episodeId,
   }) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(playlistsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(playlistsApiProvider(user));
     return ref.logApiCall(
       () => api.batchAdd(
         playlistId: playlistId,
@@ -183,8 +182,8 @@ class PlaylistDetail extends _$PlaylistDetail {
     required String playlistId,
     required PlaylistItem item,
   }) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(playlistsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(playlistsApiProvider(user));
     return ref.logApiCall(
       () => api.batchRemove(playlistId: playlistId, items: [item]),
       source: 'PlaylistDetail',

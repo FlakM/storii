@@ -33,7 +33,7 @@ final class PlaylistsProvider
   Playlists create() => Playlists();
 }
 
-String _$playlistsHash() => r'571aa0d6a464f52979c9ba27f527611b7fdd0cc8';
+String _$playlistsHash() => r'78a22fdecfd0e21734704056e07f26f95f407cb4';
 
 abstract class _$Playlists extends $AsyncNotifier<List<Playlist>> {
   FutureOr<List<Playlist>> build();
@@ -94,7 +94,7 @@ final class PlaylistDetailProvider
   }
 }
 
-String _$playlistDetailHash() => r'4e4ced50f0ea10e2d9ecc2d0e6a25f820a0d51f9';
+String _$playlistDetailHash() => r'7d6cf9b74037b37c425536de3d9d5a428ca80e0a';
 
 final class PlaylistDetailFamily extends $Family
     with

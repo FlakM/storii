@@ -14,6 +14,9 @@ _WidgetConfig _$WidgetConfigFromJson(Map<String, dynamic> json) =>
       updatedAt: DateTime.parse(json['updatedAt'] as String),
       coverPath: json['coverPath'] as String?,
       progress: (json['progress'] as num?)?.toDouble(),
+      state:
+          $enumDecodeNullable(_$WidgetPlaybackStateEnumMap, json['state']) ??
+          WidgetPlaybackState.none,
     );
 
 Map<String, dynamic> _$WidgetConfigToJson(_WidgetConfig instance) =>
@@ -24,4 +27,12 @@ Map<String, dynamic> _$WidgetConfigToJson(_WidgetConfig instance) =>
       'updatedAt': instance.updatedAt.toIso8601String(),
       'coverPath': ?instance.coverPath,
       'progress': ?instance.progress,
+      'state': _$WidgetPlaybackStateEnumMap[instance.state]!,
     };
+
+const _$WidgetPlaybackStateEnumMap = {
+  WidgetPlaybackState.none: 'none',
+  WidgetPlaybackState.loading: 'loading',
+  WidgetPlaybackState.playing: 'playing',
+  WidgetPlaybackState.paused: 'paused',
+};

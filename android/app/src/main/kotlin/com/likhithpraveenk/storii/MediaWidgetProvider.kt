@@ -13,18 +13,24 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Shader
-import android.widget.ProgressBar
+import android.view.View
 import android.widget.RemoteViews
 import androidx.core.content.edit
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.scale
 import androidx.core.net.toUri
+import org.json.JSONException
+import org.json.JSONObject
 import java.io.File
+
 
 class MediaWidgetProvider : AppWidgetProvider() {
 
     companion object {
         private const val HOME_WIDGET_PREFS = "HomeWidgetPreferences"
+        private const val STATE_NONE = "none"
+        private const val STATE_LOADING = "loading"
+        private const val STATE_PLAYING = "playing"
 
         private fun renderWidget(
             context: Context,
@@ -35,17 +41,17 @@ class MediaWidgetProvider : AppWidgetProvider() {
             val views = RemoteViews(context.packageName, R.layout.widget_media_square)
 
             val dataKey = "widget_$appWidgetId"
-            val jsonString = widgetData.getString(dataKey, null)
+            val config = widgetData.getString(dataKey, null)?.let { parseWidgetConfig(it) }
 
-            val itemId = jsonString?.let { parseItemId(it) } ?: ""
-            val episodeId = jsonString?.let { parseEpisodeId(it) }
-            val coverPath = jsonString?.let { parseCoverPath(it) }
-            val progress = jsonString?.let { parseProgress(it) }
+            val itemId = config?.itemId ?: ""
+            val episodeId = config?.episodeId
+            val coverPath = config?.coverPath
+            val progress = config?.progress
 
             if (itemId.isEmpty()) {
                 views.setImageViewResource(R.id.widget_cover, R.drawable.add_rounded)
-                views.setViewVisibility(R.id.widget_progress_red, ProgressBar.GONE)
-                views.setViewVisibility(R.id.widget_progress_green, ProgressBar.GONE)
+                views.setViewVisibility(R.id.widget_progress_red, View.GONE)
+                views.setViewVisibility(R.id.widget_progress_green, View.GONE)
 
                 val configureUri = "storii://widget?id=$appWidgetId".toUri()
                 val configureIntent = Intent(Intent.ACTION_VIEW, configureUri).apply {
@@ -72,12 +78,10 @@ class MediaWidgetProvider : AppWidgetProvider() {
                 if (progress != null && progress > 0) {
                     val isGreen = progress >= 1.0
                     views.setViewVisibility(
-                        R.id.widget_progress_green,
-                        if (isGreen) ProgressBar.VISIBLE else ProgressBar.GONE
+                        R.id.widget_progress_green, if (isGreen) View.VISIBLE else View.GONE
                     )
                     views.setViewVisibility(
-                        R.id.widget_progress_red,
-                        if (isGreen) ProgressBar.GONE else ProgressBar.VISIBLE
+                        R.id.widget_progress_red, if (isGreen) View.GONE else View.VISIBLE
                     )
                     views.setProgressBar(
                         if (isGreen) R.id.widget_progress_green else R.id.widget_progress_red,
@@ -86,75 +90,74 @@ class MediaWidgetProvider : AppWidgetProvider() {
                         false
                     )
                 } else {
-                    views.setViewVisibility(R.id.widget_progress_red, ProgressBar.GONE)
-                    views.setViewVisibility(R.id.widget_progress_green, ProgressBar.GONE)
+                    views.setViewVisibility(R.id.widget_progress_red, View.GONE)
+                    views.setViewVisibility(R.id.widget_progress_green, View.GONE)
                 }
 
-                val deepLinkUri = if (!episodeId.isNullOrEmpty()) {
-                    "storii://play?id=$itemId&episodeId=$episodeId".toUri()
-                } else {
-                    "storii://play?id=$itemId".toUri()
-                }
-
-                val intent = Intent(Intent.ACTION_VIEW, deepLinkUri).apply {
-                    setPackage(context.packageName)
-                    flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-                }
-
-                val pendingIntent = PendingIntent.getActivity(
+                val itemIntent =
+                    Intent(Intent.ACTION_VIEW, "storii:///item/$itemId".toUri()).apply {
+                        setPackage(context.packageName)
+                        flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    }
+                val itemPendingIntent = PendingIntent.getActivity(
                     context,
                     appWidgetId,
-                    intent,
+                    itemIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
                 )
-                views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
+                views.setOnClickPendingIntent(R.id.widget_root, itemPendingIntent)
+
+                val playIntent = Intent(context, WidgetPlayReceiver::class.java).apply {
+                    putExtra(WidgetPlayReceiver.EXTRA_LIBRARY_ITEM_ID, itemId)
+                    putExtra(WidgetPlayReceiver.EXTRA_EPISODE_ID, episodeId)
+                }
+                val playPendingIntent = PendingIntent.getBroadcast(
+                    context,
+                    appWidgetId,
+                    playIntent,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+                views.setOnClickPendingIntent(R.id.widget_badge, playPendingIntent)
+
+                val state = config?.state ?: STATE_NONE
+                if (state == STATE_LOADING) {
+                    views.setViewVisibility(R.id.widget_badge_loading, View.VISIBLE)
+                    views.setViewVisibility(R.id.widget_badge, View.GONE)
+                } else {
+                    views.setViewVisibility(R.id.widget_badge_loading, View.GONE)
+                    views.setViewVisibility(R.id.widget_badge, View.VISIBLE)
+                    views.setImageViewResource(
+                        R.id.widget_badge, if (state == STATE_PLAYING) {
+                            R.drawable.widget_badge_pause
+                        } else {
+                            R.drawable.widget_badge_play
+                        }
+                    )
+                }
             }
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
 
-        private fun parseItemId(jsonString: String): String {
-            return try {
-                val start = jsonString.indexOf("\"itemId\":\"") + 10
-                val end = jsonString.indexOf("\"", start)
-                if (start in 10..<end) jsonString.substring(start, end) else ""
-            } catch (_: Exception) {
-                ""
-            }
-        }
+        private class WidgetConfigData(
+            val itemId: String,
+            val episodeId: String?,
+            val coverPath: String?,
+            val progress: Double?,
+            val state: String,
+        )
 
-        private fun parseEpisodeId(jsonString: String): String? {
+        private fun parseWidgetConfig(jsonString: String): WidgetConfigData? {
             return try {
-                val start = jsonString.indexOf("\"episodeId\":\"") + 13
-                val end = jsonString.indexOf("\"", start)
-                if (start in 13..<end) jsonString.substring(start, end) else null
-            } catch (_: Exception) {
-                null
-            }
-        }
-
-        private fun parseCoverPath(jsonString: String): String? {
-            return try {
-                val start = jsonString.indexOf("\"coverPath\":\"") + 13
-                val end = jsonString.indexOf("\"", start)
-                if (start in 13..<end) jsonString.substring(start, end) else null
-            } catch (_: Exception) {
-                null
-            }
-        }
-
-        private fun parseProgress(jsonString: String): Double? {
-            return try {
-                val start = jsonString.indexOf("\"progress\":") + 11
-                val end = jsonString.indexOf(",", start)
-                if (end == -1) {
-                    val endBrace = jsonString.indexOf("}", start)
-                    if (start in 11..<endBrace) jsonString.substring(start, endBrace)
-                        .toDouble() else null
-                } else if (start in 11..<end) {
-                    jsonString.substring(start, end).toDouble()
-                } else null
-            } catch (_: Exception) {
+                val json = JSONObject(jsonString)
+                WidgetConfigData(
+                    itemId = json.optString("itemId"),
+                    episodeId = json.optString("episodeId").takeIf { it.isNotEmpty() },
+                    coverPath = json.optString("coverPath").takeIf { it.isNotBlank() },
+                    progress = json.optDouble("progress").takeIf { !it.isNaN() },
+                    state = json.optString("state").takeIf { it.isNotEmpty() } ?: STATE_NONE,
+                )
+            } catch (_: JSONException) {
                 null
             }
         }
@@ -184,11 +187,12 @@ class MediaWidgetProvider : AppWidgetProvider() {
                 }
                 val bitmap = BitmapFactory.decodeFile(coverPath, decodeOptions) ?: return null
 
-                if (bitmap.width != maxImageSizePx || bitmap.height != maxImageSizePx) {
-                    bitmap.scale(maxImageSizePx, maxImageSizePx)
-                } else {
-                    bitmap
+                if (bitmap.width == maxImageSizePx && bitmap.height == maxImageSizePx) {
+                    return bitmap
                 }
+                val scaled = bitmap.scale(maxImageSizePx, maxImageSizePx)
+                bitmap.recycle()
+                return scaled
             } catch (_: Exception) {
                 null
             }

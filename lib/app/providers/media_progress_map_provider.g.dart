@@ -42,7 +42,7 @@ final class MediaProgressSyncControllerProvider
 }
 
 String _$mediaProgressSyncControllerHash() =>
-    r'4723db3d3136c4a978e70c2214f46db36d9566bb';
+    r'4f068cc162edd9a20df3d6e2a6d76267e70af041';
 
 @ProviderFor(_progressUpdate)
 final _progressUpdateProvider = _ProgressUpdateProvider._();
@@ -81,7 +81,7 @@ final class _ProgressUpdateProvider
   }
 }
 
-String _$_progressUpdateHash() => r'99f6ddf397d9491fa61882a38d90b53c9f7e8e01';
+String _$_progressUpdateHash() => r'a8954a4fcea71479262868f91d502c231aba5f65';
 
 @ProviderFor(mediaProgressMap)
 final mediaProgressMapProvider = MediaProgressMapProvider._();
@@ -122,7 +122,7 @@ final class MediaProgressMapProvider
   }
 }
 
-String _$mediaProgressMapHash() => r'7862c315649f97c381c3ffb445ae09c25ff55ed4';
+String _$mediaProgressMapHash() => r'98c7e3179ae0418c51e8bd22294577b21124b58f';
 
 @ProviderFor(totalFinishedBooks)
 final totalFinishedBooksProvider = TotalFinishedBooksProvider._();
@@ -248,7 +248,7 @@ final class MediaProgressFromMapProvider
 }
 
 String _$mediaProgressFromMapHash() =>
-    r'7433542fbdf0624bd04dccb95b28abc9e5a17067';
+    r'99d4c227709889fbc6c9a4ece45c1ceb0d3f6f0f';
 
 final class MediaProgressFromMapFamily extends $Family
     with

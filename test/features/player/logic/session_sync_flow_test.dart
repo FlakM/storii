@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:storii/app/models/user.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
@@ -54,15 +54,11 @@ void main() {
         sessionStoreProvider.overrideWithValue(sessionStore),
         progressStoreProvider(testUser.id).overrideWithValue(progressStore),
         currentUserProvider.overrideWithValue(testUser),
-        authGateProvider.overrideWith((ref) async {}),
-        socketApiProvider.overrideWith((ref) async => fakeSocketApi),
-        sessionsApiProvider.overrideWithValue(fakeSessionsApi),
+        authenticatedUserProvider.overrideWith((ref) async => testUser),
+        socketApiProvider.overrideWith((ref, _) async => fakeSocketApi),
+        sessionsApiProvider.overrideWith((ref, _) => fakeSessionsApi),
         sessionRepositoryProvider.overrideWith(
-          (ref) => SessionRepository(
-            fakeItemApi,
-            fakeSessionsApi,
-            auth: Future.value(),
-          ),
+          (ref, _) => SessionRepository(fakeItemApi, fakeSessionsApi),
         ),
       ],
     );

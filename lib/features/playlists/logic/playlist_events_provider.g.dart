@@ -41,7 +41,7 @@ final class PlaylistAddedProvider
   }
 }
 
-String _$playlistAddedHash() => r'3e093edc0d5ee9866ed2a639e70c8570cfbb3a2d';
+String _$playlistAddedHash() => r'aa8d7861397a0cc08f76325a854ce8cd4f10b5fe';
 
 @ProviderFor(playlistUpdated)
 final playlistUpdatedProvider = PlaylistUpdatedProvider._();
@@ -75,7 +75,7 @@ final class PlaylistUpdatedProvider
   }
 }
 
-String _$playlistUpdatedHash() => r'a4ffcc155b76df044702cb094a4e2e5889fcb208';
+String _$playlistUpdatedHash() => r'e07e46e0feea04cd460339d265630ea5c3c8c4d2';
 
 @ProviderFor(playlistRemoved)
 final playlistRemovedProvider = PlaylistRemovedProvider._();
@@ -109,4 +109,4 @@ final class PlaylistRemovedProvider
   }
 }
 
-String _$playlistRemovedHash() => r'465f666c7ca9c02e270b65b99200965f4f781c5d';
+String _$playlistRemovedHash() => r'e62404f01673ac9d04af2699ec987dfec3a76c6f';

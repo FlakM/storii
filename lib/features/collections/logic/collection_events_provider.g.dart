@@ -45,7 +45,7 @@ final class CollectionAddedProvider
   }
 }
 
-String _$collectionAddedHash() => r'283c423fc166244372cead714f72b37f1ab79e2f';
+String _$collectionAddedHash() => r'5980e0873be5ce12a251449d55b3a2136a96632f';
 
 @ProviderFor(collectionUpdated)
 final collectionUpdatedProvider = CollectionUpdatedProvider._();
@@ -83,7 +83,7 @@ final class CollectionUpdatedProvider
   }
 }
 
-String _$collectionUpdatedHash() => r'1c43b2ce0365b3758de5d4260069503425630a1e';
+String _$collectionUpdatedHash() => r'2b67594e8c8448286b50cbb8fada50f73e99d6f8';
 
 @ProviderFor(collectionRemoved)
 final collectionRemovedProvider = CollectionRemovedProvider._();
@@ -121,4 +121,4 @@ final class CollectionRemovedProvider
   }
 }
 
-String _$collectionRemovedHash() => r'cadb62be42b8efb19ac9ac485d2470dbaea2b341';
+String _$collectionRemovedHash() => r'52a50855d33e744a45b349989f7b1382c76849bc';

@@ -4,13 +4,12 @@ import 'package:storii/shared/helpers/api_call_logger.dart';
 class SessionRepository {
   final ItemApi _itemApi;
   final SessionsApi _sessionsApi;
-  final Future<void> auth;
-  const new(this._itemApi, this._sessionsApi, {required this.auth});
+  const new(this._itemApi, this._sessionsApi);
 
   static const _source = 'SessionRepository';
 
   Future<T> _call<T>(Future<T> Function() call, {String? logMessage}) =>
-      callWithAuth(auth, call, source: _source, logMessage: logMessage);
+      logApiCall(call, source: _source, logMessage: logMessage);
 
   Future<PlaybackSession> createSession({
     required String itemId,

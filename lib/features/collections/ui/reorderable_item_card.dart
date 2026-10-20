@@ -109,13 +109,14 @@ class ReorderableItemCard extends ConsumerWidget {
                 title: isFinished ? l10n.markAsIncomplete : l10n.markAsComplete,
                 actionLabel: l10n.confirm,
                 onTap: () async {
-                  await ref
-                      .read(userProgressActionsProvider)
-                      .markComplete(
-                        itemId: itemId,
-                        episodeId: episodeId,
-                        isFinished: !isFinished,
-                      );
+                  final actions = await ref.read(
+                    userProgressActionsProvider.future,
+                  );
+                  await actions.markComplete(
+                    itemId: itemId,
+                    episodeId: episodeId,
+                    isFinished: !isFinished,
+                  );
                 },
               ),
               icon: Icon(

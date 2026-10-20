@@ -49,9 +49,10 @@ class ActionButtons extends ConsumerWidget {
               actionLabel: l10n.confirm,
               actionIcon: Icons.beenhere_outlined,
               onTap: () async {
-                final success = await ref
-                    .read(userProgressActionsProvider)
-                    .markComplete(itemId: item.id);
+                final actions = await ref.read(
+                  userProgressActionsProvider.future,
+                );
+                final success = await actions.markComplete(itemId: item.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
@@ -86,9 +87,10 @@ class ActionButtons extends ConsumerWidget {
               actionIcon: Icons.delete_outline,
               isDestructive: true,
               onTap: () async {
-                final success = await ref
-                    .read(userProgressActionsProvider)
-                    .remove(mediaProgress.id);
+                final actions = await ref.read(
+                  userProgressActionsProvider.future,
+                );
+                final success = await actions.remove(mediaProgress.id);
                 if (context.mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

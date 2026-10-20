@@ -41,7 +41,7 @@ final class WidgetControllerProvider
   }
 }
 
-String _$widgetControllerHash() => r'ed7558fd62d4309f0313dc0ca6a8b3df81acd4d6';
+String _$widgetControllerHash() => r'0415a4d9ee31bb73f415490e1863aadb2d204898';
 
 abstract class _$WidgetController extends $Notifier<void> {
   void build();

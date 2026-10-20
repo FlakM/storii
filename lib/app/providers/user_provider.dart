@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/providers/api_providers.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/shared/helpers/extensions.dart';
@@ -13,24 +14,29 @@ part 'user_provider.g.dart';
 
 @riverpod
 class ServerUser extends _$ServerUser {
-  StreamSubscription? _userSub;
-
   @override
   Future<User> build() async {
-    ref.onDispose(() {
-      _userSub?.cancel();
-    });
-    await _userSub?.cancel();
-    final repo = ref.read(meRepositoryProvider);
-    final user = await repo.getUser();
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final repo = ref.watch(meRepositoryProvider(user));
+    final serverUser = await repo.getUser();
 
-    final socket = await ref.watch(socketApiProvider.future);
-    _userSub = socket.user.onUserUpdated.listen((update) {
-      state = AsyncData(update);
+    ref.listen(_userUpdateProvider, (_, next) {
+      final updatedUser = next.value;
+      if (updatedUser != null) {
+        state = AsyncData(updatedUser);
+      }
     });
 
-    return user;
+    return serverUser;
   }
+}
+
+@riverpod
+Stream<User> _userUpdate(Ref ref) async* {
+  final user = ref.watch(currentUserProvider);
+  if (user == null) return;
+  final socket = await ref.watch(socketApiProvider(user).future);
+  yield* socket.user.onUserUpdated;
 }
 
 @riverpod

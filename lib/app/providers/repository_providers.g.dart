@@ -10,7 +10,7 @@ part of 'repository_providers.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(libraryRepository)
-final libraryRepositoryProvider = LibraryRepositoryProvider._();
+final libraryRepositoryProvider = LibraryRepositoryFamily._();
 
 final class LibraryRepositoryProvider
     extends
@@ -20,19 +20,26 @@ final class LibraryRepositoryProvider
           LibraryRepository
         >
     with $Provider<LibraryRepository> {
-  LibraryRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'libraryRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  LibraryRepositoryProvider._({
+    required LibraryRepositoryFamily super.from,
+    required UserDomain super.argument,
+  }) : super(
+         retry: null,
+         name: r'libraryRepositoryProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$libraryRepositoryHash();
+
+  @override
+  String toString() {
+    return r'libraryRepositoryProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -42,7 +49,8 @@ final class LibraryRepositoryProvider
 
   @override
   LibraryRepository create(Ref ref) {
-    return libraryRepository(ref);
+    final argument = this.argument as UserDomain;
+    return libraryRepository(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -52,29 +60,64 @@ final class LibraryRepositoryProvider
       providerOverride: $SyncValueProvider<LibraryRepository>(value),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LibraryRepositoryProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
-String _$libraryRepositoryHash() => r'be966816786cd481d8439872a9db5823ef8c13e9';
+String _$libraryRepositoryHash() => r'84d318337113cfc2619765eb599cc15055130667';
+
+final class LibraryRepositoryFamily extends $Family
+    with $FunctionalFamilyOverride<LibraryRepository, UserDomain> {
+  LibraryRepositoryFamily._()
+    : super(
+        retry: null,
+        name: r'libraryRepositoryProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  LibraryRepositoryProvider call(UserDomain user) =>
+      LibraryRepositoryProvider._(argument: user, from: this);
+
+  @override
+  String toString() => r'libraryRepositoryProvider';
+}
 
 @ProviderFor(itemRepository)
-final itemRepositoryProvider = ItemRepositoryProvider._();
+final itemRepositoryProvider = ItemRepositoryFamily._();
 
 final class ItemRepositoryProvider
     extends $FunctionalProvider<ItemRepository, ItemRepository, ItemRepository>
     with $Provider<ItemRepository> {
-  ItemRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'itemRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  ItemRepositoryProvider._({
+    required ItemRepositoryFamily super.from,
+    required UserDomain super.argument,
+  }) : super(
+         retry: null,
+         name: r'itemRepositoryProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$itemRepositoryHash();
+
+  @override
+  String toString() {
+    return r'itemRepositoryProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -83,7 +126,8 @@ final class ItemRepositoryProvider
 
   @override
   ItemRepository create(Ref ref) {
-    return itemRepository(ref);
+    final argument = this.argument as UserDomain;
+    return itemRepository(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -93,29 +137,64 @@ final class ItemRepositoryProvider
       providerOverride: $SyncValueProvider<ItemRepository>(value),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is ItemRepositoryProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
-String _$itemRepositoryHash() => r'f5c4d2335bf25761f776f6caf86e13677f5c1814';
+String _$itemRepositoryHash() => r'ee75656765df6ba650f968a63dc00fc38cc52a87';
+
+final class ItemRepositoryFamily extends $Family
+    with $FunctionalFamilyOverride<ItemRepository, UserDomain> {
+  ItemRepositoryFamily._()
+    : super(
+        retry: null,
+        name: r'itemRepositoryProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  ItemRepositoryProvider call(UserDomain user) =>
+      ItemRepositoryProvider._(argument: user, from: this);
+
+  @override
+  String toString() => r'itemRepositoryProvider';
+}
 
 @ProviderFor(meRepository)
-final meRepositoryProvider = MeRepositoryProvider._();
+final meRepositoryProvider = MeRepositoryFamily._();
 
 final class MeRepositoryProvider
     extends $FunctionalProvider<MeRepository, MeRepository, MeRepository>
     with $Provider<MeRepository> {
-  MeRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'meRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  MeRepositoryProvider._({
+    required MeRepositoryFamily super.from,
+    required UserDomain super.argument,
+  }) : super(
+         retry: null,
+         name: r'meRepositoryProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$meRepositoryHash();
+
+  @override
+  String toString() {
+    return r'meRepositoryProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -124,7 +203,8 @@ final class MeRepositoryProvider
 
   @override
   MeRepository create(Ref ref) {
-    return meRepository(ref);
+    final argument = this.argument as UserDomain;
+    return meRepository(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -134,12 +214,40 @@ final class MeRepositoryProvider
       providerOverride: $SyncValueProvider<MeRepository>(value),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is MeRepositoryProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
-String _$meRepositoryHash() => r'ba9c9bdae48f1b3eb9767c73dfa324854283024d';
+String _$meRepositoryHash() => r'3f8134848ec4f46f70774bdb8cfeb45ae5d4c784';
+
+final class MeRepositoryFamily extends $Family
+    with $FunctionalFamilyOverride<MeRepository, UserDomain> {
+  MeRepositoryFamily._()
+    : super(
+        retry: null,
+        name: r'meRepositoryProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  MeRepositoryProvider call(UserDomain user) =>
+      MeRepositoryProvider._(argument: user, from: this);
+
+  @override
+  String toString() => r'meRepositoryProvider';
+}
 
 @ProviderFor(sessionRepository)
-final sessionRepositoryProvider = SessionRepositoryProvider._();
+final sessionRepositoryProvider = SessionRepositoryFamily._();
 
 final class SessionRepositoryProvider
     extends
@@ -149,19 +257,26 @@ final class SessionRepositoryProvider
           SessionRepository
         >
     with $Provider<SessionRepository> {
-  SessionRepositoryProvider._()
-    : super(
-        from: null,
-        argument: null,
-        retry: null,
-        name: r'sessionRepositoryProvider',
-        isAutoDispose: true,
-        dependencies: null,
-        $allTransitiveDependencies: null,
-      );
+  SessionRepositoryProvider._({
+    required SessionRepositoryFamily super.from,
+    required UserDomain super.argument,
+  }) : super(
+         retry: null,
+         name: r'sessionRepositoryProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$sessionRepositoryHash();
+
+  @override
+  String toString() {
+    return r'sessionRepositoryProvider'
+        ''
+        '($argument)';
+  }
 
   @$internal
   @override
@@ -171,7 +286,8 @@ final class SessionRepositoryProvider
 
   @override
   SessionRepository create(Ref ref) {
-    return sessionRepository(ref);
+    final argument = this.argument as UserDomain;
+    return sessionRepository(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -181,6 +297,34 @@ final class SessionRepositoryProvider
       providerOverride: $SyncValueProvider<SessionRepository>(value),
     );
   }
+
+  @override
+  bool operator ==(Object other) {
+    return other is SessionRepositoryProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
-String _$sessionRepositoryHash() => r'192924c1ddee8cc79b3f6c03729a77cb6126a683';
+String _$sessionRepositoryHash() => r'1867b6d44da65a2d36d9bb411684cb42790bda57';
+
+final class SessionRepositoryFamily extends $Family
+    with $FunctionalFamilyOverride<SessionRepository, UserDomain> {
+  SessionRepositoryFamily._()
+    : super(
+        retry: null,
+        name: r'sessionRepositoryProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  SessionRepositoryProvider call(UserDomain user) =>
+      SessionRepositoryProvider._(argument: user, from: this);
+
+  @override
+  String toString() => r'sessionRepositoryProvider';
+}

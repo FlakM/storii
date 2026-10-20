@@ -4,9 +4,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
 import 'package:storii/app/logs/logs_interceptor.dart';
+import 'package:storii/app/models/user.dart';
 import 'package:storii/app/network/offline_cache_interceptor.dart';
 import 'package:storii/app/providers/connection_providers.dart';
-import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/providers/token_provider.dart';
 import 'package:storii/features/auth/logic/servers_provider.dart';
 import 'package:storii/features/auth/logic/user_session_controller.dart';
@@ -16,22 +16,9 @@ import 'package:storii/storage/local/servers_store.dart';
 part 'api_providers.g.dart';
 
 @Riverpod(keepAlive: true)
-CancelToken apiCancelToken(Ref ref) {
-  ref.watch(currentUserProvider);
-  final cancelToken = CancelToken();
-  ref.onDispose(() {
-    cancelToken.cancel('User session disposed or logged out');
-  });
-  return cancelToken;
-}
-
-@Riverpod(keepAlive: true)
-ApiClient apiClient(Ref ref) {
-  final user = ref.watch(currentUserProvider);
-  if (user == null) throw StateError('No current user');
-
+ApiClient apiClient(Ref ref, UserDomain user) {
   final tokenService = ref.watch(tokenProvider);
-  final cancelToken = ref.watch(apiCancelTokenProvider);
+  final cancelToken = CancelToken();
   final serverUrl = ref.watch(activeServerUrlProvider);
 
   final cacheOptions = CacheOptions(
@@ -73,6 +60,10 @@ ApiClient apiClient(Ref ref) {
     },
   );
 
+  ref.onDispose(() {
+    cancelToken.cancel('User session disposed or logged out');
+  });
+
   return apiClient;
 }
 
@@ -89,25 +80,27 @@ AuthApi authApi(Ref ref, Uri baseUrl) {
 }
 
 @riverpod
-ServerApi serverApi(Ref ref) => ServerApi(ref.watch(apiClientProvider));
+ServerApi serverApi(Ref ref, UserDomain user) =>
+    ServerApi(ref.watch(apiClientProvider(user)));
 
 @riverpod
-LibraryApi libraryApi(Ref ref) => LibraryApi(ref.watch(apiClientProvider));
+LibraryApi libraryApi(Ref ref, UserDomain user) =>
+    LibraryApi(ref.watch(apiClientProvider(user)));
 
 @riverpod
-ItemApi itemApi(Ref ref) => ItemApi(ref.watch(apiClientProvider));
+ItemApi itemApi(Ref ref, UserDomain user) =>
+    ItemApi(ref.watch(apiClientProvider(user)));
 
 @riverpod
-MeApi meApi(Ref ref) => MeApi(ref.watch(apiClientProvider));
+MeApi meApi(Ref ref, UserDomain user) =>
+    MeApi(ref.watch(apiClientProvider(user)));
 
 @riverpod
-SessionsApi sessionsApi(Ref ref) => SessionsApi(ref.watch(apiClientProvider));
+SessionsApi sessionsApi(Ref ref, UserDomain user) =>
+    SessionsApi(ref.watch(apiClientProvider(user)));
 
-@Riverpod(keepAlive: true)
-Future<SocketApi> socketApi(Ref ref) async {
-  final user = ref.watch(currentUserProvider);
-  if (user == null) throw StateError('No current user');
-
+@riverpod
+Future<SocketApi> socketApi(Ref ref, UserDomain user) async {
   final tokenService = ref.read(tokenProvider);
   final token = await tokenService.getAccessToken(user.id);
   final serverUrl = ref.watch(activeServerUrlProvider);
@@ -125,12 +118,13 @@ Future<SocketApi> socketApi(Ref ref) async {
 }
 
 @riverpod
-CollectionsApi collectionsApi(Ref ref) =>
-    CollectionsApi(ref.watch(apiClientProvider));
+CollectionsApi collectionsApi(Ref ref, UserDomain user) =>
+    CollectionsApi(ref.watch(apiClientProvider(user)));
 
 @riverpod
-PlaylistsApi playlistsApi(Ref ref) =>
-    PlaylistsApi(ref.watch(apiClientProvider));
+PlaylistsApi playlistsApi(Ref ref, UserDomain user) =>
+    PlaylistsApi(ref.watch(apiClientProvider(user)));
 
 @riverpod
-SearchApi searchApi(Ref ref) => SearchApi(ref.watch(apiClientProvider));
+SearchApi searchApi(Ref ref, UserDomain user) =>
+    SearchApi(ref.watch(apiClientProvider(user)));

@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/providers/api_providers.dart';
-import 'package:storii/app/providers/auth_gate_provider.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/features/collections/logic/collection_events_provider.dart';
 import 'package:storii/features/library/logic/active_library_provider.dart';
@@ -41,9 +41,8 @@ class Collections extends _$Collections {
       state = AsyncData(state.value!.where((c) => c.id != removed.id).toList());
     });
 
-    await ref.watch(authGateProvider.future);
-    final api = ref.read(libraryApiProvider);
-
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final api = ref.watch(libraryApiProvider(user));
     return ref.logApiCall(
       () => api.getCollections(libraryId: libraryId),
       source: 'collections',
@@ -69,8 +68,8 @@ class CollectionDetail extends _$CollectionDetail {
       state = AsyncError(Exception(l10n.errorNotFound), StackTrace.current);
     });
 
-    await ref.watch(authGateProvider.future);
-    final api = ref.read(collectionsApiProvider);
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final api = ref.watch(collectionsApiProvider(user));
     return ref.logApiCall(
       () => api.get(collectionId: id),
       source: 'CollectionDetail',
@@ -86,8 +85,8 @@ class CollectionDetail extends _$CollectionDetail {
     books.insert(newIndex, moved);
     state = AsyncData(current.copyWith(books: books));
     try {
-      await ref.read(authGateProvider.future);
-      final api = ref.read(collectionsApiProvider);
+      final user = await ref.read(authenticatedUserProvider.future);
+      final api = ref.read(collectionsApiProvider(user));
       await ref.logApiCall(
         () => api.reorder(
           collectionId: current.id,
@@ -119,8 +118,8 @@ class CollectionDetail extends _$CollectionDetail {
     required String libraryItemId,
   }) async {
     final activeLibrary = await ref.watch(activeLibraryDetailsProvider.future);
-    await ref.read(authGateProvider.future);
-    final api = ref.read(collectionsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(collectionsApiProvider(user));
     return ref.logApiCall(
       () => api.create(
         params: CreateCollectionRequestParams(
@@ -139,8 +138,8 @@ class CollectionDetail extends _$CollectionDetail {
     required String name,
     String? description,
   }) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(collectionsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(collectionsApiProvider(user));
     return ref.logApiCall(
       () => api.updateMetadata(
         collectionId: collectionId,
@@ -153,8 +152,8 @@ class CollectionDetail extends _$CollectionDetail {
   }
 
   Future<void> delete(String collectionId) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(collectionsApiProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final api = ref.read(collectionsApiProvider(user));
     return ref.logApiCall(
       () => api.delete(collectionId: collectionId),
       source: 'CollectionDetail',
@@ -166,8 +165,8 @@ class CollectionDetail extends _$CollectionDetail {
     required String collectionId,
     required String libraryItemId,
   }) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(collectionsApiProvider);
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final api = ref.read(collectionsApiProvider(user));
     return ref.logApiCall(
       () => api.batchAdd(
         collectionId: collectionId,
@@ -182,8 +181,8 @@ class CollectionDetail extends _$CollectionDetail {
     required String collectionId,
     required String libraryItemId,
   }) async {
-    await ref.read(authGateProvider.future);
-    final api = ref.read(collectionsApiProvider);
+    final user = await ref.watch(authenticatedUserProvider.future);
+    final api = ref.read(collectionsApiProvider(user));
     return ref.logApiCall(
       () => api.batchRemove(
         collectionId: collectionId,

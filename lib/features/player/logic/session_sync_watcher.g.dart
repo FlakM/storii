@@ -42,7 +42,7 @@ final class SessionSyncWatcherProvider
 }
 
 String _$sessionSyncWatcherHash() =>
-    r'2814d3ba4a5ccc98a1130c0022ad3b7ae4c166f0';
+    r'e46117270d5d86461eae5323267d2493696ca671';
 
 abstract class _$SessionSyncWatcher extends $Notifier<void> {
   void build();

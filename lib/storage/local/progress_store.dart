@@ -64,13 +64,13 @@ class ProgressStore {
   }
 
   void putAll(List<MediaProgress> list) {
-    final keysToDelete = userMediaProgressBox.keys
-        .where((k) => _splitKey(k, userId) != null)
-        .toList();
-
     final entries = <String, String>{
       for (final p in list) _key(p.libraryItemId, p.episodeId): jsonEncode(p),
     };
+
+    final keysToDelete = userMediaProgressBox.keys
+        .where((k) => _splitKey(k, userId) != null && !entries.containsKey(k))
+        .toList();
 
     try {
       userMediaProgressBox
@@ -94,27 +94,22 @@ ProgressStore progressStore(Ref ref, String userId) =>
 class ProgressMap extends _$ProgressMap {
   @override
   Stream<Map<String, MediaProgress>> build(String userId) {
-    final initial = ref.read(progressStoreProvider(userId)).getAll();
+    final map = ref.read(progressStoreProvider(userId)).getAll();
     return userMediaProgressBox
         .watch()
         .map((e) {
           final mapKey = _splitKey(e.key, userId);
-          if (mapKey == null) return state.value ?? <String, MediaProgress>{};
+          if (mapKey == null) return null;
 
-          final map = Map<String, MediaProgress>.from(state.value ?? {});
-          if (e.deleted) {
-            map.remove(mapKey);
+          final item = e.deleted ? null : _decode(e.value);
+          if (item != null) {
+            map[mediaItemIdKey(item.libraryItemId, item.episodeId)] = item;
           } else {
-            final progress = _decode(e.value as String?);
-            if (progress != null) {
-              map[mediaItemIdKey(progress.libraryItemId, progress.episodeId)] =
-                  progress;
-            } else {
-              map.remove(mapKey);
-            }
+            map.remove(mapKey);
           }
-          return map;
+          return Map<String, MediaProgress>.from(map);
         })
-        .startWith(initial);
+        .whereType<Map<String, MediaProgress>>()
+        .startWith(Map<String, MediaProgress>.from(map));
   }
 }

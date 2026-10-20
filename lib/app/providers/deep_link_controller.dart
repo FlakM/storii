@@ -2,17 +2,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/app/config/router.dart';
 import 'package:storii/app/init.dart' as init;
 import 'package:storii/app/logs/log_service.dart';
-import 'package:storii/app/providers/widget_controller.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
+import 'package:storii/features/widget/logic/widget_controller.dart';
 
 part 'deep_link_controller.g.dart';
 
 @riverpod
 void deepLinkController(Ref ref) {
-  final router = ref.watch(routerProvider);
-
   Future<void> handle(Uri url) async {
     LogService.log('$url', source: 'deepLinkController');
+    final router = ref.read(routerProvider);
     switch (url.host) {
       case 'oauth':
         router.go('/oauth${url.path}', extra: url);

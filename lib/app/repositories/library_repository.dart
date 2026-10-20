@@ -4,13 +4,12 @@ import 'package:storii/shared/helpers/api_call_logger.dart';
 
 class LibraryRepository {
   final LibraryApi _api;
-  final Future<void> auth;
-  const new(this._api, {required this.auth});
+  const new(this._api);
 
   static const _source = 'LibraryRepository';
 
   Future<T> _call<T>(Future<T> Function() call, {String? logMessage}) =>
-      callWithAuth(auth, call, source: _source, logMessage: logMessage);
+      logApiCall(call, source: _source, logMessage: logMessage);
 
   Future<List<Library>> getLibraries() {
     return _call(_api.getAll, logMessage: 'Error fetching user libraries');

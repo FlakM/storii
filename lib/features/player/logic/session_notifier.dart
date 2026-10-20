@@ -4,6 +4,7 @@ import 'dart:developer';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/logs/log_service.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/connection_providers.dart';
 import 'package:storii/app/providers/media_progress_map_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
@@ -27,7 +28,8 @@ class SessionNotifier extends _$SessionNotifier {
     required String itemId,
     String? episodeId,
   }) async {
-    final repo = ref.read(sessionRepositoryProvider);
+    final user = await ref.read(authenticatedUserProvider.future);
+    final repo = ref.read(sessionRepositoryProvider(user));
     final params = await ref.read(playRequestParamsProvider.future);
 
     final session = await repo.createSession(
@@ -95,7 +97,11 @@ class SessionNotifier extends _$SessionNotifier {
     return session;
   }
 
-  Future<void> sync(Duration totalListened, Duration position) async {
+  Future<void> sync(
+    Duration totalListened,
+    Duration position, {
+    bool closing = false,
+  }) async {
     final session = state;
     if (session == null) {
       // log('no session to sync');
@@ -110,7 +116,9 @@ class SessionNotifier extends _$SessionNotifier {
 
     if (isLocal) {
       await ref.read(sessionStoreProvider).save(updated);
-      state = updated;
+      if (!closing) {
+        state = updated;
+      }
 
       final isConnected = await ref.read(socketStatusProvider.future);
       if (!isConnected) {
@@ -118,7 +126,8 @@ class SessionNotifier extends _$SessionNotifier {
       }
 
       try {
-        final repo = ref.read(sessionRepositoryProvider);
+        final user = await ref.read(authenticatedUserProvider.future);
+        final repo = ref.read(sessionRepositoryProvider(user));
         await repo.syncLocal(localSession: updated.stripped);
       } catch (e) {
         LogService.log(
@@ -137,11 +146,14 @@ class SessionNotifier extends _$SessionNotifier {
           updatedAt: DateTime.now(),
         );
         await ref.read(sessionStoreProvider).save(withPosition);
-        state = withPosition;
+        if (!closing) {
+          state = withPosition;
+        }
         throw 'No Server Connection';
       }
 
-      final repo = ref.read(sessionRepositoryProvider);
+      final user = await ref.read(authenticatedUserProvider.future);
+      final repo = ref.read(sessionRepositoryProvider(user));
       await repo.syncSession(
         sessionId: session.id,
         params: SyncSessionRequestParams(
@@ -152,7 +164,9 @@ class SessionNotifier extends _$SessionNotifier {
     }
 
     await ref.read(sessionStoreProvider).delete(updated.id);
-    state = updated;
+    if (!closing) {
+      state = updated;
+    }
 
     log(
       '${position.toTime()}: sync success '
@@ -169,7 +183,8 @@ class SessionNotifier extends _$SessionNotifier {
 
     try {
       if (!isLocal) {
-        final repo = ref.read(sessionRepositoryProvider);
+        final user = await ref.read(authenticatedUserProvider.future);
+        final repo = ref.read(sessionRepositoryProvider(user));
         await repo.closeSession(sessionId: session.id);
         await ref.read(sessionStoreProvider).delete(session.id);
       }

@@ -6,14 +6,13 @@ import 'package:storii/shared/helpers/api_call_logger.dart';
 
 class ItemRepository {
   final ItemApi _api;
-  final Future<void> auth;
   final Uri? serverUrl;
-  const new(this._api, {required this.auth, this.serverUrl});
+  const new(this._api, {this.serverUrl});
 
   static const _source = 'ItemRepository';
 
   Future<T> _call<T>(Future<T> Function() call, {String? logMessage}) =>
-      callWithAuth(auth, call, source: _source, logMessage: logMessage);
+      logApiCall(call, source: _source, logMessage: logMessage);
 
   Future<LibraryItem> getItem(
     String itemId, {

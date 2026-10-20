@@ -153,7 +153,12 @@ class _ItemDetailScreenState extends ConsumerState<ItemDetailScreen> {
             left: 4,
             child: IconButton(
               onPressed: () {
-                context.pop();
+                if (context.canPop()) {
+                  context.pop();
+                } else {
+                  final path = ref.read(startupNavProvider).item.route.path;
+                  context.go(path);
+                }
               },
               icon: const Icon(Icons.arrow_back),
             ),

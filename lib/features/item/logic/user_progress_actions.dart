@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/repositories/me_repository.dart';
 import 'package:storii/shared/helpers/app_error.dart';
@@ -84,7 +85,8 @@ class UserProgressActions {
 }
 
 @riverpod
-UserProgressActions userProgressActions(Ref ref) {
-  final repo = ref.watch(meRepositoryProvider);
+Future<UserProgressActions> userProgressActions(Ref ref) async {
+  final user = await ref.watch(authenticatedUserProvider.future);
+  final repo = ref.watch(meRepositoryProvider(user));
   return UserProgressActions(repo);
 }

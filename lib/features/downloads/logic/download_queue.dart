@@ -19,7 +19,7 @@ import 'package:storii/storage/local/items_cache.dart';
 
 part 'download_queue.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 class DownloadQueue extends _$DownloadQueue {
   DownloadsStore get _store => ref.read(downloadsStoreProvider);
 

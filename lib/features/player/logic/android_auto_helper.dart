@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:storii/api/abs/abs_api.dart';
 import 'package:storii/app/init.dart';
 import 'package:storii/app/logs/log_service.dart';
+import 'package:storii/app/providers/authenticated_user_provider.dart';
 import 'package:storii/app/providers/repository_providers.dart';
 import 'package:storii/app/providers/settings_provider.dart';
 import 'package:storii/app/repositories/item_repository.dart';
@@ -13,7 +14,9 @@ import 'package:storii/features/library/logic/active_library_provider.dart';
 import 'package:storii/features/library/logic/library_items_provider.dart';
 import 'package:storii/features/player/logic/android_auto_extensions.dart';
 import 'package:storii/features/player/logic/android_auto_paging.dart';
+import 'package:storii/features/player/logic/audio_providers.dart';
 import 'package:storii/features/player/logic/queue_providers.dart';
+import 'package:storii/features/player/logic/session_notifier.dart';
 import 'package:storii/features/player/models/android_auto_media_id.dart';
 import 'package:storii/shared/helpers/abs_model_extensions.dart';
 import 'package:storii/shared/helpers/extensions.dart';
@@ -37,10 +40,9 @@ class AndroidAutoHelper {
 
   final ProviderContainer _container;
 
-  ItemRepository? _itemRepository() {
-    final user = _container.read(currentUserProvider);
-    if (user == null) return null;
-    return _container.read(itemRepositoryProvider);
+  Future<ItemRepository?> _itemRepository() async {
+    final user = await _container.read(authenticatedUserProvider.future);
+    return _container.read(itemRepositoryProvider(user));
   }
 
   CoverHelper get _helper => _container.read(coverHelperProvider);
@@ -94,9 +96,18 @@ class AndroidAutoHelper {
     required bool autoplay,
   }) async {
     try {
+      if (autoplay && _isPausedOnSameItem(itemId, episodeId)) {
+        await audioHandler.play();
+        return;
+      }
       await _container
           .read(queueProvider.notifier)
-          .play(itemId: itemId, episodeId: episodeId, forAndroidAuto: true);
+          .play(
+            itemId: itemId,
+            episodeId: episodeId,
+            forAndroidAuto: true,
+            autoplay: autoplay,
+          );
     } catch (e, st) {
       LogService.log(
         'Android Auto play failed: $e',
@@ -108,6 +119,13 @@ class AndroidAutoHelper {
     }
   }
 
+  bool _isPausedOnSameItem(String itemId, String? episodeId) {
+    final session = _container.read(sessionProvider);
+    final isSameItem =
+        session?.libraryItemId == itemId && session?.episodeId == episodeId;
+    return isSameItem && !_container.read(isPlayingProvider);
+  }
+
   Future<List<MediaItem>> search(
     String query, [
     Map<String, dynamic>? options,
@@ -115,7 +133,8 @@ class AndroidAutoHelper {
     final libraryId = _container.read(currentLibraryProvider)?.id;
     if (libraryId == null) return [];
 
-    final libraryRepo = _container.read(libraryRepositoryProvider);
+    final user = await _container.read(authenticatedUserProvider.future);
+    final libraryRepo = _container.read(libraryRepositoryProvider(user));
     final result = await libraryRepo.search(libraryId, query: query);
     final items = <LibraryItem>[
       ...result.book,
@@ -126,7 +145,7 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
-    final repo = _itemRepository();
+    final repo = await _itemRepository();
     return Future.wait(
       paged.map(
         (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
@@ -167,7 +186,7 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
-    final repo = _itemRepository();
+    final repo = await _itemRepository();
     return Future.wait(
       paged.map(
         (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
@@ -221,7 +240,7 @@ class AndroidAutoHelper {
       items,
       androidAutoPagingFromOptions(options),
     );
-    final repo = _itemRepository();
+    final repo = await _itemRepository();
     return Future.wait(
       paged.map(
         (item) => item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
@@ -237,7 +256,7 @@ class AndroidAutoHelper {
     try {
       final item = await _container.read(itemDetailProvider(itemId).future);
       if (item.isBook) {
-        final repo = _itemRepository();
+        final repo = await _itemRepository();
         return applyAndroidAutoPaging([
           await item.toAndroidAutoMediaItem(repo: repo, helper: _helper),
         ], androidAutoPagingFromOptions(options));
@@ -261,7 +280,7 @@ class AndroidAutoHelper {
         episodes,
         androidAutoPagingFromOptions(options),
       );
-      final repo = _itemRepository();
+      final repo = await _itemRepository();
       return await Future.wait(
         paged.map(
           (e) => e.toAndroidAutoMediaItem(

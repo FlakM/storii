@@ -15,11 +15,13 @@ final userProgressActionsProvider = UserProgressActionsProvider._();
 final class UserProgressActionsProvider
     extends
         $FunctionalProvider<
+          AsyncValue<UserProgressActions>,
           UserProgressActions,
-          UserProgressActions,
-          UserProgressActions
+          FutureOr<UserProgressActions>
         >
-    with $Provider<UserProgressActions> {
+    with
+        $FutureModifier<UserProgressActions>,
+        $FutureProvider<UserProgressActions> {
   UserProgressActionsProvider._()
     : super(
         from: null,
@@ -36,23 +38,15 @@ final class UserProgressActionsProvider
 
   @$internal
   @override
-  $ProviderElement<UserProgressActions> $createElement(
+  $FutureProviderElement<UserProgressActions> $createElement(
     $ProviderPointer pointer,
-  ) => $ProviderElement(pointer);
+  ) => $FutureProviderElement(pointer);
 
   @override
-  UserProgressActions create(Ref ref) {
+  FutureOr<UserProgressActions> create(Ref ref) {
     return userProgressActions(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(UserProgressActions value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $SyncValueProvider<UserProgressActions>(value),
-    );
   }
 }
 
 String _$userProgressActionsHash() =>
-    r'c29728ba317e20f19a42db575707cbc893cf79bc';
+    r'2112b7eb2b036ad16e77e360a3c7a25f5535a9f1';

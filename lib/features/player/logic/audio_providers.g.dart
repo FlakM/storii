@@ -508,7 +508,7 @@ final class AudioPlayerNotifierProvider
 }
 
 String _$audioPlayerNotifierHash() =>
-    r'ef318b0acfd78a91fa52ca3ee7b8d78db2f1509c';
+    r'a975fc265a0fd6cf2de43c2d52651541f147fd25';
 
 abstract class _$AudioPlayerNotifier extends $Notifier<AudioPlayerState> {
   AudioPlayerState build();
@@ -568,7 +568,7 @@ final class PlayerStateWatcherProvider
 }
 
 String _$playerStateWatcherHash() =>
-    r'beb8b19d5f5c3a1b23c7c5d2329897232b8dd537';
+    r'dc43be93944f04f6f5e8d0b8ce06c1776e3e7020';
 
 @ProviderFor(volume)
 final volumeProvider = VolumeProvider._();

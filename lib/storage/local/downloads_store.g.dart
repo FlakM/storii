@@ -74,7 +74,7 @@ final class DownloadsProvider
   Downloads create() => Downloads();
 }
 
-String _$downloadsHash() => r'a1440a5b101109197b0bafd873c1735b06975556';
+String _$downloadsHash() => r'6ec2c1f856e7e7e136ec48b3c0ad05865bfc5535';
 
 abstract class _$Downloads extends $StreamNotifier<Map<String, DownloadItem>> {
   Stream<Map<String, DownloadItem>> build();
