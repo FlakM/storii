@@ -97,7 +97,11 @@ class SessionNotifier extends _$SessionNotifier {
     return session;
   }
 
-  Future<void> sync(Duration totalListened, Duration position) async {
+  Future<void> sync(
+    Duration totalListened,
+    Duration position, {
+    bool closing = false,
+  }) async {
     final session = state;
     if (session == null) {
       // log('no session to sync');
@@ -112,7 +116,9 @@ class SessionNotifier extends _$SessionNotifier {
 
     if (isLocal) {
       await ref.read(sessionStoreProvider).save(updated);
-      state = updated;
+      if (!closing) {
+        state = updated;
+      }
 
       final isConnected = await ref.read(socketStatusProvider.future);
       if (!isConnected) {
@@ -140,7 +146,9 @@ class SessionNotifier extends _$SessionNotifier {
           updatedAt: DateTime.now(),
         );
         await ref.read(sessionStoreProvider).save(withPosition);
-        state = withPosition;
+        if (!closing) {
+          state = withPosition;
+        }
         throw 'No Server Connection';
       }
 
@@ -156,7 +164,9 @@ class SessionNotifier extends _$SessionNotifier {
     }
 
     await ref.read(sessionStoreProvider).delete(updated.id);
-    state = updated;
+    if (!closing) {
+      state = updated;
+    }
 
     log(
       '${position.toTime()}: sync success '

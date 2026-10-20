@@ -568,7 +568,7 @@ final class PlayerStateWatcherProvider
 }
 
 String _$playerStateWatcherHash() =>
-    r'beb8b19d5f5c3a1b23c7c5d2329897232b8dd537';
+    r'dc43be93944f04f6f5e8d0b8ce06c1776e3e7020';
 
 @ProviderFor(volume)
 final volumeProvider = VolumeProvider._();

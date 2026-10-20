@@ -242,13 +242,18 @@ class AudioPlayerNotifier extends _$AudioPlayerNotifier {
 
 @riverpod
 void playerStateWatcher(Ref ref) {
-  ref.listen(sessionProvider, (previous, next) {
+  // to catch background playback start (widget/AA)
+  final session = ref.read(sessionProvider);
+  final playerVisible = ref.read(playerViewStateProvider) != .hidden;
+  if (session != null && !playerVisible) {
+    Future.microtask(() => ref.read(playerModeProvider.notifier).toMini());
+  }
+
+  ref.listen(sessionProvider, (_, next) {
     final playerVisible = ref.read(playerViewStateProvider) != .hidden;
     final playerMode = ref.read(playerModeProvider.notifier);
 
-    // if playback started then show player
-    if (previous == null && next != null && !playerVisible) {
-      // show full during initial loading, mini otherwise
+    if (next != null && !playerVisible) {
       final isLoading = ref.read(
         audioPlayerProvider.select((s) => s.loadingItemId != null),
       );
@@ -260,7 +265,6 @@ void playerStateWatcher(Ref ref) {
       return;
     }
 
-    // if session ended then hide
     if (next == null && playerVisible) {
       playerMode.toHidden();
       return;

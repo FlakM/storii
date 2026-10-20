@@ -39,8 +39,9 @@ class SessionSyncWatcher extends _$SessionSyncWatcher {
         getSyncInterval: () => ref.read(networkAwareSyncIntervalProvider),
         getPosition: () => audioHandler.currentPosition,
         isPlaying: () => ref.read(isPlayingProvider),
-        onSync: (listened, position) =>
-            ref.read(sessionProvider.notifier).sync(listened, position),
+        onSync: (listened, position, {closing = false}) => ref
+            .read(sessionProvider.notifier)
+            .sync(listened, position, closing: closing),
         onClose: () => ref.read(sessionProvider.notifier).close(),
         onMarkComplete: () async {
           final actions = await ref.read(userProgressActionsProvider.future);

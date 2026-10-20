@@ -23,7 +23,7 @@ void main() {
       isPlaying: () => playing,
       onSync:
           onSync ??
-          (listened, position) async =>
+          (listened, position, {closing = false}) async =>
               syncCalls.add((listened: listened, position: position)),
       onClose: onClose ?? () async {},
       onMarkComplete: onMarkComplete ?? () async {},
@@ -66,7 +66,7 @@ void main() {
     var attempts = 0;
     await service.dispose();
     service = makeService(
-      onSync: (_, _) async {
+      onSync: (_, _, {closing = false}) async {
         attempts++;
         throw Exception();
       },

@@ -7,7 +7,11 @@ import 'package:storii/features/player/logic/playback_history.dart';
 
 typedef OnSessionClose = Future<void> Function();
 typedef OnMarkComplete = Future<void> Function();
-typedef OnSync = Future<void> Function(Duration listened, Duration position);
+typedef OnSync = Future<void> Function(
+  Duration listened,
+  Duration position, {
+  bool closing,
+});
 
 class PlaybackSyncService {
   final PlaybackSession session;
@@ -67,7 +71,7 @@ class PlaybackSyncService {
   }
 
   Future<void> onStop() async {
-    await _sync(.stop, keepRunning: false);
+    await _sync(.stop, keepRunning: false, closing: true);
     await onClose();
   }
 
@@ -85,6 +89,7 @@ class PlaybackSyncService {
     PlaybackEventKind kind, {
     required bool keepRunning,
     bool playbackError = false,
+    bool closing = false,
   }) async {
     final listened = _accumulator.snapshotAndReset(keepRunning: keepRunning);
     if (listened.inMilliseconds < 200 && kind != .play) {
@@ -103,7 +108,7 @@ class PlaybackSyncService {
     await history.addEvent(event);
 
     try {
-      await onSync(listened, position);
+      await onSync(listened, position, closing: closing);
       await history.updateEvent(
         event.copyWith(syncAttempt: true, syncSuccess: true),
       );
