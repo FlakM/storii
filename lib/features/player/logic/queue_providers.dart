@@ -231,7 +231,7 @@ void queueController(Ref ref) {
   if (ref.read(playOnStartupProvider)) {
     final queue = ref.read(queueProvider);
     final session = ref.read(sessionProvider);
-    if (queue.current != null && session != null) {
+    if (queue.current != null && session == null) {
       Future.microtask(() {
         ref.read(queueProvider.notifier).playLastPlayed();
       });
